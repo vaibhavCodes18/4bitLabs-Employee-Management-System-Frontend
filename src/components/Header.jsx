@@ -1,8 +1,6 @@
 import React from "react";
-import {
-  FaMicrochip,
-  
-} from 'react-icons/fa';
+import { FaMicrochip } from "react-icons/fa";
+import { Link } from "react-router-dom";
 const Header = () => {
   return (
     <header className="container mx-auto px-6 py-5 flex justify-between items-center">
@@ -26,12 +24,12 @@ const Header = () => {
           Contact
         </a>
       </nav>
-      <a
-        href="#roles"
+      <Link
+        to="/login"
         className="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shadow-md"
       >
         Get Started
-      </a>
+      </Link>
     </header>
   );
 };

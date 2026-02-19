@@ -35,12 +35,7 @@ const RolesSection = () => {
               <li>✓ System settings & security</li>
               <li>✓ Audit logs & reports</li>
             </ul>
-            <Link
-              to="/login"
-              className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded-lg w-full hover:bg-indigo-700 transition"
-            >
-              Access Portal
-            </Link>
+            
           </div>
 
           {/* Trainer Card */}
@@ -59,9 +54,7 @@ const RolesSection = () => {
               <li>✓ Lesson plans & materials</li>
               <li>✓ Performance tracking</li>
             </ul>
-            <button className="mt-6 bg-green-600 text-white px-4 py-2 rounded-lg w-full hover:bg-green-700 transition">
-              Access Portal
-            </button>
+            
           </div>
 
           {/* Analyst Card */}
@@ -80,9 +73,7 @@ const RolesSection = () => {
               <li>✓ Student success metrics</li>
               <li>✓ Trend analysis</li>
             </ul>
-            <button className="mt-6 bg-yellow-600 text-white px-4 py-2 rounded-lg w-full hover:bg-yellow-700 transition">
-              Access Portal
-            </button>
+            
           </div>
 
           {/* Counsellor Card */}
@@ -101,9 +92,7 @@ const RolesSection = () => {
               <li>✓ Student counseling records</li>
               <li>✓ Follow-up & engagement</li>
             </ul>
-            <button className="mt-6 bg-pink-600 text-white px-4 py-2 rounded-lg w-full hover:bg-pink-700 transition">
-              Access Portal
-            </button>
+            
           </div>
         </div>
       </div>

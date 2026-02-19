@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   FaMicrochip,
   FaEnvelope,
   FaLock,
   FaUserTag,
   FaArrowRight,
-  FaCheckCircle
-} from 'react-icons/fa';
+  FaCheckCircle,
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const SignUpPage = () => {
+const LoginPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: ''
+    email: "",
+    password: "",
+    role: "",
   });
+  const admin = JSON.parse(localStorage.getItem("admin"));
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,8 +24,13 @@ const SignUpPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle sign-up logic here
-    console.log('Sign up data:', formData);
+    // Handle login logic here
+    console.log("Login data:", formData);
+    setFormData(formData);
+
+    if(admin.email === formData.email && admin.password === formData.password){
+      navigate('admin-dashboard');
+    }
   };
 
   return (
@@ -39,19 +46,21 @@ const SignUpPage = () => {
               <span className="text-2xl font-bold">4bitlabs</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">
-              Join the <br />4bitlabs Family
+              Welcome Back to <br />
+              4bitLabs EMS
             </h2>
             <p className="text-indigo-100 text-lg mb-8">
-              Create your account to access the Employee Management System and start collaborating with your team.
+              Log in with your credentials and role to access your personalized
+              dashboard.
             </p>
             <ul className="space-y-3">
               <li className="flex items-center space-x-3">
                 <FaCheckCircle className="text-indigo-200" />
-                <span>Role‑based access control</span>
+                <span>Secure role‑based access</span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaCheckCircle className="text-indigo-200" />
-                <span>Real‑time analytics & reports</span>
+                <span>Real‑time updates & notifications</span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaCheckCircle className="text-indigo-200" />
@@ -64,11 +73,13 @@ const SignUpPage = () => {
           </div>
         </div>
 
-        {/* Right Column - Form */}
+        {/* Right Column - Login Form */}
         <div className="md:w-1/2 p-8 md:p-12">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-800">Create Account</h3>
-            <p className="text-gray-500 mt-1">Fill in your details to get started</p>
+            <h3 className="text-2xl font-bold text-gray-800">Sign In</h3>
+            <p className="text-gray-500 mt-1">
+              Enter your details to access your account
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -104,22 +115,6 @@ const SignUpPage = () => {
               />
             </div>
 
-            {/* Confirm Password Field */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className="text-gray-400" />
-              </div>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm password"
-                required
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
-              />
-            </div>
-
             {/* Role Selector */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -132,17 +127,46 @@ const SignUpPage = () => {
                 required
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent appearance-none bg-white"
               >
-                <option value="" disabled>Select your role</option>
+                <option value="" disabled>
+                  Select your role
+                </option>
                 <option value="admin">Admin</option>
                 <option value="trainer">Trainer</option>
                 <option value="analyst">Analyst</option>
                 <option value="counsellor">Counsellor</option>
               </select>
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
+            </div>
+
+            {/* Remember me & Forgot password */}
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center space-x-2 text-gray-600">
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <span>Remember me</span>
+              </label>
+              <a
+                href="#"
+                className="text-indigo-600 hover:text-indigo-700 font-medium"
+              >
+                Forgot password?
+              </a>
             </div>
 
             {/* Submit Button */}
@@ -150,32 +174,14 @@ const SignUpPage = () => {
               type="submit"
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2 shadow-md"
             >
-              <span>Sign Up</span>
+              <span>Sign In</span>
               <FaArrowRight />
             </button>
           </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">or</span>
-            </div>
-          </div>
-
-          {/* Login Link */}
-          <p className="text-center text-gray-600">
-            Already have an account?{' '}
-            <a href="#" className="text-indigo-600 hover:text-indigo-700 font-medium">
-              Sign in
-            </a>
-          </p>
         </div>
       </div>
     </div>
   );
 };
 
-export default SignUpPage;
+export default LoginPage;
