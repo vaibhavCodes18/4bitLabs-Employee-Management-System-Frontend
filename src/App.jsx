@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage"
+import SignUpPage from "./pages/SignUpPage";
 
 function App() {
   return (
@@ -8,8 +9,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage/>} />
-          <Route path="/about" element="about" />
-          <Route path="/feedback" element="feedback" />
+          <Route path="/login" element={<SignUpPage/>} />
         </Routes>
       </BrowserRouter>
     </>
