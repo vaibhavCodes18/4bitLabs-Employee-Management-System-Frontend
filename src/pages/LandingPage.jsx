@@ -1,16 +1,4 @@
-import React from "react";
-import {
-  FaUserShield,
-  FaChalkboardTeacher,
-  FaChartLine,
-  FaUserFriends,
-  FaEnvelope,
-  FaPhoneAlt,
-  FaMapMarkerAlt,
-  FaLinkedin,
-  FaTwitter,
-  FaFacebookF,
-} from "react-icons/fa";
+
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import About from "../components/About";
