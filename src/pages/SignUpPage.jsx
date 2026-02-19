@@ -28,7 +28,7 @@ const LoginPage = () => {
     console.log("Login data:", formData);
     setFormData(formData);
 
-    if(admin.email === formData.email && admin.password === formData.password){
+    if(admin.email === formData.email && admin.password === formData.password && admin.role === formData.role){
       navigate('admin-dashboard');
     }
   };
