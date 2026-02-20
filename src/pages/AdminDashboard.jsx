@@ -10,14 +10,12 @@ import {
   FaSignOutAlt,
   FaBell,
   FaSearch,
-  FaUserCircle,
   FaEnvelope,
   FaCalendarAlt,
   FaStar,
-  FaGraduationCap,
 } from "react-icons/fa";
 
-// Admin credentials (hardcoded for demo)
+// Admin credentials
 const ADMIN_USER = {
   fullName: "Vaibhav Sathe",
   username: "admin123",
@@ -26,7 +24,7 @@ const ADMIN_USER = {
   role: "admin",
 };
 
-// Dummy data for trainers
+// Dummy data
 const trainers = [
   {
     id: 1,
@@ -51,7 +49,6 @@ const trainers = [
   },
 ];
 
-// Dummy data for analysts
 const analysts = [
   {
     id: 1,
@@ -76,7 +73,6 @@ const analysts = [
   },
 ];
 
-// Dummy data for counsellors
 const counsellors = [
   {
     id: 1,
@@ -101,9 +97,36 @@ const counsellors = [
   },
 ];
 
-// Stats cards
+// Combine all employees for the Employees view
+const allEmployees = [
+  ...trainers.map((t) => ({
+    ...t,
+    role: "Trainer",
+    roleIcon: FaChalkboardTeacher,
+    roleColor: "text-green-600",
+  })),
+  ...analysts.map((a) => ({
+    ...a,
+    role: "Analyst",
+    roleIcon: FaChartLine,
+    roleColor: "text-purple-600",
+  })),
+  ...counsellors.map((c) => ({
+    ...c,
+    role: "Counsellor",
+    roleIcon: FaUserFriends,
+    roleColor: "text-yellow-600",
+  })),
+];
+
+// Stats cards (only shown on Dashboard)
 const stats = [
-  { label: "Total Employees", value: 124, icon: FaUsers, color: "bg-blue-500" },
+  {
+    label: "Total Employees",
+    value: allEmployees.length,
+    icon: FaUsers,
+    color: "bg-blue-500",
+  },
   {
     label: "Trainers",
     value: trainers.length,
@@ -126,19 +149,43 @@ const stats = [
 
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeView, setActiveView] = useState("dashboard"); // 'dashboard', 'employees', 'trainers', 'analysts', 'counsellors'
 
   const handleLogout = () => {
     alert(`Logging out ${ADMIN_USER.fullName}... (demo)`);
-    // In real app: clear tokens, redirect to login
     window.location.href = "/login";
+  };
+
+  // Navigation handler
+  const handleNavClick = (view) => {
+    setActiveView(view);
+  };
+
+  // Render content based on activeView
+  const renderContent = () => {
+    switch (activeView) {
+      case "dashboard":
+        return <DashboardView admin={ADMIN_USER} stats={stats} />;
+      case "employees":
+        return <EmployeesView employees={allEmployees} />;
+      case "trainers":
+        return <TrainersView trainers={trainers} />;
+      case "analysts":
+        return <AnalystsView analysts={analysts} />;
+      case "counsellors":
+        return <CounsellorsView counsellors={counsellors} />;
+      default:
+        return <DashboardView admin={ADMIN_USER} stats={stats} />;
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans flex">
       {/* Sidebar */}
       <aside
-        className={`${sidebarOpen ? "w-64" : "w-20"} bg-white shadow-lg transition-all duration-300 hidden md:block`}
+        className={`${sidebarOpen ? "w-64" : "w-20"} bg-white shadow-lg transition-all duration-300 hidden md:block relative`}
       >
+        {/* Logo */}
         <div className="p-4 flex items-center space-x-2 border-b">
           <div className="bg-indigo-600 p-2 rounded-lg">
             <FaMicrochip className="text-white text-xl" />
@@ -147,41 +194,68 @@ const AdminDashboard = () => {
             <span className="text-xl font-bold text-gray-800">4bitlabs</span>
           )}
         </div>
-        <nav className="mt-6">
+
+        {/* Logout Button - moved to top, no border */}
+        <div className="p-4">
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-2 w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition"
+          >
+            <FaSignOutAlt className="text-lg" />
+            {sidebarOpen && <span className="text-sm font-medium">Logout</span>}
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="mt-2">
           <SidebarItem
             icon={FaTachometerAlt}
             label="Dashboard"
-            active={true}
+            active={activeView === "dashboard"}
             open={sidebarOpen}
+            onClick={() => handleNavClick("dashboard")}
           />
-          <SidebarItem icon={FaUsers} label="Employees" open={sidebarOpen} />
+          <SidebarItem
+            icon={FaUsers}
+            label="Employees"
+            active={activeView === "employees"}
+            open={sidebarOpen}
+            onClick={() => handleNavClick("employees")}
+          />
           <SidebarItem
             icon={FaChalkboardTeacher}
             label="Trainers"
+            active={activeView === "trainers"}
             open={sidebarOpen}
+            onClick={() => handleNavClick("trainers")}
           />
-          <SidebarItem icon={FaChartLine} label="Analysts" open={sidebarOpen} />
+          <SidebarItem
+            icon={FaChartLine}
+            label="Analysts"
+            active={activeView === "analysts"}
+            open={sidebarOpen}
+            onClick={() => handleNavClick("analysts")}
+          />
           <SidebarItem
             icon={FaUserFriends}
             label="Counsellors"
+            active={activeView === "counsellors"}
             open={sidebarOpen}
+            onClick={() => handleNavClick("counsellors")}
           />
-          <SidebarItem icon={FaCog} label="Settings" open={sidebarOpen} />
+          <SidebarItem
+            icon={FaCog}
+            label="Settings"
+            active={activeView === "settings"}
+            open={sidebarOpen}
+            onClick={() => handleNavClick("settings")}
+          />
         </nav>
-        <div className="absolute bottom-0 w-full p-4 border-t">
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition w-full"
-          >
-            <FaSignOutAlt />
-            {sidebarOpen && <span>Logout</span>}
-          </button>
-        </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
-        {/* Header */}
+        {/* Header (same as before) */}
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -202,7 +276,6 @@ const AdminDashboard = () => {
             </svg>
           </button>
           <div className="flex items-center space-x-4 ml-auto">
-            {/* Search */}
             <div className="relative hidden md:block">
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
@@ -211,14 +284,12 @@ const AdminDashboard = () => {
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
             </div>
-            {/* Notifications */}
             <button className="relative text-gray-600 hover:text-indigo-600">
               <FaBell className="text-xl" />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 3
               </span>
             </button>
-            {/* Admin Info */}
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                 {ADMIN_USER.fullName.charAt(0)}
@@ -233,210 +304,259 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        {/* Dashboard Content */}
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Welcome back, {ADMIN_USER.fullName}!
-          </h1>
-          <p className="text-gray-500 mb-6">
-            Here's what's happening with your teams today.
-          </p>
-          {/* Admin Info Card (Additional) */}
-          <div className="my-8 bg-linear-to-r from-indigo-50 to-blue-50 rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-2xl">
-                {ADMIN_USER.fullName.charAt(0)}
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-800">
-                  {ADMIN_USER.fullName}
-                </h3>
-                <p className="text-gray-600">{ADMIN_USER.email}</p>
-                <p className="text-sm text-indigo-600 mt-1">
-                  Role: {ADMIN_USER.role} · Username: {ADMIN_USER.username}
-                </p>
-              </div>
-            </div>
-            <button className="mt-4 md:mt-0 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
-              Edit Profile
-            </button>
-          </div>
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-md p-6 flex items-center space-x-4 hover:shadow-lg transition"
-              >
-                <div className={`${stat.color} p-3 rounded-lg text-white`}>
-                  <stat.icon className="text-2xl" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    {stat.value}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Role Sections */}
-          <div className="space-y-8">
-            {/* Trainers Section */}
-            <section className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaChalkboardTeacher className="text-green-600 mr-2" /> Trainers
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2">Name</th>
-                      <th className="text-left py-2">Expertise</th>
-                      <th className="text-left py-2">Students</th>
-                      <th className="text-left py-2">Rating</th>
-                      <th className="text-left py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {trainers.map((trainer) => (
-                      <tr
-                        key={trainer.id}
-                        className="border-b hover:bg-gray-50"
-                      >
-                        <td className="py-3 font-medium">{trainer.name}</td>
-                        <td>{trainer.expertise}</td>
-                        <td>{trainer.students}</td>
-                        <td>
-                          <div className="flex items-center">
-                            <FaStar className="text-yellow-400 mr-1" />
-                            {trainer.rating}
-                          </div>
-                        </td>
-                        <td>
-                          <button className="text-indigo-600 hover:text-indigo-800 mr-2">
-                            Edit
-                          </button>
-                          <button className="text-red-600 hover:text-red-800">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-                + Add New Trainer
-              </button>
-            </section>
-
-            {/* Analysts Section */}
-            <section className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaChartLine className="text-purple-600 mr-2" /> Analysts
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2">Name</th>
-                      <th className="text-left py-2">Department</th>
-                      <th className="text-left py-2">Projects</th>
-                      <th className="text-left py-2">Success Rate</th>
-                      <th className="text-left py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {analysts.map((analyst) => (
-                      <tr
-                        key={analyst.id}
-                        className="border-b hover:bg-gray-50"
-                      >
-                        <td className="py-3 font-medium">{analyst.name}</td>
-                        <td>{analyst.department}</td>
-                        <td>{analyst.projects}</td>
-                        <td>{analyst.successRate}</td>
-                        <td>
-                          <button className="text-indigo-600 hover:text-indigo-800 mr-2">
-                            Edit
-                          </button>
-                          <button className="text-red-600 hover:text-red-800">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <button className="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
-                + Add New Analyst
-              </button>
-            </section>
-
-            {/* Counsellors Section */}
-            <section className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2">Name</th>
-                      <th className="text-left py-2">Students Assigned</th>
-                      <th className="text-left py-2">Sessions</th>
-                      <th className="text-left py-2">Satisfaction</th>
-                      <th className="text-left py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {counsellors.map((counsellor) => (
-                      <tr
-                        key={counsellor.id}
-                        className="border-b hover:bg-gray-50"
-                      >
-                        <td className="py-3 font-medium">{counsellor.name}</td>
-                        <td>{counsellor.studentsAssigned}</td>
-                        <td>{counsellor.sessionsCompleted}</td>
-                        <td>
-                          <div className="flex items-center">
-                            <FaStar className="text-yellow-400 mr-1" />
-                            {counsellor.satisfaction}
-                          </div>
-                        </td>
-                        <td>
-                          <button className="text-indigo-600 hover:text-indigo-800 mr-2">
-                            Edit
-                          </button>
-                          <button className="text-red-600 hover:text-red-800">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <button className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm">
-                + Add New Counsellor
-              </button>
-            </section>
-          </div>
-        </div>
+        {/* Dynamic Content */}
+        <div className="p-6">{renderContent()}</div>
       </main>
     </div>
   );
 };
 
-// Sidebar Item Component
-const SidebarItem = ({ icon: Icon, label, active = false, open }) => {
+// ---------- View Components ----------
+
+const DashboardView = ({ admin, stats }) => (
+  <>
+    <h1 className="text-2xl font-bold text-gray-800 mb-2">
+      Welcome back, {admin.fullName}!
+    </h1>
+    <p className="text-gray-500 mb-6">
+      Here's what's happening with your teams today.
+    </p>
+
+    {/* Admin Info Card */}
+    <div className="mb-8 bg-linear-to-r from-indigo-50 to-blue-50 rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between">
+      <div className="flex items-center space-x-4">
+        <div className="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-2xl">
+          {admin.fullName.charAt(0)}
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-gray-800">{admin.fullName}</h3>
+          <p className="text-gray-600">{admin.email}</p>
+          <p className="text-sm text-indigo-600 mt-1">
+            Role: {admin.role} · Username: {admin.username}
+          </p>
+        </div>
+      </div>
+      <button className="mt-4 md:mt-0 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
+        Edit Profile
+      </button>
+    </div>
+
+    {/* Stats Cards */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {stats.map((stat, index) => (
+        <div
+          key={index}
+          className="bg-white rounded-xl shadow-md p-6 flex items-center space-x-4 hover:shadow-lg transition"
+        >
+          <div className={`${stat.color} p-3 rounded-lg text-white`}>
+            <stat.icon className="text-2xl" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">{stat.label}</p>
+            <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </>
+);
+
+const EmployeesView = ({ employees }) => (
+  <div className="bg-white rounded-xl shadow-md p-6">
+    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+      <FaUsers className="text-blue-600 mr-2" /> All Employees
+    </h2>
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left py-2">Name</th>
+            <th className="text-left py-2">Role</th>
+            <th className="text-left py-2">Details</th>
+            <th className="text-left py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {employees.map((emp) => {
+            const RoleIcon = emp.roleIcon;
+            return (
+              <tr key={emp.id} className="border-b hover:bg-gray-50">
+                <td className="py-3 font-medium">{emp.name}</td>
+                <td>
+                  <div className={`flex items-center ${emp.roleColor}`}>
+                    <RoleIcon className="mr-1" /> {emp.role}
+                  </div>
+                </td>
+                <td>
+                  {emp.role === "Trainer" &&
+                    `${emp.expertise}, ${emp.students} students`}
+                  {emp.role === "Analyst" &&
+                    `${emp.department}, ${emp.projects} projects`}
+                  {emp.role === "Counsellor" &&
+                    `${emp.studentsAssigned} students, ${emp.sessionsCompleted} sessions`}
+                </td>
+                <td>
+                  <button className="text-indigo-600 hover:text-indigo-800 mr-2">
+                    Edit
+                  </button>
+                  <button className="text-red-600 hover:text-red-800">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+    <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+      + Add New Employee
+    </button>
+  </div>
+);
+
+const TrainersView = ({ trainers }) => (
+  <div className="bg-white rounded-xl shadow-md p-6">
+    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+      <FaChalkboardTeacher className="text-green-600 mr-2" /> Trainers
+    </h2>
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left py-2">Name</th>
+            <th className="text-left py-2">Expertise</th>
+            <th className="text-left py-2">Students</th>
+            <th className="text-left py-2">Rating</th>
+            <th className="text-left py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {trainers.map((trainer) => (
+            <tr key={trainer.id} className="border-b hover:bg-gray-50">
+              <td className="py-3 font-medium">{trainer.name}</td>
+              <td>{trainer.expertise}</td>
+              <td>{trainer.students}</td>
+              <td>
+                <div className="flex items-center">
+                  <FaStar className="text-yellow-400 mr-1" />
+                  {trainer.rating}
+                </div>
+              </td>
+              <td>
+                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
+                  Edit
+                </button>
+                <button className="text-red-600 hover:text-red-800">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+      + Add New Trainer
+    </button>
+  </div>
+);
+
+const AnalystsView = ({ analysts }) => (
+  <div className="bg-white rounded-xl shadow-md p-6">
+    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+      <FaChartLine className="text-purple-600 mr-2" /> Analysts
+    </h2>
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left py-2">Name</th>
+            <th className="text-left py-2">Department</th>
+            <th className="text-left py-2">Projects</th>
+            <th className="text-left py-2">Success Rate</th>
+            <th className="text-left py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {analysts.map((analyst) => (
+            <tr key={analyst.id} className="border-b hover:bg-gray-50">
+              <td className="py-3 font-medium">{analyst.name}</td>
+              <td>{analyst.department}</td>
+              <td>{analyst.projects}</td>
+              <td>{analyst.successRate}</td>
+              <td>
+                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
+                  Edit
+                </button>
+                <button className="text-red-600 hover:text-red-800">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <button className="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
+      + Add New Analyst
+    </button>
+  </div>
+);
+
+const CounsellorsView = ({ counsellors }) => (
+  <div className="bg-white rounded-xl shadow-md p-6">
+    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+      <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
+    </h2>
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left py-2">Name</th>
+            <th className="text-left py-2">Students Assigned</th>
+            <th className="text-left py-2">Sessions</th>
+            <th className="text-left py-2">Satisfaction</th>
+            <th className="text-left py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {counsellors.map((counsellor) => (
+            <tr key={counsellor.id} className="border-b hover:bg-gray-50">
+              <td className="py-3 font-medium">{counsellor.name}</td>
+              <td>{counsellor.studentsAssigned}</td>
+              <td>{counsellor.sessionsCompleted}</td>
+              <td>
+                <div className="flex items-center">
+                  <FaStar className="text-yellow-400 mr-1" />
+                  {counsellor.satisfaction}
+                </div>
+              </td>
+              <td>
+                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
+                  Edit
+                </button>
+                <button className="text-red-600 hover:text-red-800">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <button className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm">
+      + Add New Counsellor
+    </button>
+  </div>
+);
+
+// Sidebar Item Component (modified to accept onClick)
+const SidebarItem = ({ icon: Icon, label, active, open, onClick }) => {
   return (
-    <a
-      href="#"
-      className={`flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg transition ${
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg transition ${
         active
           ? "bg-indigo-50 text-indigo-600"
           : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
@@ -444,7 +564,7 @@ const SidebarItem = ({ icon: Icon, label, active = false, open }) => {
     >
       <Icon className="text-xl" />
       {open && <span className="text-sm font-medium">{label}</span>}
-    </a>
+    </button>
   );
 };
 
