@@ -11,6 +11,8 @@ import {
   FaBell,
   FaSearch,
   FaStar,
+  FaTimes,
+  FaBars,
 } from "react-icons/fa";
 
 // Admin credentials
@@ -26,7 +28,7 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
 
-  // Data states
+  // Data states (unchanged)
   const [trainers, setTrainers] = useState([
     {
       id: 1,
@@ -101,7 +103,7 @@ const AdminDashboard = () => {
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); // 'add' or 'edit'
+  const [modalMode, setModalMode] = useState("add");
   const [modalRole, setModalRole] = useState("Trainer");
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({});
@@ -163,9 +165,13 @@ const AdminDashboard = () => {
 
   const handleNavClick = (view) => {
     setActiveView(view);
+    // On mobile, close drawer after navigation
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
   };
 
-  // Modal handlers
+  // Modal handlers (unchanged)
   const openAddModal = (role) => {
     setModalMode("add");
     setModalRole(role);
@@ -198,7 +204,7 @@ const AdminDashboard = () => {
     if (!formData.name) return;
 
     if (modalMode === "add") {
-      // Add new employee
+      // Add logic (same as before)
       let newId;
       let updatedData;
 
@@ -240,7 +246,7 @@ const AdminDashboard = () => {
           return;
       }
     } else {
-      // Edit existing employee
+      // Edit logic (same as before)
       switch (modalRole) {
         case "Trainer":
           setTrainers((prev) =>
@@ -312,7 +318,7 @@ const AdminDashboard = () => {
     }
   };
 
-  // Render content based on activeView
+  // Render content based on activeView (unchanged)
   const renderContent = () => {
     switch (activeView) {
       case "dashboard":
@@ -360,9 +366,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans flex">
-      {/* Sidebar */}
+      {/* Desktop Sidebar - hidden on mobile */}
       <aside
-        className={`${sidebarOpen ? "w-64" : "w-20"} bg-white shadow-lg transition-all duration-300 hidden md:block relative`}
+        className={`${
+          sidebarOpen ? "w-64" : "w-20"
+        } bg-white shadow-lg transition-all duration-300 hidden md:block relative`}
       >
         {/* Logo */}
         <div className="p-4 flex items-center space-x-2 border-b">
@@ -432,30 +440,103 @@ const AdminDashboard = () => {
         </nav>
       </aside>
 
+      {/* Mobile Drawer - slides in when sidebarOpen is true on mobile */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Overlay */}
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setSidebarOpen(false)}
+          />
+          {/* Drawer */}
+          <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl p-4">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center space-x-2">
+                <div className="bg-indigo-600 p-2 rounded-lg">
+                  <FaMicrochip className="text-white text-xl" />
+                </div>
+                <span className="text-xl font-bold text-gray-800">
+                  4bitlabs
+                </span>
+              </div>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="text-gray-600"
+              >
+                <FaTimes size={20} />
+              </button>
+            </div>
+            {/* Logout Button in Drawer */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition mb-4"
+            >
+              <FaSignOutAlt className="text-lg" />
+              <span className="text-sm font-medium">Logout</span>
+            </button>
+            {/* Navigation in Drawer */}
+            <nav className="mt-2">
+              <SidebarItem
+                icon={FaTachometerAlt}
+                label="Dashboard"
+                active={activeView === "dashboard"}
+                open={true}
+                onClick={() => handleNavClick("dashboard")}
+              />
+              <SidebarItem
+                icon={FaUsers}
+                label="Employees"
+                active={activeView === "employees"}
+                open={true}
+                onClick={() => handleNavClick("employees")}
+              />
+              <SidebarItem
+                icon={FaChalkboardTeacher}
+                label="Trainers"
+                active={activeView === "trainers"}
+                open={true}
+                onClick={() => handleNavClick("trainers")}
+              />
+              <SidebarItem
+                icon={FaChartLine}
+                label="Analysts"
+                active={activeView === "analysts"}
+                open={true}
+                onClick={() => handleNavClick("analysts")}
+              />
+              <SidebarItem
+                icon={FaUserFriends}
+                label="Counsellors"
+                active={activeView === "counsellors"}
+                open={true}
+                onClick={() => handleNavClick("counsellors")}
+              />
+              <SidebarItem
+                icon={FaCog}
+                label="Settings"
+                active={activeView === "settings"}
+                open={true}
+                onClick={() => handleNavClick("settings")}
+              />
+            </nav>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
-        {/* Header */}
+        {/* Header - responsive */}
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden text-gray-600"
+            className="text-gray-600 focus:outline-none"
+            aria-label="Toggle menu"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+            <FaBars size={24} />
           </button>
-          <div className="flex items-center space-x-4 ml-auto">
-            <div className="relative hidden md:block">
+          <div className="flex items-center space-x-4">
+            {/* Search - hidden on mobile */}
+            <div className="relative hidden sm:block">
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
@@ -463,17 +544,19 @@ const AdminDashboard = () => {
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
             </div>
+            {/* Notifications */}
             <button className="relative text-gray-600 hover:text-indigo-600">
               <FaBell className="text-xl" />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 3
               </span>
             </button>
+            {/* Admin Info - hide name on very small screens */}
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
                 {ADMIN_USER.fullName.charAt(0)}
               </div>
-              <div className="hidden md:block">
+              <div className="hidden sm:block">
                 <p className="text-sm font-semibold text-gray-800">
                   {ADMIN_USER.fullName}
                 </p>
@@ -484,10 +567,10 @@ const AdminDashboard = () => {
         </header>
 
         {/* Dynamic Content */}
-        <div className="p-6">{renderContent()}</div>
+        <div className="p-4 sm:p-6">{renderContent()}</div>
       </main>
 
-      {/* Add/Edit Modal */}
+      {/* Add/Edit Modal (unchanged) */}
       <AddEmployeeModal
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -501,7 +584,7 @@ const AdminDashboard = () => {
   );
 };
 
-// ---------- Modal Component ----------
+// ---------- Modal Component (unchanged) ----------
 const AddEmployeeModal = ({
   isOpen,
   onClose,
@@ -751,8 +834,7 @@ const AddEmployeeModal = ({
   );
 };
 
-// ---------- View Components ----------
-
+// ---------- View Components (unchanged) ----------
 const DashboardView = ({ admin, stats }) => (
   <>
     <h1 className="text-2xl font-bold text-gray-800 mb-2">
@@ -801,13 +883,13 @@ const DashboardView = ({ admin, stats }) => (
 
 const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
       <h2 className="text-lg font-semibold text-gray-800 flex items-center">
         <FaUsers className="text-blue-600 mr-2" /> All Employees
       </h2>
       <button
         onClick={onAdd}
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm w-full sm:w-auto"
       >
         + Add New Employee
       </button>
@@ -866,13 +948,13 @@ const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => (
 
 const TrainersView = ({ trainers, onAdd, onEdit, onDelete }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
       <h2 className="text-lg font-semibold text-gray-800 flex items-center">
         <FaChalkboardTeacher className="text-green-600 mr-2" /> Trainers
       </h2>
       <button
         onClick={onAdd}
-        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
+        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm w-full sm:w-auto"
       >
         + Add New Trainer
       </button>
@@ -924,13 +1006,13 @@ const TrainersView = ({ trainers, onAdd, onEdit, onDelete }) => (
 
 const AnalystsView = ({ analysts, onAdd, onEdit, onDelete }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
       <h2 className="text-lg font-semibold text-gray-800 flex items-center">
         <FaChartLine className="text-purple-600 mr-2" /> Analysts
       </h2>
       <button
         onClick={onAdd}
-        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm"
+        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm w-full sm:w-auto"
       >
         + Add New Analyst
       </button>
@@ -977,13 +1059,13 @@ const AnalystsView = ({ analysts, onAdd, onEdit, onDelete }) => (
 
 const CounsellorsView = ({ counsellors, onAdd, onEdit, onDelete }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
       <h2 className="text-lg font-semibold text-gray-800 flex items-center">
         <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
       </h2>
       <button
         onClick={onAdd}
-        className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm"
+        className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm w-full sm:w-auto"
       >
         + Add New Counsellor
       </button>
