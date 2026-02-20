@@ -1,10 +1,18 @@
 import { FaUserFriends, FaStar } from "react-icons/fa";
 
-const CounsellorsView = ({ counsellors }) => (
+const CounsellorsView = ({ counsellors, onAdd, onEdit, onDelete }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-      <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
-    </h2>
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+      <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+        <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
+      </h2>
+      <button
+        onClick={onAdd}
+        className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm w-full sm:w-auto"
+      >
+        + Add New Counsellor
+      </button>
+    </div>
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
@@ -29,10 +37,16 @@ const CounsellorsView = ({ counsellors }) => (
                 </div>
               </td>
               <td>
-                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
+                <button
+                  onClick={() => onEdit(counsellor)}
+                  className="text-indigo-600 hover:text-indigo-800 mr-2"
+                >
                   Edit
                 </button>
-                <button className="text-red-600 hover:text-red-800">
+                <button
+                  onClick={() => onDelete(counsellor.id)}
+                  className="text-red-600 hover:text-red-800"
+                >
                   Delete
                 </button>
               </td>
@@ -41,9 +55,6 @@ const CounsellorsView = ({ counsellors }) => (
         </tbody>
       </table>
     </div>
-    <button className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm">
-      + Add New Counsellor
-    </button>
   </div>
 );
 export default CounsellorsView;

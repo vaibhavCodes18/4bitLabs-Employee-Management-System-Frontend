@@ -1,10 +1,18 @@
 import { FaChartLine } from "react-icons/fa";
 
-const AnalystsView = ({ analysts }) => (
+const AnalystsView = ({ analysts, onAdd, onEdit, onDelete }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-      <FaChartLine className="text-purple-600 mr-2" /> Analysts
-    </h2>
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+      <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+        <FaChartLine className="text-purple-600 mr-2" /> Analysts
+      </h2>
+      <button
+        onClick={onAdd}
+        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm w-full sm:w-auto"
+      >
+        + Add New Analyst
+      </button>
+    </div>
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
@@ -24,10 +32,16 @@ const AnalystsView = ({ analysts }) => (
               <td>{analyst.projects}</td>
               <td>{analyst.successRate}</td>
               <td>
-                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
+                <button
+                  onClick={() => onEdit(analyst)}
+                  className="text-indigo-600 hover:text-indigo-800 mr-2"
+                >
                   Edit
                 </button>
-                <button className="text-red-600 hover:text-red-800">
+                <button
+                  onClick={() => onDelete(analyst.id)}
+                  className="text-red-600 hover:text-red-800"
+                >
                   Delete
                 </button>
               </td>
@@ -36,9 +50,6 @@ const AnalystsView = ({ analysts }) => (
         </tbody>
       </table>
     </div>
-    <button className="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
-      + Add New Analyst
-    </button>
   </div>
 );
 export default AnalystsView;

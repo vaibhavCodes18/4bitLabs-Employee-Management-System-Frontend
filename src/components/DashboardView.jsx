@@ -9,7 +9,6 @@ const DashboardView = ({ admin, stats }) => (
       Here's what's happening with your teams today.
     </p>
 
-    {/* Admin Info Card */}
     <div className="mb-8 bg-linear-to-r from-indigo-50 to-blue-50 rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between">
       <div className="flex items-center space-x-4">
         <div className="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-2xl">
@@ -28,7 +27,6 @@ const DashboardView = ({ admin, stats }) => (
       </button>
     </div>
 
-    {/* Stats Cards */}
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {stats.map((stat, index) => (
         <div
