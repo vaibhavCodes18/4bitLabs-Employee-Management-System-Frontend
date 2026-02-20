@@ -1,4 +1,3 @@
-
 import { FaUsers } from "react-icons/fa";
 
 const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => (
@@ -7,12 +6,6 @@ const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => (
       <h2 className="text-lg font-semibold text-gray-800 flex items-center">
         <FaUsers className="text-blue-600 mr-2" /> All Employees
       </h2>
-      <button
-        onClick={onAdd}
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm w-full sm:w-auto"
-      >
-        + Add New Employee
-      </button>
     </div>
     <div className="overflow-x-auto">
       <table className="w-full text-sm">

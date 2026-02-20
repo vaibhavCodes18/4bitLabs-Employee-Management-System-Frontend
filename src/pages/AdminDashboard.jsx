@@ -437,13 +437,6 @@ const AdminDashboard = () => {
             open={sidebarOpen}
             onClick={() => handleNavClick("counsellors")}
           />
-          <SidebarItem
-            icon={FaCog}
-            label="Settings"
-            active={activeView === "settings"}
-            open={sidebarOpen}
-            onClick={() => handleNavClick("settings")}
-          />
         </nav>
       </aside>
 
@@ -517,13 +510,6 @@ const AdminDashboard = () => {
                 active={activeView === "counsellors"}
                 open={true}
                 onClick={() => handleNavClick("counsellors")}
-              />
-              <SidebarItem
-                icon={FaCog}
-                label="Settings"
-                active={activeView === "settings"}
-                open={true}
-                onClick={() => handleNavClick("settings")}
               />
             </nav>
           </div>
