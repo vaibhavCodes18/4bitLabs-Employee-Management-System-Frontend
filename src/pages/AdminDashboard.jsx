@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   FaMicrochip,
   FaTachometerAlt,
@@ -6,14 +6,16 @@ import {
   FaChalkboardTeacher,
   FaChartLine,
   FaUserFriends,
-  FaCog,
   FaSignOutAlt,
   FaBell,
   FaSearch,
-  FaEnvelope,
-  FaCalendarAlt,
-  FaStar,
 } from "react-icons/fa";
+import TrainersView from "../components/TrainersView";
+import DashboardView from "../components/DashboardView";
+import EmployeesView from "../components/EmployeesView";
+import AnalystsView from "../components/AnalystsView";
+import CounsellorsView from "../components/CounsellorsView";
+import SidebarItem from "../components/SidebarItem";
 
 // Admin credentials
 const ADMIN_USER = {
@@ -243,13 +245,6 @@ const AdminDashboard = () => {
             open={sidebarOpen}
             onClick={() => handleNavClick("counsellors")}
           />
-          <SidebarItem
-            icon={FaCog}
-            label="Settings"
-            active={activeView === "settings"}
-            open={sidebarOpen}
-            onClick={() => handleNavClick("settings")}
-          />
         </nav>
       </aside>
 
@@ -308,263 +303,6 @@ const AdminDashboard = () => {
         <div className="p-6">{renderContent()}</div>
       </main>
     </div>
-  );
-};
-
-// ---------- View Components ----------
-
-const DashboardView = ({ admin, stats }) => (
-  <>
-    <h1 className="text-2xl font-bold text-gray-800 mb-2">
-      Welcome back, {admin.fullName}!
-    </h1>
-    <p className="text-gray-500 mb-6">
-      Here's what's happening with your teams today.
-    </p>
-
-    {/* Admin Info Card */}
-    <div className="mb-8 bg-linear-to-r from-indigo-50 to-blue-50 rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between">
-      <div className="flex items-center space-x-4">
-        <div className="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-2xl">
-          {admin.fullName.charAt(0)}
-        </div>
-        <div>
-          <h3 className="text-xl font-bold text-gray-800">{admin.fullName}</h3>
-          <p className="text-gray-600">{admin.email}</p>
-          <p className="text-sm text-indigo-600 mt-1">
-            Role: {admin.role} · Username: {admin.username}
-          </p>
-        </div>
-      </div>
-      <button className="mt-4 md:mt-0 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
-        Edit Profile
-      </button>
-    </div>
-
-    {/* Stats Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      {stats.map((stat, index) => (
-        <div
-          key={index}
-          className="bg-white rounded-xl shadow-md p-6 flex items-center space-x-4 hover:shadow-lg transition"
-        >
-          <div className={`${stat.color} p-3 rounded-lg text-white`}>
-            <stat.icon className="text-2xl" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">{stat.label}</p>
-            <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </>
-);
-
-const EmployeesView = ({ employees }) => (
-  <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-      <FaUsers className="text-blue-600 mr-2" /> All Employees
-    </h2>
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b">
-            <th className="text-left py-2">Name</th>
-            <th className="text-left py-2">Role</th>
-            <th className="text-left py-2">Details</th>
-            <th className="text-left py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees.map((emp) => {
-            const RoleIcon = emp.roleIcon;
-            return (
-              <tr key={emp.id} className="border-b hover:bg-gray-50">
-                <td className="py-3 font-medium">{emp.name}</td>
-                <td>
-                  <div className={`flex items-center ${emp.roleColor}`}>
-                    <RoleIcon className="mr-1" /> {emp.role}
-                  </div>
-                </td>
-                <td>
-                  {emp.role === "Trainer" &&
-                    `${emp.expertise}, ${emp.students} students`}
-                  {emp.role === "Analyst" &&
-                    `${emp.department}, ${emp.projects} projects`}
-                  {emp.role === "Counsellor" &&
-                    `${emp.studentsAssigned} students, ${emp.sessionsCompleted} sessions`}
-                </td>
-                <td>
-                  <button className="text-indigo-600 hover:text-indigo-800 mr-2">
-                    Edit
-                  </button>
-                  <button className="text-red-600 hover:text-red-800">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-    <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-      + Add New Employee
-    </button>
-  </div>
-);
-
-const TrainersView = ({ trainers }) => (
-  <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-      <FaChalkboardTeacher className="text-green-600 mr-2" /> Trainers
-    </h2>
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b">
-            <th className="text-left py-2">Name</th>
-            <th className="text-left py-2">Expertise</th>
-            <th className="text-left py-2">Students</th>
-            <th className="text-left py-2">Rating</th>
-            <th className="text-left py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {trainers.map((trainer) => (
-            <tr key={trainer.id} className="border-b hover:bg-gray-50">
-              <td className="py-3 font-medium">{trainer.name}</td>
-              <td>{trainer.expertise}</td>
-              <td>{trainer.students}</td>
-              <td>
-                <div className="flex items-center">
-                  <FaStar className="text-yellow-400 mr-1" />
-                  {trainer.rating}
-                </div>
-              </td>
-              <td>
-                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
-                  Edit
-                </button>
-                <button className="text-red-600 hover:text-red-800">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-      + Add New Trainer
-    </button>
-  </div>
-);
-
-const AnalystsView = ({ analysts }) => (
-  <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-      <FaChartLine className="text-purple-600 mr-2" /> Analysts
-    </h2>
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b">
-            <th className="text-left py-2">Name</th>
-            <th className="text-left py-2">Department</th>
-            <th className="text-left py-2">Projects</th>
-            <th className="text-left py-2">Success Rate</th>
-            <th className="text-left py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {analysts.map((analyst) => (
-            <tr key={analyst.id} className="border-b hover:bg-gray-50">
-              <td className="py-3 font-medium">{analyst.name}</td>
-              <td>{analyst.department}</td>
-              <td>{analyst.projects}</td>
-              <td>{analyst.successRate}</td>
-              <td>
-                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
-                  Edit
-                </button>
-                <button className="text-red-600 hover:text-red-800">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <button className="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm">
-      + Add New Analyst
-    </button>
-  </div>
-);
-
-const CounsellorsView = ({ counsellors }) => (
-  <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-      <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
-    </h2>
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b">
-            <th className="text-left py-2">Name</th>
-            <th className="text-left py-2">Students Assigned</th>
-            <th className="text-left py-2">Sessions</th>
-            <th className="text-left py-2">Satisfaction</th>
-            <th className="text-left py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {counsellors.map((counsellor) => (
-            <tr key={counsellor.id} className="border-b hover:bg-gray-50">
-              <td className="py-3 font-medium">{counsellor.name}</td>
-              <td>{counsellor.studentsAssigned}</td>
-              <td>{counsellor.sessionsCompleted}</td>
-              <td>
-                <div className="flex items-center">
-                  <FaStar className="text-yellow-400 mr-1" />
-                  {counsellor.satisfaction}
-                </div>
-              </td>
-              <td>
-                <button className="text-indigo-600 hover:text-indigo-800 mr-2">
-                  Edit
-                </button>
-                <button className="text-red-600 hover:text-red-800">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <button className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm">
-      + Add New Counsellor
-    </button>
-  </div>
-);
-
-// Sidebar Item Component (modified to accept onClick)
-const SidebarItem = ({ icon: Icon, label, active, open, onClick }) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center space-x-3 px-4 py-3 mx-2 rounded-lg transition ${
-        active
-          ? "bg-indigo-50 text-indigo-600"
-          : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
-      }`}
-    >
-      <Icon className="text-xl" />
-      {open && <span className="text-sm font-medium">{label}</span>}
-    </button>
   );
 };
 
