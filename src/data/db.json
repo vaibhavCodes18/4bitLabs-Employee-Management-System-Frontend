@@ -31,13 +31,6 @@
       "id": "1"
     },
     {
-      "id": "2",
-      "name": "Priya Patel",
-      "expertise": "Python & Data Science",
-      "students": 38,
-      "rating": 4.9
-    },
-    {
       "id": "3",
       "name": "Ankit Verma",
       "expertise": "Java & Spring Boot",
@@ -52,13 +45,6 @@
       "studentsAssigned": 28,
       "sessionsCompleted": 134,
       "satisfaction": 4.9
-    },
-    {
-      "id": "2",
-      "name": "Arjun Nair",
-      "studentsAssigned": 22,
-      "sessionsCompleted": 98,
-      "satisfaction": 4.7
     },
     {
       "id": "3",

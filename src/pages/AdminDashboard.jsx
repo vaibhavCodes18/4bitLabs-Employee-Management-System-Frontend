@@ -215,7 +215,7 @@ const AdminDashboard = () => {
               rating: parseFloat(formData.rating),
             });
             setTrainers((prev) =>
-              prev.map((t) => (t.id === editingId ? response.data : t))
+              prev.map((t) => (t.id === editingId ? response.data : t)),
             );
             break;
           }
@@ -227,7 +227,7 @@ const AdminDashboard = () => {
               successRate: formData.successRate,
             });
             setAnalysts((prev) =>
-              prev.map((a) => (a.id === editingId ? response.data : a))
+              prev.map((a) => (a.id === editingId ? response.data : a)),
             );
             break;
           }
@@ -239,7 +239,7 @@ const AdminDashboard = () => {
               satisfaction: parseFloat(formData.satisfaction),
             });
             setCounsellors((prev) =>
-              prev.map((c) => (c.id === editingId ? response.data : c))
+              prev.map((c) => (c.id === editingId ? response.data : c)),
             );
             break;
           }
@@ -255,7 +255,8 @@ const AdminDashboard = () => {
   };
 
   const handleDelete = async (role, id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) return;
+    if (!window.confirm("Are you sure you want to delete this employee?"))
+      return;
 
     try {
       switch (role) {
@@ -421,9 +422,14 @@ const AdminDashboard = () => {
                 <div className="bg-indigo-600 p-2 rounded-lg">
                   <FaMicrochip className="text-white text-xl" />
                 </div>
-                <span className="text-xl font-bold text-gray-800">4bitlabs</span>
+                <span className="text-xl font-bold text-gray-800">
+                  4bitlabs
+                </span>
               </div>
-              <button onClick={() => setSidebarOpen(false)} className="text-gray-600">
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="text-gray-600"
+              >
                 <FaTimes size={20} />
               </button>
             </div>

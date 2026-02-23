@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import SignUpPage from "./pages/SignUpPage";
 import AdminDashboard from "./pages/AdminDashboard";
-import { EmployeeProvider } from "./context/EmployeeContext";
+// import { EmployeeProvider } from "./context/EmployeeContext";
 
 function App() {
   return (
@@ -12,14 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<SignUpPage />} />
-          <Route
-            path="/admin-dashboard"
-            element={
-              <EmployeeProvider>
-                <AdminDashboard />
-              </EmployeeProvider>
-            }
-          />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Routes>
       </BrowserRouter>
     </>
