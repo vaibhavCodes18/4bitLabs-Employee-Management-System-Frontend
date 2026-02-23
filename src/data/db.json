@@ -1,0 +1,71 @@
+{
+  "analyst": [
+    {
+      "id": "1",
+      "name": "Neha Gupta",
+      "department": "Data Analytics",
+      "projects": 12,
+      "successRate": "94%"
+    },
+    {
+      "id": "2",
+      "name": "Rajesh Iyer",
+      "department": "Business Intelligence",
+      "projects": 9,
+      "successRate": "89%"
+    },
+    {
+      "id": "3",
+      "name": "Sneha Desai",
+      "department": "Market Research",
+      "projects": 15,
+      "successRate": "92%"
+    }
+  ],
+  "trainer": [
+    {
+      "name": "Rahul Sharma k",
+      "expertise": "React & Node.js",
+      "students": 45,
+      "rating": 4.8,
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "name": "Priya Patel",
+      "expertise": "Python & Data Science",
+      "students": 38,
+      "rating": 4.9
+    },
+    {
+      "id": "3",
+      "name": "Ankit Verma",
+      "expertise": "Java & Spring Boot",
+      "students": 52,
+      "rating": 4.7
+    }
+  ],
+  "counsellors": [
+    {
+      "id": "1",
+      "name": "Kavita Joshi",
+      "studentsAssigned": 28,
+      "sessionsCompleted": 134,
+      "satisfaction": 4.9
+    },
+    {
+      "id": "2",
+      "name": "Arjun Nair",
+      "studentsAssigned": 22,
+      "sessionsCompleted": 98,
+      "satisfaction": 4.7
+    },
+    {
+      "id": "3",
+      "name": "Meera Menon",
+      "studentsAssigned": 31,
+      "sessionsCompleted": 156,
+      "satisfaction": 5
+    }
+  ]
+}

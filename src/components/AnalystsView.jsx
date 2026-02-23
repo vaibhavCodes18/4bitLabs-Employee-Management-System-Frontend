@@ -1,6 +1,6 @@
 import { FaChartLine } from "react-icons/fa";
 
-const AnalystsView = ({ onAdd, onEdit, onDelete }) => {
+const AnalystsView = ({ analysts,onAdd, onEdit, onDelete }) => {
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
