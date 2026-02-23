@@ -29,8 +29,9 @@ const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => (
                   </div>
                 </td>
                 <td>
+                  // Inside EmployeesView, for trainer:
                   {emp.role === "Trainer" &&
-                    `${emp.expertise}, ${emp.students} students`}
+                    `${emp.specialization || emp.expertise}, ${emp.expInYear || 0} yrs exp, ${emp.students} students`}
                   {emp.role === "Analyst" &&
                     `${emp.department}, ${emp.projects} projects`}
                   {emp.role === "Counsellor" &&

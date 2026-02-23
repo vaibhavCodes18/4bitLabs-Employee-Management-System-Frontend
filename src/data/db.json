@@ -24,18 +24,19 @@
   ],
   "trainer": [
     {
-      "name": "Rahul Sharma k",
-      "expertise": "React & Node.js",
-      "students": 45,
-      "rating": 4.8,
-      "id": "1"
-    },
-    {
-      "id": "3",
-      "name": "Ankit Verma",
-      "expertise": "Java & Spring Boot",
-      "students": 52,
-      "rating": 4.7
+      "name": "Vaibhav",
+      "email": "vaibhv@gmail.com",
+      "password": "jdhfvjkfhvd",
+      "phno": "6796876",
+      "status": "Active",
+      "specialization": "spring",
+      "expInYear": 7,
+      "qualification": "78",
+      "joiningdate": "2026-02-21",
+      "salary": 78700,
+      "students": 78,
+      "rating": 3,
+      "id": "48f1"
     }
   ],
   "counsellors": [

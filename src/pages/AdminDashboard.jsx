@@ -146,6 +146,8 @@ const AdminDashboard = () => {
   };
 
   const openEditModal = (role, employee) => {
+    console.log(employee.id);
+
     setModalMode("edit");
     setModalRole(role);
     setEditingId(employee.id);
@@ -172,13 +174,40 @@ const AdminDashboard = () => {
       if (modalMode === "add") {
         switch (modalRole) {
           case "Trainer": {
-            const response = await api.addTrainer({
+            const trainerData = {
               name: formData.name,
-              expertise: formData.expertise || "",
+              email: formData.email || "",
+              password: formData.password || "",
+              phno: formData.phno || "",
+              status: formData.status || "Active",
+              specialization:
+                formData.specialization || formData.expertise || "",
+              expInYear: parseFloat(formData.expInYear) || 0,
+              qualification: formData.qualification || "",
+              joiningdate: formData.joiningdate || "",
+              salary: parseFloat(formData.salary) || 0,
               students: parseInt(formData.students) || 0,
               rating: parseFloat(formData.rating) || 0,
-            });
-            setTrainers((prev) => [...prev, response.data]);
+            };
+
+            if (modalMode === "add") {
+              const response = await api.addTrainer(trainerData);
+              // Ensure the new trainer has a numeric ID
+              const newTrainer = {
+                ...response.data,
+                id: response.data.id,
+              };
+              setTrainers((prev) => [...prev, newTrainer]);
+            } else {
+              const response = await api.updateTrainer(editingId, trainerData);
+              const updatedTrainer = {
+                ...response.data,
+                id: response.data.id,
+              };
+              setTrainers((prev) =>
+                prev.map((t) => (t.id === editingId ? updatedTrainer : t)),
+              );
+            }
             break;
           }
           case "Analyst": {
@@ -208,15 +237,31 @@ const AdminDashboard = () => {
         // Edit mode
         switch (modalRole) {
           case "Trainer": {
-            const response = await api.updateTrainer(editingId, {
+            const trainerData = {
               name: formData.name,
-              expertise: formData.expertise,
-              students: parseInt(formData.students),
-              rating: parseFloat(formData.rating),
-            });
-            setTrainers((prev) =>
-              prev.map((t) => (t.id === editingId ? response.data : t)),
-            );
+              email: formData.email || "",
+              password: formData.password || "",
+              phno: formData.phno || "",
+              status: formData.status || "Active",
+              specialization:
+                formData.specialization || formData.expertise || "",
+              expInYear: parseFloat(formData.expInYear) || 0,
+              qualification: formData.qualification || "",
+              joiningdate: formData.joiningdate || "",
+              salary: parseFloat(formData.salary) || 0,
+              students: parseInt(formData.students) || 0,
+              rating: parseFloat(formData.rating) || 0,
+            };
+
+            if (modalMode === "add") {
+              const response = await api.addTrainer(trainerData);
+              setTrainers((prev) => [...prev, response.data]);
+            } else {
+              const response = await api.updateTrainer(editingId, trainerData);
+              setTrainers((prev) =>
+                prev.map((t) => (t.id === editingId ? response.data : t)),
+              );
+            }
             break;
           }
           case "Analyst": {
