@@ -217,6 +217,7 @@ const AdminDashboard = () => {
               password: formData.password || "",
               phno: formData.phno || "",
               department: formData.department || "",
+              status: formData.status || "Active",
               joiningdate: formData.joiningdate || "",
               salary: parseFloat(formData.salary) || 0,
             };
@@ -282,6 +283,7 @@ const AdminDashboard = () => {
               email: formData.email || "",
               password: formData.password || "",
               phno: formData.phno || "",
+              status: formData.status || "Active",
               department: formData.department || "",
               joiningdate: formData.joiningdate || "",
               salary: parseFloat(formData.salary) || 0,
