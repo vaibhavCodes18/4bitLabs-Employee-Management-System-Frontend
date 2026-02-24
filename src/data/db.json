@@ -1,21 +1,5 @@
 {
   "analyst": [],
-  "trainer": [
-    {
-      "name": "vaibhav",
-      "email": "vaibhav@hmaol.com",
-      "password": "vaibhav",
-      "phno": "79898797",
-      "status": "Inactive",
-      "specialization": "Spring boot",
-      "expInYear": 5,
-      "qualification": "Btech",
-      "joiningdate": "2026-02-27",
-      "salary": 34000,
-      "students": 67,
-      "rating": 4,
-      "id": "5627"
-    }
-  ],
+  "trainer": [],
   "counsellors": []
 }

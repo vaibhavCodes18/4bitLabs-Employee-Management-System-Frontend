@@ -1,4 +1,4 @@
-import { FaUserFriends, FaStar } from "react-icons/fa";
+import { FaUserFriends, FaTrash, FaEdit } from "react-icons/fa";
 
 const CounsellorsView = ({ counsellors, onAdd, onEdit, onDelete }) => {
   return (
@@ -19,36 +19,60 @@ const CounsellorsView = ({ counsellors, onAdd, onEdit, onDelete }) => {
           <thead>
             <tr className="border-b">
               <th className="text-left py-2">Name</th>
-              <th className="text-left py-2">Students Assigned</th>
-              <th className="text-left py-2">Sessions</th>
-              <th className="text-left py-2">Satisfaction</th>
+              <th className="text-left py-2">Email</th>
+              <th className="text-left py-2">Phone</th>
+              <th className="text-left py-2">Status</th>
+              <th className="text-left py-2">Joining Date</th>
+              <th className="text-left py-2">Salary</th>
               <th className="text-left py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {counsellors.map((counsellor) => (
               <tr key={counsellor.id} className="border-b hover:bg-gray-50">
-                <td className="py-3 font-medium">{counsellor.name}</td>
-                <td>{counsellor.studentsAssigned}</td>
-                <td>{counsellor.sessionsCompleted}</td>
-                <td>
-                  <div className="flex items-center">
-                    <FaStar className="text-yellow-400 mr-1" />
-                    {counsellor.satisfaction}
-                  </div>
+                <td className="py-3 font-medium whitespace-nowrap">
+                  {counsellor.name}
                 </td>
-                <td>
+                <td className="py-3 whitespace-nowrap">
+                  {counsellor.email || "-"}
+                </td>
+                <td className="py-3 whitespace-nowrap">
+                  {counsellor.phno || "-"}
+                </td>
+                
+                <td className="py-3 whitespace-nowrap">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      counsellor.status === "Active"
+                        ? "bg-green-100 text-green-700"
+                        : counsellor.status === "Inactive"
+                          ? "bg-gray-100 text-gray-700"
+                          : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {counsellor.status || "Active"}
+                  </span>
+                </td>
+                <td className="py-3 whitespace-nowrap">
+                  {counsellor.joiningdate || "-"}
+                </td>
+                <td className="py-3 whitespace-nowrap">
+                  ${counsellor.salary?.toLocaleString() || "-"}
+                </td>
+                <td className="py-3 whitespace-nowrap">
                   <button
                     onClick={() => onEdit(counsellor)}
-                    className="text-indigo-600 hover:text-indigo-800 mr-2"
+                    className="text-indigo-600 hover:text-indigo-800 mr-3"
+                    title="Edit"
                   >
-                    Edit
+                    <FaEdit />
                   </button>
                   <button
                     onClick={() => onDelete(counsellor.id)}
                     className="text-red-600 hover:text-red-800"
+                    title="Delete"
                   >
-                    Delete
+                    <FaTrash />
                   </button>
                 </td>
               </tr>

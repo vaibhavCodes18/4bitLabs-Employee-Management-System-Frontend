@@ -236,9 +236,13 @@ const AdminDashboard = () => {
           case "Counsellor": {
             const response = await api.addCounsellor({
               name: formData.name,
-              studentsAssigned: parseInt(formData.studentsAssigned) || 0,
-              sessionsCompleted: parseInt(formData.sessionsCompleted) || 0,
-              satisfaction: parseFloat(formData.satisfaction) || 0,
+              email: formData.email || "",
+              password: formData.password || "",
+              phno: formData.phno || "",
+              status: formData.status || "Active",
+              department: formData.department || "",
+              joiningdate: formData.joiningdate || "",
+              salary: parseFloat(formData.salary) || 0,
             });
             setCounsellors((prev) => [...prev, response.data]);
             break;
@@ -303,9 +307,13 @@ const AdminDashboard = () => {
           case "Counsellor": {
             const response = await api.updateCounsellor(editingId, {
               name: formData.name,
-              studentsAssigned: parseInt(formData.studentsAssigned),
-              sessionsCompleted: parseInt(formData.sessionsCompleted),
-              satisfaction: parseFloat(formData.satisfaction),
+              email: formData.email || "",
+              password: formData.password || "",
+              phno: formData.phno || "",
+              status: formData.status || "Active",
+              department: formData.department || "",
+              joiningdate: formData.joiningdate || "",
+              salary: parseFloat(formData.salary) || 0,
             });
             setCounsellors((prev) =>
               prev.map((c) => (c.id === editingId ? response.data : c)),
