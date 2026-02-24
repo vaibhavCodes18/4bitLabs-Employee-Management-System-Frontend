@@ -211,13 +211,25 @@ const AdminDashboard = () => {
             break;
           }
           case "Analyst": {
-            const response = await api.addAnalyst({
+            const analystData = {
               name: formData.name,
+              email: formData.email || "",
+              password: formData.password || "",
+              phno: formData.phno || "",
               department: formData.department || "",
-              projects: parseInt(formData.projects) || 0,
-              successRate: formData.successRate || "0%",
-            });
-            setAnalysts((prev) => [...prev, response.data]);
+              joiningdate: formData.joiningdate || "",
+              salary: parseFloat(formData.salary) || 0,
+            };
+
+            if (modalMode === "add") {
+              const response = await api.addAnalyst(analystData);
+              setAnalysts((prev) => [...prev, response.data]);
+            } else {
+              const response = await api.updateAnalyst(editingId, analystData);
+              setAnalysts((prev) =>
+                prev.map((a) => (a.id === editingId ? response.data : a)),
+              );
+            }
             break;
           }
           case "Counsellor": {
@@ -265,15 +277,25 @@ const AdminDashboard = () => {
             break;
           }
           case "Analyst": {
-            const response = await api.updateAnalyst(editingId, {
+            const analystData = {
               name: formData.name,
-              department: formData.department,
-              projects: parseInt(formData.projects),
-              successRate: formData.successRate,
-            });
-            setAnalysts((prev) =>
-              prev.map((a) => (a.id === editingId ? response.data : a)),
-            );
+              email: formData.email || "",
+              password: formData.password || "",
+              phno: formData.phno || "",
+              department: formData.department || "",
+              joiningdate: formData.joiningdate || "",
+              salary: parseFloat(formData.salary) || 0,
+            };
+
+            if (modalMode === "add") {
+              const response = await api.addAnalyst(analystData);
+              setAnalysts((prev) => [...prev, response.data]);
+            } else {
+              const response = await api.updateAnalyst(editingId, analystData);
+              setAnalysts((prev) =>
+                prev.map((a) => (a.id === editingId ? response.data : a)),
+              );
+            }
             break;
           }
           case "Counsellor": {
