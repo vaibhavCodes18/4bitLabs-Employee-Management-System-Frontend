@@ -1,4 +1,5 @@
 import { FaChalkboardTeacher, FaStar, FaEdit, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const TrainersView = ({ trainers, onAdd, onEdit, onDelete }) => {
   return (
@@ -61,6 +62,7 @@ const TrainersView = ({ trainers, onAdd, onEdit, onDelete }) => {
                 </td>
                 <td className="py-3 whitespace-nowrap">
                   <button
+                  type="button"
                     onClick={() => onEdit(trainer)}
                     className="text-indigo-600 hover:text-indigo-800 mr-3"
                     title="Edit"
@@ -68,6 +70,7 @@ const TrainersView = ({ trainers, onAdd, onEdit, onDelete }) => {
                     <FaEdit />
                   </button>
                   <button
+                  type="button"
                     onClick={() => onDelete(trainer.id)}
                     className="text-red-600 hover:text-red-800"
                     title="Delete"

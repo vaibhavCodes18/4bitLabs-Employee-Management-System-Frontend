@@ -1,4 +1,5 @@
 import { FaChartLine, FaEdit, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const AnalystsView = ({ analysts, onAdd, onEdit, onDelete }) => {
   return (
@@ -61,20 +62,20 @@ const AnalystsView = ({ analysts, onAdd, onEdit, onDelete }) => {
                   ${analyst.salary?.toLocaleString() || "-"}
                 </td>
                 <td className="py-3 whitespace-nowrap">
-                  <button
+                  <Link
                     onClick={() => onEdit(analyst)}
                     className="text-indigo-600 hover:text-indigo-800 mr-3"
                     title="Edit"
                   >
                     <FaEdit />
-                  </button>
-                  <button
+                  </Link>
+                  <Link
                     onClick={() => onDelete(analyst.id)}
                     className="text-red-600 hover:text-red-800"
                     title="Delete"
                   >
                     <FaTrash />
-                  </button>
+                  </Link>
                 </td>
               </tr>
             ))}

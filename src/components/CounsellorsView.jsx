@@ -1,4 +1,5 @@
 import { FaUserFriends, FaTrash, FaEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const CounsellorsView = ({ counsellors, onAdd, onEdit, onDelete }) => {
   return (
@@ -59,8 +60,9 @@ const CounsellorsView = ({ counsellors, onAdd, onEdit, onDelete }) => {
                 <td className="py-3 whitespace-nowrap">
                   ${counsellor.salary?.toLocaleString() || "-"}
                 </td>
-                <td className="py-3 whitespace-nowrap">
+                <td className="flex py-3 whitespace-nowrap">
                   <button
+                  type="button"
                     onClick={() => onEdit(counsellor)}
                     className="text-indigo-600 hover:text-indigo-800 mr-3"
                     title="Edit"
@@ -68,6 +70,7 @@ const CounsellorsView = ({ counsellors, onAdd, onEdit, onDelete }) => {
                     <FaEdit />
                   </button>
                   <button
+                    type="button"
                     onClick={() => onDelete(counsellor.id)}
                     className="text-red-600 hover:text-red-800"
                     title="Delete"

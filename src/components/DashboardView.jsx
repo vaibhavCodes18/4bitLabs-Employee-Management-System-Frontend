@@ -22,9 +22,7 @@ const DashboardView = ({ admin, stats }) => (
           </p>
         </div>
       </div>
-      <button className="mt-4 md:mt-0 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
-        Edit Profile
-      </button>
+      
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

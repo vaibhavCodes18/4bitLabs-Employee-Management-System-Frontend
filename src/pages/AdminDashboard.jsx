@@ -22,6 +22,8 @@ import AnalystsView from "../components/AnalystsView";
 import TrainersView from "../components/TrainersView";
 import EmployeesView from "../components/EmployeesView";
 import * as api from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 // Admin credentials
 const ADMIN_USER = {
@@ -51,6 +53,7 @@ const AdminDashboard = () => {
   const [modalRole, setModalRole] = useState("Trainer");
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
 
   // Fetch all data on mount
   useEffect(() => {
@@ -74,6 +77,10 @@ const AdminDashboard = () => {
       }
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("AdminDashboard Mounted");
   }, []);
 
   // Combine all employees for Employees view
@@ -128,7 +135,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     alert(`Logging out ${ADMIN_USER.fullName}... (demo)`);
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   const handleNavClick = (view) => {
@@ -146,7 +153,6 @@ const AdminDashboard = () => {
   };
 
   const openEditModal = (role, employee) => {
-
     setModalMode("edit");
     setModalRole(role);
     setEditingId(employee.id);
@@ -325,7 +331,17 @@ const AdminDashboard = () => {
       }
       closeModal();
     } catch (err) {
-      alert(`Failed to ${modalMode} employee. Please try again.`);
+      toast.error(`Failed to ${modalMode} employee. Please try again.`, {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       console.error(err);
     }
     return false;
@@ -353,7 +369,17 @@ const AdminDashboard = () => {
           return;
       }
     } catch (err) {
-      alert("Failed to delete employee. Please try again.");
+      toast.error("Failed to delete employee. Please try again.", {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       console.error(err);
     }
   };

@@ -1,17 +1,5 @@
 {
   "analyst": [],
   "trainer": [],
-  "counsellors": [
-    {
-      "name": "vaibhav sathe",
-      "email": "vaibhav@gmail.com",
-      "password": "vaibhav123",
-      "phno": "99999999",
-      "status": "On Leave",
-      "department": "",
-      "joiningdate": "2026-02-20",
-      "salary": 60000,
-      "id": "322a"
-    }
-  ]
+  "counsellors": []
 }
