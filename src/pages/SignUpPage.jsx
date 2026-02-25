@@ -8,6 +8,7 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -34,8 +35,21 @@ const LoginPage = () => {
       admin.role === formData.role
     ) {
       navigate("/admin-dashboard");
+      toast.success("Login successfully!", {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     } else {
-      alert("Credentials invalid");
+      toast.error(
+        "We couldn't sign you in. Please verify your email and password.",
+      );
     }
   };
 

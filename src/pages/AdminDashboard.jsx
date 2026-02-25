@@ -146,7 +146,6 @@ const AdminDashboard = () => {
   };
 
   const openEditModal = (role, employee) => {
-    console.log(employee.id);
 
     setModalMode("edit");
     setModalRole(role);
@@ -329,6 +328,7 @@ const AdminDashboard = () => {
       alert(`Failed to ${modalMode} employee. Please try again.`);
       console.error(err);
     }
+    return false;
   };
 
   const handleDelete = async (role, id) => {
