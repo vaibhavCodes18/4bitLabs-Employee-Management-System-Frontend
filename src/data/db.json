@@ -1,17 +1,65 @@
 {
   "analyst": [
     {
-      "id": "13b3",
-      "name": "vaibhav",
+      "id": "aaf6",
+      "name": "vaibhv",
       "email": "vaibhav@gmail.com",
-      "password": "dhgfjhvfbc",
-      "phno": "344345",
-      "department": "dvdv",
-      "status": "Active",
+      "password": "vaibhav",
+      "phno": "986789",
+      "department": "CSe",
+      "status": "Inactive",
       "joiningdate": "2026-02-20",
-      "salary": 3543500
+      "salary": 7000
     }
   ],
-  "trainer": [],
-  "counsellors": []
+  "trainer": [
+    {
+      "id": "f170",
+      "name": "sahile",
+      "email": "aglawe@gmail.com",
+      "password": "Vaibhav",
+      "phno": "897987896",
+      "status": "Active",
+      "specialization": "Spring Bott",
+      "expInYear": 34,
+      "qualification": "Btech Me",
+      "joiningdate": "2026-02-19",
+      "salary": 50000,
+      "students": 89,
+      "rating": 4
+    }
+  ],
+  "counsellors": [
+    {
+      "id": "e281",
+      "name": "Vaibhav",
+      "email": "vaibhv@gam.cmd",
+      "password": "dsxcdsxc",
+      "phno": "1233",
+      "status": "Active",
+      "department": "",
+      "joiningdate": "2026-02-12",
+      "salary": 343400
+    }
+  ],
+  "batches": [
+    {
+      "id": "2",
+      "name": "Data Science Pro",
+      "course": "Python & ML",
+      "startDate": "2025-04-15",
+      "endDate": "2025-08-15",
+      "status": "upcoming",
+      "studentsCount": 18
+    },
+    {
+      "id": "3",
+      "name": "Java Backend Batch",
+      "course": "Spring Boot",
+      "startDate": "2025-02-10",
+      "endDate": "2025-05-10",
+      "status": "completed",
+      "studentsCount": 30
+    }
+  ]
 }

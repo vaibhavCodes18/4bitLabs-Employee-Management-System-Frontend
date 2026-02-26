@@ -19,3 +19,9 @@ export const getCounsellors = () => axios.get(`${API_BASE}/counsellors`);
 export const addCounsellor = (data) => axios.post(`${API_BASE}/counsellors`, data);
 export const updateCounsellor = (id, data) => axios.put(`${API_BASE}/counsellors/${id}`, data);
 export const deleteCounsellor = (id) => axios.delete(`${API_BASE}/counsellors/${id}`);
+
+// Batches endpoints
+export const getBatches = () => axios.get(`${API_BASE}/batches`);
+export const addBatch = (data) => axios.post(`${API_BASE}/batches`, data);
+export const updateBatch = (id, data) => axios.put(`${API_BASE}/batches/${id}`, data);
+export const deleteBatch = (id) => axios.delete(`${API_BASE}/batches/${id}`);

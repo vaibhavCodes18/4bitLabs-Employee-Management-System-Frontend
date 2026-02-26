@@ -62,9 +62,7 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
               <th className="text-left py-2">Status</th>
               <th className="text-left py-2">Joining Date</th>
               <th className="text-left py-2">Salary</th>
-              <th className="text-left py-2">Students Assigned</th>
-              <th className="text-left py-2">Sessions</th>
-              <th className="text-left py-2">Satisfaction</th>
+              
               <th className="text-left py-2">Actions</th>
             </tr>
           </thead>
@@ -99,18 +97,7 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
                 <td className="py-3 whitespace-nowrap">
                   ${counsellor.salary?.toLocaleString() || "-"}
                 </td>
-                <td className="py-3 whitespace-nowrap">
-                  {counsellor.studentsAssigned || 0}
-                </td>
-                <td className="py-3 whitespace-nowrap">
-                  {counsellor.sessionsCompleted || 0}
-                </td>
-                <td className="py-3 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <FaStar className="text-yellow-400 mr-1" />
-                    {counsellor.satisfaction || 0}
-                  </div>
-                </td>
+               
                 <td className="py-3 whitespace-nowrap">
                   <button
                     onClick={() => onView(counsellor)} // or onView(trainer/analyst/counsellor)

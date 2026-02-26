@@ -1,8 +1,9 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import SignUpPage from "./pages/SignUpPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import LoginPage from "./pages/LoginPage";
+import AnalystDashboard from "./pages/AnalystDashboard";
 // import { EmployeeProvider } from "./context/EmployeeContext";
 
 function App() {
@@ -11,8 +12,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/analyst-dashboard" element={<AnalystDashboard />} />
         </Routes>
       </BrowserRouter>
     </>

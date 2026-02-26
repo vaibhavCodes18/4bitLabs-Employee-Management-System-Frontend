@@ -452,7 +452,7 @@ const AdminDashboard = () => {
       case "counsellors":
         return (
           <CounsellorsView
-            counsellors={counsellors}
+            counsellors={counsellors} 
             onAdd={() => openAddModal("Counsellor")}
             onView={(counsellor) => openViewModal("Counsellor", counsellor)}
             onEdit={(counsellor) => openEditModal("Counsellor", counsellor)}
@@ -775,11 +775,7 @@ const AdminDashboard = () => {
                     label="Salary"
                     value={`$${viewEmployee.salary?.toLocaleString()}`}
                   />
-                  <DetailItem label="Projects" value={viewEmployee.projects} />
-                  <DetailItem
-                    label="Success Rate"
-                    value={viewEmployee.successRate}
-                  />
+                  
                 </>
               )}
 
@@ -797,18 +793,7 @@ const AdminDashboard = () => {
                     label="Salary"
                     value={`$${viewEmployee.salary?.toLocaleString()}`}
                   />
-                  <DetailItem
-                    label="Students Assigned"
-                    value={viewEmployee.studentsAssigned}
-                  />
-                  <DetailItem
-                    label="Sessions Completed"
-                    value={viewEmployee.sessionsCompleted}
-                  />
-                  <DetailItem
-                    label="Satisfaction"
-                    value={viewEmployee.satisfaction}
-                  />
+                  
                 </>
               )}
             </div>

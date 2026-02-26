@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   FaMicrochip,
   FaEnvelope,
@@ -6,6 +7,7 @@ import {
   FaUserTag,
   FaArrowRight,
   FaCheckCircle,
+  FaSpinner,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
@@ -17,46 +19,112 @@ const LoginPage = () => {
     password: "",
     role: "",
   });
-  const admin = JSON.parse(localStorage.getItem("admin"));
+  const [loading, setLoading] = useState(false);
+
+  // Admin credentials from localStorage (set during registration or hardcoded)
+  const admin = JSON.parse(localStorage.getItem("admin")) || {
+    email: "admin@info.com",
+    password: "admin12",
+    role: "admin",
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login data:", formData);
-    setFormData(formData);
+    setLoading(true);
 
-    if (
-      admin.email === formData.email &&
-      admin.password === formData.password &&
-      admin.role === formData.role
-    ) {
-      navigate("/admin-dashboard");
-      toast.success("Login successfully!", {
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else {
-      toast.error(
-        "We couldn't sign you in. Please verify your email and password.",
+    const { email, password, role } = formData;
+
+    try {
+      // Admin login (local)
+      if (role === "admin") {
+        if (email === admin.email && password === admin.password) {
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ role: "admin", ...admin }),
+          );
+          toast.success("Admin login successful!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+          navigate("/admin-dashboard");
+        } else {
+          toast.error("Invalid admin credentials.");
+        }
+        setLoading(false);
+        return;
+      }
+
+      // For other roles, fetch from API
+      let endpoint = "";
+      if (role === "trainer") endpoint = "http://localhost:3000/trainer";
+      else if (role === "analyst") endpoint = "http://localhost:3000/analyst";
+      else if (role === "counsellor")
+        endpoint = "http://localhost:3000/counsellors";
+      else {
+        toast.error("Please select a valid role.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(endpoint);
+      const users = response.data;
+
+      // Find user with matching email and password
+      const user = users.find(
+        (u) => u.email === email && u.password === password,
       );
+
+      if (user) {
+        // Store user info (excluding password)
+        const { password: _, ...userWithoutPassword } = user;
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ role, ...userWithoutPassword }),
+        );
+        toast.success(`Welcome, ${user.name}!`, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        // For now, all roles go to the same dashboard.
+        // You can change this to role‑specific routes later.
+        if (role === "admin") navigate("/admin-dashboard");
+        else if (role === "analyst") navigate("/analyst-dashboard");
+        // else if (role === "trainer")
+        //   navigate("/trainer-dashboard"); // you'll create later
+        // else if (role === "counsellor") navigate("/counsellor-dashboard");
+      } else {
+        toast.error("Invalid email or password for the selected role.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 font-sans flex items-center justify-center p-4">
       <div className="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-        {/* Left Column - Branding */}
+        {/* Left Column - Branding (unchanged) */}
         <div className="md:w-1/2 bg-indigo-600 p-8 md:p-12 text-white flex flex-col justify-between">
           <div>
             <div className="flex items-center space-x-2 mb-8">
@@ -192,10 +260,20 @@ const LoginPage = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2 shadow-md"
+              disabled={loading}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>Sign In</span>
-              <FaArrowRight />
+              {loading ? (
+                <>
+                  <FaSpinner className="animate-spin" />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <FaArrowRight />
+                </>
+              )}
             </button>
           </form>
         </div>
