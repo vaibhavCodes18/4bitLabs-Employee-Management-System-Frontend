@@ -401,6 +401,7 @@ const AddEmployeeModal = ({
             {mode === "add" ? "Add New" : "Edit"} {role}
           </h3>
           <button
+            type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
           >
@@ -419,7 +420,7 @@ const AddEmployeeModal = ({
             </svg>
           </button>
         </div>
-        <form onSubmit={onSubmit} className="p-6 space-y-4">
+        <div className="p-6 space-y-4">
           {renderFields()}
           <div className="flex justify-end space-x-3 pt-4">
             <button
@@ -430,13 +431,14 @@ const AddEmployeeModal = ({
               Cancel
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={onSubmit}
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
             >
               {mode === "add" ? "Add" : "Save"} {role}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

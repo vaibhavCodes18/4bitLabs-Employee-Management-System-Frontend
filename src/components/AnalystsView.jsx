@@ -17,6 +17,7 @@ const AnalystsView = ({ analysts, onAdd, onView, onEdit, onDelete }) => {
           <FaChartLine className="text-purple-600 mr-2" /> Analysts
         </h2>
         <button
+          type="button"
           onClick={onAdd}
           className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-sm w-full sm:w-auto"
         >
@@ -79,6 +80,7 @@ const AnalystsView = ({ analysts, onAdd, onView, onEdit, onDelete }) => {
                 </td>
                 <td className="py-3 whitespace-nowrap">
                   <button
+                    type="button"
                     onClick={() => onView(analyst)} // or onView(trainer/analyst/counsellor)
                     className="text-blue-600 hover:text-blue-800 mr-3"
                     title="View Details"
@@ -86,6 +88,7 @@ const AnalystsView = ({ analysts, onAdd, onView, onEdit, onDelete }) => {
                     <FaEye />
                   </button>
                   <button
+                    type="button"
                     onClick={() => onEdit(analyst)}
                     className="text-indigo-600 hover:text-indigo-800 mr-3"
                     title="Edit"
@@ -93,6 +96,7 @@ const AnalystsView = ({ analysts, onAdd, onView, onEdit, onDelete }) => {
                     <FaEdit />
                   </button>
                   <button
+                    type="button"
                     onClick={() => onDelete(analyst.id)}
                     className="text-red-600 hover:text-red-800"
                     title="Delete"

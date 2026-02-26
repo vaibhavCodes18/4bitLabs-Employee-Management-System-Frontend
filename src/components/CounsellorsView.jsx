@@ -24,6 +24,7 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
           <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
         </h2>
         <button
+          type="button"
           onClick={onAdd}
           className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm w-full sm:w-auto"
         >
@@ -62,7 +63,7 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
               <th className="text-left py-2">Status</th>
               <th className="text-left py-2">Joining Date</th>
               <th className="text-left py-2">Salary</th>
-              
+
               <th className="text-left py-2">Actions</th>
             </tr>
           </thead>
@@ -80,13 +81,12 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
                 </td>
                 <td className="py-3 whitespace-nowrap">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      counsellor.status === "Active"
+                    className={`px-2 py-1 rounded-full text-xs ${counsellor.status === "Active"
                         ? "bg-green-100 text-green-700"
                         : counsellor.status === "Inactive"
                           ? "bg-gray-100 text-gray-700"
                           : "bg-yellow-100 text-yellow-700"
-                    }`}
+                      }`}
                   >
                     {counsellor.status || "Active"}
                   </span>
@@ -97,9 +97,10 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
                 <td className="py-3 whitespace-nowrap">
                   ${counsellor.salary?.toLocaleString() || "-"}
                 </td>
-               
+
                 <td className="py-3 whitespace-nowrap">
                   <button
+                    type="button"
                     onClick={() => onView(counsellor)} // or onView(trainer/analyst/counsellor)
                     className="text-blue-600 hover:text-blue-800 mr-3"
                     title="View Details"
@@ -107,6 +108,7 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
                     <FaEye />
                   </button>
                   <button
+                    type="button"
                     onClick={() => onEdit(counsellor)}
                     className="text-indigo-600 hover:text-indigo-800 mr-3"
                     title="Edit"
@@ -114,6 +116,7 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
                     <FaEdit />
                   </button>
                   <button
+                    type="button"
                     onClick={() => onDelete(counsellor.id)}
                     className="text-red-600 hover:text-red-800"
                     title="Delete"

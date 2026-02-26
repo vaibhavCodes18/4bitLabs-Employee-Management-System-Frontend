@@ -23,7 +23,7 @@ import TrainersView from "../components/TrainersView";
 import EmployeesView from "../components/EmployeesView";
 import * as api from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { Bounce, toast } from "react-toastify";
+import { toast as tosts } from "react-hot-toast";
 import { DetailItem } from "../components/DetailItem";
 
 // Admin credentials
@@ -33,6 +33,19 @@ const ADMIN_USER = {
   email: "admin@info.com",
   password: "admin12",
   role: "admin",
+};
+
+// Custom style for success toasts
+const successToastStyle = {
+  style: {
+    border: '1px solid #713200',
+    padding: '16px',
+    color: '#713200',
+  },
+  iconTheme: {
+    primary: '#713200',
+    secondary: '#FFFAEE',
+  },
 };
 
 const AdminDashboard = () => {
@@ -93,7 +106,7 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
- 
+
 
   // Combine all employees for Employees view
   const allEmployees = [
@@ -195,29 +208,9 @@ const AdminDashboard = () => {
         default:
           return;
       }
-      toast.success(`${deleteRole} deleted successfully!`, {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      tosts.success(`${deleteRole} deleted successfully!`, successToastStyle);
     } catch (err) {
-      toast.error("Failed to delete employee. Please try again.", {
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      tosts.error("Failed to delete employee. Please try again.");
       console.error(err);
     } finally {
       cancelDelete();
@@ -257,8 +250,7 @@ const AdminDashboard = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (!formData.name) return;
 
     try {
@@ -380,22 +372,15 @@ const AdminDashboard = () => {
             return;
         }
       }
+      tosts.success(
+        `${modalRole} ${modalMode === "add" ? "added" : "updated"} successfully!`,
+        successToastStyle
+      );
       closeModal();
     } catch (err) {
-      toast.error(`Failed to ${modalMode} employee. Please try again.`, {
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      tosts.error(`Failed to ${modalMode} ${modalRole.toLowerCase()}. Please try again.`);
       console.error(err);
     }
-    return false;
   };
 
   // Render content based on activeView
@@ -451,7 +436,7 @@ const AdminDashboard = () => {
       case "counsellors":
         return (
           <CounsellorsView
-            counsellors={counsellors} 
+            counsellors={counsellors}
             onAdd={() => openAddModal("Counsellor")}
             onView={(counsellor) => openViewModal("Counsellor", counsellor)}
             onEdit={(counsellor) => openEditModal("Counsellor", counsellor)}
@@ -462,14 +447,13 @@ const AdminDashboard = () => {
         return <DashboardView admin={ADMIN_USER} stats={stats} />;
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans flex">
       {/* Sidebar (unchanged) */}
       <aside
-        className={`${
-          sidebarOpen ? "w-64" : "w-20"
-        } bg-white shadow-lg transition-all duration-300 hidden md:block relative`}
+        className={`${sidebarOpen ? "w-64" : "w-20"
+          } bg-white shadow-lg transition-all duration-300 hidden md:block relative`}
       >
         <div className="p-4 flex items-center space-x-2 border-b">
           <div className="bg-indigo-600 p-2 rounded-lg">
@@ -482,6 +466,7 @@ const AdminDashboard = () => {
 
         <div className="p-4">
           <button
+            type="button"
             onClick={handleLogoutClick}
             className="flex items-center space-x-2 w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition"
           >
@@ -547,6 +532,7 @@ const AdminDashboard = () => {
                 </span>
               </div>
               <button
+                type="button"
                 onClick={() => setSidebarOpen(false)}
                 className="text-gray-600"
               >
@@ -554,6 +540,7 @@ const AdminDashboard = () => {
               </button>
             </div>
             <button
+              type="button"
               onClick={handleLogoutClick}
               className="flex items-center space-x-2 w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition mb-4"
             >
@@ -605,6 +592,7 @@ const AdminDashboard = () => {
       <main className="flex-1 overflow-y-auto">
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
           <button
+            type="button"
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-gray-600 focus:outline-none"
             aria-label="Toggle menu"
@@ -620,7 +608,7 @@ const AdminDashboard = () => {
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
             </div>
-            <button className="relative text-gray-600 hover:text-indigo-600">
+            <button type="button" className="relative text-gray-600 hover:text-indigo-600">
               <FaBell className="text-xl" />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 3
@@ -666,12 +654,14 @@ const AdminDashboard = () => {
             </p>
             <div className="flex justify-end space-x-3">
               <button
+                type="button"
                 onClick={cancelDelete}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={confirmDelete}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
               >
@@ -687,13 +677,12 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             {/* Header with role color */}
             <div
-              className={`p-6 rounded-t-xl ${
-                viewRole === "Trainer"
-                  ? "bg-green-50 border-b-2 border-green-200"
-                  : viewRole === "Analyst"
-                    ? "bg-purple-50 border-b-2 border-purple-200"
-                    : "bg-yellow-50 border-b-2 border-yellow-200"
-              }`}
+              className={`p-6 rounded-t-xl ${viewRole === "Trainer"
+                ? "bg-green-50 border-b-2 border-green-200"
+                : viewRole === "Analyst"
+                  ? "bg-purple-50 border-b-2 border-purple-200"
+                  : "bg-yellow-50 border-b-2 border-yellow-200"
+                }`}
             >
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-bold text-gray-800 flex items-center">
@@ -709,6 +698,7 @@ const AdminDashboard = () => {
                   {viewEmployee.name} – {viewRole} Details
                 </h3>
                 <button
+                  type="button"
                   onClick={closeViewModal}
                   className="text-gray-400 hover:text-gray-600"
                 >
@@ -769,7 +759,7 @@ const AdminDashboard = () => {
                     label="Salary"
                     value={`$${viewEmployee.salary?.toLocaleString()}`}
                   />
-                  
+
                 </>
               )}
 
@@ -787,7 +777,7 @@ const AdminDashboard = () => {
                     label="Salary"
                     value={`$${viewEmployee.salary?.toLocaleString()}`}
                   />
-                  
+
                 </>
               )}
             </div>
@@ -795,6 +785,7 @@ const AdminDashboard = () => {
             {/* Footer with close button */}
             <div className="border-t p-4 flex justify-end">
               <button
+                type="button"
                 onClick={closeViewModal}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
               >
@@ -816,12 +807,14 @@ const AdminDashboard = () => {
             </p>
             <div className="flex justify-end space-x-3">
               <button
+                type="button"
                 onClick={cancelLogout}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={confirmLogout}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
               >

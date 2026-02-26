@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUsers, FaSearch, FaChalkboardTeacher, FaChartLine, FaUserFriends,FaEye } from "react-icons/fa";
+import { FaUsers, FaSearch, FaChalkboardTeacher, FaChartLine, FaUserFriends, FaEye } from "react-icons/fa";
 
 const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,6 +32,7 @@ const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => {
           <FaUsers className="text-blue-600 mr-2" /> All Employees
         </h2>
         <button
+          type="button"
           onClick={onAdd}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm w-full sm:w-auto"
         >
@@ -96,12 +97,14 @@ const EmployeesView = ({ employees, onAdd, onEdit, onDelete }) => {
                   </td>
                   <td className="whitespace-nowrap">
                     <button
+                      type="button"
                       onClick={() => onEdit(emp)}
                       className="text-indigo-600 hover:text-indigo-800 mr-2"
                     >
                       Edit
                     </button>
                     <button
+                      type="button"
                       onClick={() => onDelete(emp)}
                       className="text-red-600 hover:text-red-800"
                     >

@@ -25,6 +25,7 @@ const TrainersView = ({ trainers, onAdd, onView, onEdit, onDelete }) => {
           <FaChalkboardTeacher className="text-green-600 mr-2" /> Trainers
         </h2>
         <button
+          type="button"
           onClick={onAdd}
           className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm w-full sm:w-auto"
         >
@@ -87,13 +88,12 @@ const TrainersView = ({ trainers, onAdd, onView, onEdit, onDelete }) => {
                 </td>
                 <td className="py-3 whitespace-nowrap">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      trainer.status === "Active"
+                    className={`px-2 py-1 rounded-full text-xs ${trainer.status === "Active"
                         ? "bg-green-100 text-green-700"
                         : trainer.status === "Inactive"
                           ? "bg-gray-100 text-gray-700"
                           : "bg-yellow-100 text-yellow-700"
-                    }`}
+                      }`}
                   >
                     {trainer.status || "Active"}
                   </span>
@@ -124,6 +124,7 @@ const TrainersView = ({ trainers, onAdd, onView, onEdit, onDelete }) => {
                 </td>
                 <td className="py-3 whitespace-nowrap">
                   <button
+                    type="button"
                     onClick={() => onView(trainer)} // or onView(trainer/analyst/counsellor)
                     className="text-blue-600 hover:text-blue-800 mr-3"
                     title="View Details"
@@ -131,6 +132,7 @@ const TrainersView = ({ trainers, onAdd, onView, onEdit, onDelete }) => {
                     <FaEye />
                   </button>
                   <button
+                    type="button"
                     onClick={() => onEdit(trainer)}
                     className="text-indigo-600 hover:text-indigo-800 mr-3"
                     title="Edit"
@@ -138,6 +140,7 @@ const TrainersView = ({ trainers, onAdd, onView, onEdit, onDelete }) => {
                     <FaEdit />
                   </button>
                   <button
+                    type="button"
                     onClick={() => onDelete(trainer.id)}
                     className="text-red-600 hover:text-red-800"
                     title="Delete"

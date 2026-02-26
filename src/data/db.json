@@ -14,19 +14,49 @@
   ],
   "trainer": [
     {
-      "id": "f170",
-      "name": "sahile",
-      "email": "aglawe@gmail.com",
-      "password": "Vaibhav",
-      "phno": "897987896",
+      "name": "Test Trainer",
+      "email": "test@example.com",
+      "password": "",
+      "phno": "",
+      "status": "Inactive",
+      "specialization": "",
+      "expInYear": 0,
+      "qualification": "",
+      "joiningdate": "",
+      "salary": 0,
+      "students": 0,
+      "rating": 0,
+      "id": "abc8"
+    },
+    {
+      "id": "7b00",
+      "name": "Trainer 2",
+      "email": "trainer2@example.com",
+      "password": "",
+      "phno": "",
       "status": "Active",
-      "specialization": "Spring Bott",
-      "expInYear": 34,
-      "qualification": "Btech Me",
-      "joiningdate": "2026-02-19",
-      "salary": 50000,
-      "students": 89,
-      "rating": 4
+      "specialization": "",
+      "expInYear": 0,
+      "qualification": "",
+      "joiningdate": "",
+      "salary": 0,
+      "students": 0,
+      "rating": 0
+    },
+    {
+      "id": "ae65",
+      "name": "TestTrainer123",
+      "email": "test123@test.com",
+      "password": "",
+      "phno": "",
+      "status": "Active",
+      "specialization": "",
+      "expInYear": 0,
+      "qualification": "",
+      "joiningdate": "",
+      "salary": 0,
+      "students": 0,
+      "rating": 0
     }
   ],
   "counsellors": [
@@ -44,34 +74,24 @@
   ],
   "batches": [
     {
-      "id": "2",
-      "name": "Data Science Pro",
-      "course": "Python & ML",
-      "startDate": "2025-04-15",
-      "endDate": "2025-08-15",
-      "status": "active",
-      "studentsCount": 18,
-      "trainerName": "vaibhab"
-    },
-    {
       "id": "3",
       "name": "Java Backend Batch",
       "course": "Spring Boot",
       "startDate": "2025-02-10",
       "endDate": "2025-05-10",
-      "status": "completed",
+      "status": "active",
       "studentsCount": 30,
       "trainerName": "vaibhav"
     },
     {
-      "id": "7ed8",
-      "name": "Bt06",
-      "course": "java",
-      "startDate": "2026-02-06",
-      "endDate": "2026-03-01",
-      "status": "upcoming",
-      "studentsCount": 60,
-      "trainerName": "sahilke"
+      "id": "e28e",
+      "name": "Java b2",
+      "course": "Java Full Stack",
+      "startDate": "2026-01-28",
+      "endDate": "2026-03-07",
+      "status": "active",
+      "studentsCount": 89,
+      "trainerName": "Vaibhav"
     }
   ]
 }

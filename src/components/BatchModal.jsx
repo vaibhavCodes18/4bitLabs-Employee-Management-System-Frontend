@@ -13,11 +13,11 @@ export const BatchModal = ({
     <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
       <div className="flex justify-between items-center p-6 border-b">
         <h3 className="text-xl font-bold text-gray-800">{title}</h3>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+        <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600">
           <FaTimes size={20} />
         </button>
       </div>
-      <form onSubmit={onSubmit} className="p-6 space-y-4">
+      <div className="p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -121,13 +121,14 @@ export const BatchModal = ({
             Cancel
           </button>
           <button
-            type="submit"
+            type="button"
+            onClick={onSubmit}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
           >
             {submitText}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 );
