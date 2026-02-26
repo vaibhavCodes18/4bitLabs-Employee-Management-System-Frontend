@@ -1,5 +1,17 @@
 {
-  "analyst": [],
+  "analyst": [
+    {
+      "id": "13b3",
+      "name": "vaibhav",
+      "email": "vaibhav@gmail.com",
+      "password": "dhgfjhvfbc",
+      "phno": "344345",
+      "department": "dvdv",
+      "status": "Active",
+      "joiningdate": "2026-02-20",
+      "salary": 3543500
+    }
+  ],
   "trainer": [],
   "counsellors": []
 }

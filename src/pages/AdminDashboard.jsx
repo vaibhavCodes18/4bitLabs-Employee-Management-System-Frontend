@@ -35,6 +35,10 @@ const ADMIN_USER = {
 };
 
 const AdminDashboard = () => {
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewEmployee, setViewEmployee] = useState(null);
+  const [viewRole, setViewRole] = useState(null);
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
 
@@ -47,12 +51,21 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Modal state
+  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [modalRole, setModalRole] = useState("Trainer");
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({});
+
+  // Delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteRole, setDeleteRole] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
+  // Logout confirmation modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const navigate = useNavigate();
 
   // Fetch all data on mount
@@ -133,9 +146,83 @@ const AdminDashboard = () => {
     },
   ];
 
-  const handleLogout = () => {
-    alert(`Logging out ${ADMIN_USER.fullName}... (demo)`);
+  const openViewModal = (role, employee) => {
+    setViewRole(role);
+    setViewEmployee(employee);
+    setShowViewModal(true);
+  };
+
+  const closeViewModal = () => {
+    setShowViewModal(false);
+    setViewEmployee(null);
+    setViewRole(null);
+  };
+
+  // Logout handlers
+  const handleLogoutClick = () => setShowLogoutModal(true);
+  const confirmLogout = () => {
     navigate("/login");
+    setShowLogoutModal(false);
+  };
+  const cancelLogout = () => setShowLogoutModal(false);
+
+  // Delete handlers
+  const openDeleteModal = (role, id) => {
+    setDeleteRole(role);
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteRole(null);
+    setDeleteId(null);
+  };
+  const confirmDelete = async () => {
+    if (!deleteRole || !deleteId) return;
+    try {
+      switch (deleteRole) {
+        case "Trainer":
+          await api.deleteTrainer(deleteId);
+          setTrainers((prev) => prev.filter((t) => t.id !== deleteId));
+          break;
+        case "Analyst":
+          await api.deleteAnalyst(deleteId);
+          setAnalysts((prev) => prev.filter((a) => a.id !== deleteId));
+          break;
+        case "Counsellor":
+          await api.deleteCounsellor(deleteId);
+          setCounsellors((prev) => prev.filter((c) => c.id !== deleteId));
+          break;
+        default:
+          return;
+      }
+      toast.success(`${deleteRole} deleted successfully!`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } catch (err) {
+      toast.error("Failed to delete employee. Please try again.", {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      console.error(err);
+    } finally {
+      cancelDelete();
+    }
   };
 
   const handleNavClick = (view) => {
@@ -143,7 +230,7 @@ const AdminDashboard = () => {
     if (window.innerWidth < 768) setSidebarOpen(false);
   };
 
-  // Modal handlers
+  // Modal handlers (add/edit) – unchanged
   const openAddModal = (role) => {
     setModalMode("add");
     setModalRole(role);
@@ -195,24 +282,9 @@ const AdminDashboard = () => {
               rating: parseFloat(formData.rating) || 0,
             };
 
-            if (modalMode === "add") {
-              const response = await api.addTrainer(trainerData);
-              // Ensure the new trainer has a numeric ID
-              const newTrainer = {
-                ...response.data,
-                id: response.data.id,
-              };
-              setTrainers((prev) => [...prev, newTrainer]);
-            } else {
-              const response = await api.updateTrainer(editingId, trainerData);
-              const updatedTrainer = {
-                ...response.data,
-                id: response.data.id,
-              };
-              setTrainers((prev) =>
-                prev.map((t) => (t.id === editingId ? updatedTrainer : t)),
-              );
-            }
+            const response = await api.addTrainer(trainerData);
+            const newTrainer = { ...response.data, id: response.data.id };
+            setTrainers((prev) => [...prev, newTrainer]);
             break;
           }
           case "Analyst": {
@@ -226,16 +298,8 @@ const AdminDashboard = () => {
               joiningdate: formData.joiningdate || "",
               salary: parseFloat(formData.salary) || 0,
             };
-
-            if (modalMode === "add") {
-              const response = await api.addAnalyst(analystData);
-              setAnalysts((prev) => [...prev, response.data]);
-            } else {
-              const response = await api.updateAnalyst(editingId, analystData);
-              setAnalysts((prev) =>
-                prev.map((a) => (a.id === editingId ? response.data : a)),
-              );
-            }
+            const response = await api.addAnalyst(analystData);
+            setAnalysts((prev) => [...prev, response.data]);
             break;
           }
           case "Counsellor": {
@@ -274,16 +338,10 @@ const AdminDashboard = () => {
               students: parseInt(formData.students) || 0,
               rating: parseFloat(formData.rating) || 0,
             };
-
-            if (modalMode === "add") {
-              const response = await api.addTrainer(trainerData);
-              setTrainers((prev) => [...prev, response.data]);
-            } else {
-              const response = await api.updateTrainer(editingId, trainerData);
-              setTrainers((prev) =>
-                prev.map((t) => (t.id === editingId ? response.data : t)),
-              );
-            }
+            const response = await api.updateTrainer(editingId, trainerData);
+            setTrainers((prev) =>
+              prev.map((t) => (t.id === editingId ? response.data : t)),
+            );
             break;
           }
           case "Analyst": {
@@ -292,21 +350,15 @@ const AdminDashboard = () => {
               email: formData.email || "",
               password: formData.password || "",
               phno: formData.phno || "",
-              status: formData.status || "Active",
               department: formData.department || "",
+              status: formData.status || "Active",
               joiningdate: formData.joiningdate || "",
               salary: parseFloat(formData.salary) || 0,
             };
-
-            if (modalMode === "add") {
-              const response = await api.addAnalyst(analystData);
-              setAnalysts((prev) => [...prev, response.data]);
-            } else {
-              const response = await api.updateAnalyst(editingId, analystData);
-              setAnalysts((prev) =>
-                prev.map((a) => (a.id === editingId ? response.data : a)),
-              );
-            }
+            const response = await api.updateAnalyst(editingId, analystData);
+            setAnalysts((prev) =>
+              prev.map((a) => (a.id === editingId ? response.data : a)),
+            );
             break;
           }
           case "Counsellor": {
@@ -347,43 +399,6 @@ const AdminDashboard = () => {
     return false;
   };
 
-  const handleDelete = async (role, id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?"))
-      return;
-
-    try {
-      switch (role) {
-        case "Trainer":
-          await api.deleteTrainer(id);
-          setTrainers((prev) => prev.filter((t) => t.id !== id));
-          break;
-        case "Analyst":
-          await api.deleteAnalyst(id);
-          setAnalysts((prev) => prev.filter((a) => a.id !== id));
-          break;
-        case "Counsellor":
-          await api.deleteCounsellor(id);
-          setCounsellors((prev) => prev.filter((c) => c.id !== id));
-          break;
-        default:
-          return;
-      }
-    } catch (err) {
-      toast.error("Failed to delete employee. Please try again.", {
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-      console.error(err);
-    }
-  };
-
   // Render content based on activeView
   const renderContent = () => {
     if (loading) {
@@ -411,7 +426,7 @@ const AdminDashboard = () => {
             employees={allEmployees}
             onAdd={() => openAddModal("Trainer")}
             onEdit={(emp) => openEditModal(emp.role, emp)}
-            onDelete={(emp) => handleDelete(emp.role, emp.id)}
+            onDelete={(emp) => openDeleteModal(emp.role, emp.id)}
           />
         );
       case "trainers":
@@ -419,8 +434,9 @@ const AdminDashboard = () => {
           <TrainersView
             trainers={trainers}
             onAdd={() => openAddModal("Trainer")}
+            onView={(trainer) => openViewModal("Trainer", trainer)}
             onEdit={(trainer) => openEditModal("Trainer", trainer)}
-            onDelete={(id) => handleDelete("Trainer", id)}
+            onDelete={(id) => openDeleteModal("Trainer", id)}
           />
         );
       case "analysts":
@@ -428,8 +444,9 @@ const AdminDashboard = () => {
           <AnalystsView
             analysts={analysts}
             onAdd={() => openAddModal("Analyst")}
+            onView={(analyst) => openViewModal("Analyst", analyst)}
             onEdit={(analyst) => openEditModal("Analyst", analyst)}
-            onDelete={(id) => handleDelete("Analyst", id)}
+            onDelete={(id) => openDeleteModal("Analyst", id)}
           />
         );
       case "counsellors":
@@ -437,15 +454,21 @@ const AdminDashboard = () => {
           <CounsellorsView
             counsellors={counsellors}
             onAdd={() => openAddModal("Counsellor")}
+            onView={(counsellor) => openViewModal("Counsellor", counsellor)}
             onEdit={(counsellor) => openEditModal("Counsellor", counsellor)}
-            onDelete={(id) => handleDelete("Counsellor", id)}
+            onDelete={(id) => openDeleteModal("Counsellor", id)}
           />
         );
       default:
         return <DashboardView admin={ADMIN_USER} stats={stats} />;
     }
   };
-
+  const DetailItem = ({ label, value }) => (
+    <div className="border-b border-gray-100 pb-2">
+      <p className="text-xs text-gray-500 uppercase tracking-wider">{label}</p>
+      <p className="text-base font-medium text-gray-800 mt-1">{value || "-"}</p>
+    </div>
+  );
   return (
     <div className="min-h-screen bg-gray-50 font-sans flex">
       {/* Sidebar (unchanged) */}
@@ -465,7 +488,7 @@ const AdminDashboard = () => {
 
         <div className="p-4">
           <button
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className="flex items-center space-x-2 w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition"
           >
             <FaSignOutAlt className="text-lg" />
@@ -537,7 +560,7 @@ const AdminDashboard = () => {
               </button>
             </div>
             <button
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
               className="flex items-center space-x-2 w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition mb-4"
             >
               <FaSignOutAlt className="text-lg" />
@@ -626,6 +649,7 @@ const AdminDashboard = () => {
         <div className="p-4 sm:p-6">{renderContent()}</div>
       </main>
 
+      {/* Add/Edit Employee Modal */}
       <AddEmployeeModal
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -635,6 +659,199 @@ const AdminDashboard = () => {
         onChange={handleInputChange}
         onSubmit={handleSubmit}
       />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Confirm Delete
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this {deleteRole?.toLowerCase()}?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* View Employee Modal */}
+      {showViewModal && viewEmployee && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Header with role color */}
+            <div
+              className={`p-6 rounded-t-xl ${
+                viewRole === "Trainer"
+                  ? "bg-green-50 border-b-2 border-green-200"
+                  : viewRole === "Analyst"
+                    ? "bg-purple-50 border-b-2 border-purple-200"
+                    : "bg-yellow-50 border-b-2 border-yellow-200"
+              }`}
+            >
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                  {viewRole === "Trainer" && (
+                    <FaChalkboardTeacher className="text-green-600 mr-2" />
+                  )}
+                  {viewRole === "Analyst" && (
+                    <FaChartLine className="text-purple-600 mr-2" />
+                  )}
+                  {viewRole === "Counsellor" && (
+                    <FaUserFriends className="text-yellow-600 mr-2" />
+                  )}
+                  {viewEmployee.name} – {viewRole} Details
+                </h3>
+                <button
+                  onClick={closeViewModal}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <FaTimes size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* Details Grid */}
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {viewRole === "Trainer" && (
+                <>
+                  <DetailItem label="Name" value={viewEmployee.name} />
+                  <DetailItem label="Email" value={viewEmployee.email} />
+                  <DetailItem label="Phone" value={viewEmployee.phno} />
+                  <DetailItem label="Status" value={viewEmployee.status} />
+                  <DetailItem
+                    label="Specialization"
+                    value={
+                      viewEmployee.specialization || viewEmployee.expertise
+                    }
+                  />
+                  <DetailItem
+                    label="Experience"
+                    value={`${viewEmployee.expInYear} years`}
+                  />
+                  <DetailItem
+                    label="Qualification"
+                    value={viewEmployee.qualification}
+                  />
+                  <DetailItem
+                    label="Joining Date"
+                    value={viewEmployee.joiningdate}
+                  />
+                  <DetailItem
+                    label="Salary"
+                    value={`$${viewEmployee.salary?.toLocaleString()}`}
+                  />
+                  <DetailItem label="Students" value={viewEmployee.students} />
+                  <DetailItem label="Rating" value={viewEmployee.rating} />
+                </>
+              )}
+
+              {viewRole === "Analyst" && (
+                <>
+                  <DetailItem label="Name" value={viewEmployee.name} />
+                  <DetailItem label="Email" value={viewEmployee.email} />
+                  <DetailItem label="Phone" value={viewEmployee.phno} />
+                  <DetailItem
+                    label="Department"
+                    value={viewEmployee.department}
+                  />
+                  <DetailItem
+                    label="Joining Date"
+                    value={viewEmployee.joiningdate}
+                  />
+                  <DetailItem
+                    label="Salary"
+                    value={`$${viewEmployee.salary?.toLocaleString()}`}
+                  />
+                  <DetailItem label="Projects" value={viewEmployee.projects} />
+                  <DetailItem
+                    label="Success Rate"
+                    value={viewEmployee.successRate}
+                  />
+                </>
+              )}
+
+              {viewRole === "Counsellor" && (
+                <>
+                  <DetailItem label="Name" value={viewEmployee.name} />
+                  <DetailItem label="Email" value={viewEmployee.email} />
+                  <DetailItem label="Phone" value={viewEmployee.phno} />
+                  <DetailItem label="Status" value={viewEmployee.status} />
+                  <DetailItem
+                    label="Joining Date"
+                    value={viewEmployee.joiningdate}
+                  />
+                  <DetailItem
+                    label="Salary"
+                    value={`$${viewEmployee.salary?.toLocaleString()}`}
+                  />
+                  <DetailItem
+                    label="Students Assigned"
+                    value={viewEmployee.studentsAssigned}
+                  />
+                  <DetailItem
+                    label="Sessions Completed"
+                    value={viewEmployee.sessionsCompleted}
+                  />
+                  <DetailItem
+                    label="Satisfaction"
+                    value={viewEmployee.satisfaction}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* Footer with close button */}
+            <div className="border-t p-4 flex justify-end">
+              <button
+                onClick={closeViewModal}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Confirm Logout
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to logout?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelLogout}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmLogout}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              >
+                Yes, Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
