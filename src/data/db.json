@@ -49,8 +49,9 @@
       "course": "Python & ML",
       "startDate": "2025-04-15",
       "endDate": "2025-08-15",
-      "status": "upcoming",
-      "studentsCount": 18
+      "status": "active",
+      "studentsCount": 18,
+      "trainerName": "vaibhab"
     },
     {
       "id": "3",
@@ -59,7 +60,18 @@
       "startDate": "2025-02-10",
       "endDate": "2025-05-10",
       "status": "completed",
-      "studentsCount": 30
+      "studentsCount": 30,
+      "trainerName": "vaibhav"
+    },
+    {
+      "id": "7ed8",
+      "name": "Bt06",
+      "course": "java",
+      "startDate": "2026-02-06",
+      "endDate": "2026-03-01",
+      "status": "upcoming",
+      "studentsCount": 60,
+      "trainerName": "sahilke"
     }
   ]
 }

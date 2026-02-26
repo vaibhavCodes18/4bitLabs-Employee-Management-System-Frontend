@@ -24,6 +24,7 @@ import EmployeesView from "../components/EmployeesView";
 import * as api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
+import { DetailItem } from "../components/DetailItem";
 
 // Admin credentials
 const ADMIN_USER = {
@@ -92,9 +93,7 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log("AdminDashboard Mounted");
-  }, []);
+ 
 
   // Combine all employees for Employees view
   const allEmployees = [
@@ -463,12 +462,7 @@ const AdminDashboard = () => {
         return <DashboardView admin={ADMIN_USER} stats={stats} />;
     }
   };
-  const DetailItem = ({ label, value }) => (
-    <div className="border-b border-gray-100 pb-2">
-      <p className="text-xs text-gray-500 uppercase tracking-wider">{label}</p>
-      <p className="text-base font-medium text-gray-800 mt-1">{value || "-"}</p>
-    </div>
-  );
+  
   return (
     <div className="min-h-screen bg-gray-50 font-sans flex">
       {/* Sidebar (unchanged) */}
