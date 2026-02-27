@@ -36,16 +36,18 @@ const AdminDashboard = () => {
   const renderContent = () => {
     if (emp.loading) {
       return (
-        <div className="flex justify-center items-center h-64">
+        <div className="flex flex-col justify-center items-center h-64 space-y-3">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600" />
+          <p className="text-sm text-gray-400 font-medium">Loading data...</p>
         </div>
       );
     }
 
     if (emp.error) {
       return (
-        <div className="bg-red-50 text-red-600 p-4 rounded-lg text-center">
-          {emp.error}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center max-w-md mx-auto">
+          <div className="w-16 h-16 mx-auto mb-4 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 text-2xl">!</div>
+          <p className="text-red-600 font-medium">{emp.error}</p>
         </div>
       );
     }

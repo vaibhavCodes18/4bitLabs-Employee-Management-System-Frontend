@@ -120,14 +120,14 @@ const LoginPage = () => {
 
         {/* Right Column - Login Form */}
         <div className="md:w-1/2 p-8 md:p-12">
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <h3 className="text-2xl font-bold text-gray-800">Sign In</h3>
-            <p className="text-gray-500 mt-1">
+            <p className="text-gray-500 mt-2">
               Enter your details to access your account
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

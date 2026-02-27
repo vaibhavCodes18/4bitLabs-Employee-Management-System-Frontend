@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import {
   FaUserFriends,
-  FaStar,
   FaEdit,
   FaTrash,
   FaSearch,
   FaEye,
+  FaPlus,
 } from "react-icons/fa";
+
+const TH = "font-semibold text-[11px] uppercase tracking-wider text-gray-500 px-3.5 py-3 border-b-2 border-gray-200 text-left whitespace-nowrap";
+const TD = "px-3.5 py-3 text-[13px] text-gray-500";
 
 const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,123 +21,115 @@ const CounsellorsView = ({ counsellors, onAdd, onView, onEdit, onDelete }) => {
   });
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-        <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-          <FaUserFriends className="text-yellow-600 mr-2" /> Counsellors
-        </h2>
-        <button
-          type="button"
-          onClick={onAdd}
-          className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition text-sm w-full sm:w-auto"
-        >
-          + Add New Counsellor
-        </button>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="flex-1 relative">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder={`Search by ${searchField}...`}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          />
+    <div className="animate-fade-in-up">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
+        {/* Header */}
+        <div className="flex flex-wrap justify-between items-center mb-6 pb-4 border-b border-gray-100 gap-3">
+          <div className="text-base font-bold text-gray-900 flex items-center gap-2">
+            <div className="p-2 bg-amber-50 rounded-lg text-amber-600">
+              <FaUserFriends />
+            </div>
+            <span>Counsellors</span>
+            <span className="ml-2 px-2.5 py-0.5 bg-amber-50 text-amber-600 rounded-full text-xs font-bold">
+              {counsellors.length}
+            </span>
+          </div>
+          <button type="button" onClick={onAdd} className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2.5 rounded-xl hover:shadow-lg hover:shadow-amber-200 transition-all duration-200 text-sm font-medium">
+            <FaPlus className="text-xs" /> Add Counsellor
+          </button>
         </div>
-        <select
-          value={searchField}
-          onChange={(e) => setSearchField(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
-        >
-          <option value="name">Name</option>
-          <option value="email">Email</option>
-        </select>
-      </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b">
-              <th className="text-left py-2">Name</th>
-              <th className="text-left py-2">Email</th>
-              <th className="text-left py-2">Phone</th>
-              <th className="text-left py-2">Status</th>
-              <th className="text-left py-2">Joining Date</th>
-              <th className="text-left py-2">Salary</th>
+        {/* Search */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div className="flex-1 relative">
+            <FaSearch className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs" />
+            <input
+              type="text"
+              placeholder={`Search by ${searchField}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full py-2 px-3 pl-10 border border-gray-200 rounded-xl text-sm text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 focus:bg-white transition"
+            />
+          </div>
+          <select
+            value={searchField}
+            onChange={(e) => setSearchField(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition"
+          >
+            <option value="name">Name</option>
+            <option value="email">Email</option>
+          </select>
+        </div>
 
-              <th className="text-left py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCounsellors.map((counsellor) => (
-              <tr key={counsellor.id} className="border-b hover:bg-gray-50">
-                <td className="py-3 font-medium whitespace-nowrap">
-                  {counsellor.name}
-                </td>
-                <td className="py-3 whitespace-nowrap">
-                  {counsellor.email || "-"}
-                </td>
-                <td className="py-3 whitespace-nowrap">
-                  {counsellor.phno || "-"}
-                </td>
-                <td className="py-3 whitespace-nowrap">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${counsellor.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : counsellor.status === "Inactive"
-                          ? "bg-gray-100 text-gray-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
-                  >
-                    {counsellor.status || "Active"}
-                  </span>
-                </td>
-                <td className="py-3 whitespace-nowrap">
-                  {counsellor.joiningdate || "-"}
-                </td>
-                <td className="py-3 whitespace-nowrap">
-                  ${counsellor.salary?.toLocaleString() || "-"}
-                </td>
-
-                <td className="py-3 whitespace-nowrap">
-                  <button
-                    type="button"
-                    onClick={() => onView(counsellor)} // or onView(trainer/analyst/counsellor)
-                    className="text-blue-600 hover:text-blue-800 mr-3"
-                    title="View Details"
-                  >
-                    <FaEye />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onEdit(counsellor)}
-                    className="text-indigo-600 hover:text-indigo-800 mr-3"
-                    title="Edit"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onDelete(counsellor.id)}
-                    className="text-red-600 hover:text-red-800"
-                    title="Delete"
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
+        {/* Table */}
+        <div className="overflow-x-auto rounded-xl border border-gray-100">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-gradient-to-r from-slate-50 to-gray-50">
+                <th className={TH}>Name</th>
+                <th className={TH}>Email</th>
+                <th className={TH}>Phone</th>
+                <th className={TH}>Status</th>
+                <th className={TH}>Joined</th>
+                <th className={TH}>Salary</th>
+                <th className={TH}>Actions</th>
               </tr>
-            ))}
-            {filteredCounsellors.length === 0 && (
-              <tr>
-                <td colSpan="10" className="text-center py-4 text-gray-500">
-                  No counsellors found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredCounsellors.map((counsellor, idx) => (
+                <tr key={counsellor.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors animate-fade-in" style={{ animationDelay: `${idx * 50}ms` }}>
+                  <td className={`${TD} font-semibold text-gray-800 whitespace-nowrap`}>
+                    <div className="flex items-center space-x-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                        {counsellor.name?.charAt(0)?.toUpperCase()}
+                      </div>
+                      <span>{counsellor.name}</span>
+                    </div>
+                  </td>
+                  <td className={`${TD} whitespace-nowrap`}>{counsellor.email || "—"}</td>
+                  <td className={`${TD} whitespace-nowrap`}>{counsellor.phno || "—"}</td>
+                  <td className={`${TD} whitespace-nowrap`}>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${counsellor.status === "Active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                      {counsellor.status || "Active"}
+                    </span>
+                  </td>
+                  <td className={`${TD} whitespace-nowrap`}>{counsellor.joiningdate || "—"}</td>
+                  <td className={`${TD} whitespace-nowrap font-medium`}>{counsellor.salary ? `$${counsellor.salary.toLocaleString()}` : "—"}</td>
+                  <td className={`${TD} whitespace-nowrap`}>
+                    <div className="flex items-center space-x-1">
+                      <button type="button" onClick={() => onView(counsellor)} className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm text-blue-500 hover:bg-blue-50 hover:scale-110 transition-all" title="View Details">
+                        <FaEye />
+                      </button>
+                      <button type="button" onClick={() => onEdit(counsellor)} className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm text-indigo-500 hover:bg-indigo-50 hover:scale-110 transition-all" title="Edit">
+                        <FaEdit />
+                      </button>
+                      <button type="button" onClick={() => onDelete(counsellor.id)} className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm text-red-500 hover:bg-red-50 hover:scale-110 transition-all" title="Delete">
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {filteredCounsellors.length === 0 && (
+                <tr>
+                  <td colSpan="7">
+                    <div className="text-center py-10 px-4 text-gray-400">
+                      <FaUserFriends className="text-3xl opacity-30 mb-2 mx-auto" />
+                      <p className="font-medium">No counsellors found</p>
+                      <p className="text-sm mt-1">Try adjusting your search filters</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+          <p className="text-xs text-gray-400">
+            Showing <span className="font-semibold text-gray-600">{filteredCounsellors.length}</span> of <span className="font-semibold text-gray-600">{counsellors.length}</span> counsellors
+          </p>
+        </div>
       </div>
     </div>
   );

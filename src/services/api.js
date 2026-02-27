@@ -59,3 +59,5 @@ export const deleteStudent = (id) => axios.delete(`${API_BASE}/students/${id}`);
 // Assignments
 export const getAssignments = () => axios.get(`${API_BASE}/assignments`);
 export const assignStudentToBatch = (data) => axios.post(`${API_BASE}/assignments`, data);
+export const updateAssignment = (id, data) => axios.put(`${API_BASE}/assignments/${id}`, data);
+export const deleteAssignment = (id) => axios.delete(`${API_BASE}/assignments/${id}`);
