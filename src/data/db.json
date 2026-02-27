@@ -81,19 +81,27 @@
   "students": [
     {
       "id": "5c41",
-      "name": "Vaibhav",
+      "name": "Vaibhav sathe",
       "email": "vaibah@gmail.com",
       "phone": "90909090",
-      "status": "active",
+      "status": "inactive",
       "joiningDate": "2026-02-17"
     },
     {
       "id": "d5cc",
-      "name": "sahil",
+      "name": "sahil aglawe",
       "email": "sahil@gmail.com",
       "phone": "89798789",
       "status": "active",
       "joiningDate": "2026-02-10"
+    },
+    {
+      "id": "21b3",
+      "name": "sandeep",
+      "email": "sandeep@gmail.com",
+      "phone": "7989696",
+      "status": "active",
+      "joiningDate": "2026-01-29"
     }
   ],
   "assignments": [
@@ -115,6 +123,26 @@
     {
       "id": "d63e",
       "studentId": "d5cc",
+      "batchId": "352c"
+    },
+    {
+      "id": "70f1",
+      "studentId": null,
+      "batchId": "352c"
+    },
+    {
+      "id": "c566",
+      "studentId": "21b3",
+      "batchId": "352c"
+    },
+    {
+      "id": "c7fc",
+      "studentId": "21b3",
+      "batchId": "352c"
+    },
+    {
+      "id": "c02c",
+      "studentId": "21b3",
       "batchId": "352c"
     }
   ]
