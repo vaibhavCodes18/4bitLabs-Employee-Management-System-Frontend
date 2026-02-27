@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   FaLayerGroup,
   FaCheckCircle,
@@ -27,11 +27,28 @@ const STATUS_BADGES = {
 const AnalystDashboard = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const batch = useBatches();
+  const [trainers, setTrainers] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user")) || {
     name: "Analyst",
     email: "analyst@info.com",
   };
+
+  // Fetch trainers for the BatchModal dropdown
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      try {
+        const res = await import("../services/api").then((api) => api.getTrainers());
+        setTrainers(res.data);
+      } catch (err) {
+        console.error("Failed to fetch trainers:", err);
+      }
+    };
+    fetchTrainers();
+  }, []);
+
+
+
 
   const statsCards = useMemo(
     () => [
@@ -174,6 +191,7 @@ const AnalystDashboard = () => {
           onSubmit={batch.handleAddBatch}
           onClose={batch.closeModals}
           submitText="Add Batch"
+          trainers={trainers}
         />
       )}
       {batch.showEditModal && (
@@ -184,6 +202,7 @@ const AnalystDashboard = () => {
           onSubmit={batch.handleEditBatch}
           onClose={batch.closeModals}
           submitText="Update Batch"
+          trainers={trainers}
         />
       )}
 

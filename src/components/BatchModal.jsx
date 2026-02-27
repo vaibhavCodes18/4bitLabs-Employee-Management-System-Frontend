@@ -8,6 +8,7 @@ export const BatchModal = ({
   onSubmit,
   onClose,
   submitText,
+  trainers = [],
 }) => (
   <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 p-4">
     <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -45,19 +46,27 @@ export const BatchModal = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
           </div>
-          {/* New Trainer Name Field */}
+          {/* Trainer Name (from API) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Trainer Name *
             </label>
-            <input
-              type="text"
+            <select
               name="trainerName"
               value={formData.trainerName}
               onChange={onChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
+            >
+              <option value="" disabled>
+                Select Trainer
+              </option>
+              {trainers.map((trainer) => (
+                <option key={trainer.id} value={trainer.name}>
+                  {trainer.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
