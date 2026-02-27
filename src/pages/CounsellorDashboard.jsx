@@ -9,6 +9,7 @@ import {
     FaTrash,
     FaPlus,
     FaTimes,
+    FaTachometerAlt,
 } from "react-icons/fa";
 
 import DashboardLayout from "../components/DashboardLayout";
@@ -16,13 +17,9 @@ import ConfirmModal from "../components/ConfirmModal";
 import { DetailItem } from "../components/DetailItem";
 import { notify } from "../utils/notify";
 import * as api from "../services/api";
+import { COUNSELLOR_NAV_ITEMS } from "../constants";
 
-// ─── Nav Items ───────────────────────────────────────────────
-const COUNSELLOR_NAV_ITEMS = [
-    { key: "dashboard", icon: FaUserGraduate, label: "Dashboard" },
-    { key: "students", icon: FaUserGraduate, label: "Students" },
-    { key: "batches", icon: FaLayerGroup, label: "Batches" },
-];
+
 
 // ─── Initial Form State ─────────────────────────────────────
 const INITIAL_FORM = {
@@ -136,6 +133,8 @@ const CounsellorDashboard = () => {
     const [currentStudent, setCurrentStudent] = useState(null);
     const [formData, setFormData] = useState(INITIAL_FORM);
     const [selectedBatch, setSelectedBatch] = useState("");
+    const [showBatchStudentsModal, setShowBatchStudentsModal] = useState(false);
+    const [viewingBatch, setViewingBatch] = useState(null);
 
     // Session user
     const user = JSON.parse(localStorage.getItem("user")) || {
@@ -179,6 +178,8 @@ const CounsellorDashboard = () => {
         setShowViewModal(false);
         setShowDeleteModal(false);
         setShowAssignModal(false);
+        setShowBatchStudentsModal(false);
+        setViewingBatch(null);
         setCurrentStudent(null);
         setFormData(INITIAL_FORM);
         setSelectedBatch("");
@@ -254,20 +255,47 @@ const CounsellorDashboard = () => {
             notify.error("Please select a batch.");
             return;
         }
+
+        // Prevent duplicate assignment
+        const alreadyAssigned = assignments.some(
+            (a) => a.studentId === currentStudent.id && a.batchId === selectedBatch,
+        );
+        if (alreadyAssigned) {
+            notify.error("Student is already assigned to this batch.");
+            return;
+        }
+
         try {
+            // 1. Create the assignment
             const response = await api.assignStudentToBatch({
                 studentId: currentStudent.id,
                 batchId: selectedBatch,
             });
-            // Update local assignments state so View modal shows it immediately
             setAssignments((prev) => [...prev, response.data]);
+
+            // 2. Increment the batch's studentsCount
+            const targetBatch = batches.find((b) => b.id === selectedBatch);
+            if (targetBatch) {
+                const newCount = (targetBatch.studentsCount || 0) + 1;
+                await api.updateBatch(selectedBatch, {
+                    ...targetBatch,
+                    studentsCount: newCount,
+                });
+                // Update local state so count reflects immediately
+                setBatches((prev) =>
+                    prev.map((b) =>
+                        b.id === selectedBatch ? { ...b, studentsCount: newCount } : b,
+                    ),
+                );
+            }
+
             notify.success("Student assigned to batch successfully!");
             closeModals();
         } catch (err) {
             notify.error("Failed to assign student. Please try again.");
             console.error(err);
         }
-    }, [selectedBatch, currentStudent, closeModals]);
+    }, [selectedBatch, currentStudent, closeModals, assignments, batches]);
 
     // ─── Helper: Get assigned batches for a student ──────────
     const getStudentBatches = useCallback(
@@ -281,6 +309,25 @@ const CounsellorDashboard = () => {
         },
         [assignments, batches],
     );
+
+    // ─── Helper: Get students assigned to a batch ────────────
+    const getBatchStudents = useCallback(
+        (batchId) => {
+            const batchAssignments = assignments.filter(
+                (a) => a.batchId === batchId && a.studentId,
+            );
+            const uniqueStudentIds = [...new Set(batchAssignments.map((a) => a.studentId))];
+            return uniqueStudentIds
+                .map((studentId) => students.find((s) => s.id === studentId))
+                .filter(Boolean);
+        },
+        [assignments, students],
+    );
+
+    const openBatchStudentsModal = useCallback((batch) => {
+        setViewingBatch(batch);
+        setShowBatchStudentsModal(true);
+    }, []);
 
     // ─── Derived Stats ────────────────────────────────────────
     const stats = useMemo(
@@ -433,6 +480,7 @@ const CounsellorDashboard = () => {
                                     <th className="text-left py-2">End Date</th>
                                     <th className="text-left py-2">Status</th>
                                     <th className="text-left py-2">Students</th>
+                                    <th className="text-left py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -448,12 +496,22 @@ const CounsellorDashboard = () => {
                                                 {batch.status ? batch.status.charAt(0).toUpperCase() + batch.status.slice(1) : "—"}
                                             </span>
                                         </td>
-                                        <td>{batch.studentsCount}</td>
+                                        <td>{batch.studentsCount || 0}</td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                onClick={() => openBatchStudentsModal(batch)}
+                                                className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center"
+                                                title="View Students"
+                                            >
+                                                <FaEye className="mr-1" /> View Students
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                                 {batches.length === 0 && (
                                     <tr>
-                                        <td colSpan="7" className="text-center py-4 text-gray-500">No batches found.</td>
+                                        <td colSpan="8" className="text-center py-4 text-gray-500">No batches found.</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -461,6 +519,75 @@ const CounsellorDashboard = () => {
                     </div>
                 </div>
             )}
+
+            {/* ─── Batch Students Modal ─────────────────────── */}
+            {showBatchStudentsModal && viewingBatch && (() => {
+                const batchStudents = getBatchStudents(viewingBatch.id);
+                return (
+                    <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-800">Students in {viewingBatch.name}</h3>
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        {viewingBatch.course} · Trainer: {viewingBatch.trainerName || "—"}
+                                    </p>
+                                </div>
+                                <button type="button" onClick={closeModals} className="text-gray-400 hover:text-gray-600">
+                                    <FaTimes size={20} />
+                                </button>
+                            </div>
+
+                            {batchStudents.length > 0 ? (
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead>
+                                            <tr className="border-b bg-gray-50">
+                                                <th className="text-left py-2 px-3">#</th>
+                                                <th className="text-left py-2 px-3">Name</th>
+                                                <th className="text-left py-2 px-3">Email</th>
+                                                <th className="text-left py-2 px-3">Phone</th>
+                                                <th className="text-left py-2 px-3">Status</th>
+                                                <th className="text-left py-2 px-3">Joining Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {batchStudents.map((student, idx) => (
+                                                <tr key={student.id} className="border-b hover:bg-gray-50">
+                                                    <td className="py-3 px-3 text-gray-500">{idx + 1}</td>
+                                                    <td className="py-3 px-3 font-medium">{student.name}</td>
+                                                    <td className="py-3 px-3">{student.email}</td>
+                                                    <td className="py-3 px-3">{student.phone}</td>
+                                                    <td className="py-3 px-3">
+                                                        <span className={`px-2 py-1 text-xs rounded-full ${student.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}>
+                                                            {student.status ? student.status.charAt(0).toUpperCase() + student.status.slice(1) : "—"}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-3 px-3">{student.joiningDate}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="text-center py-8 text-gray-400">
+                                    <FaUserGraduate className="text-4xl mx-auto mb-2 opacity-50" />
+                                    <p>No students assigned to this batch yet.</p>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-center mt-6 pt-4 border-t">
+                                <p className="text-sm text-gray-500">
+                                    Total: <span className="font-semibold text-gray-700">{batchStudents.length}</span> student{batchStudents.length !== 1 ? "s" : ""}
+                                </p>
+                                <button type="button" onClick={closeModals} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
 
             {/* ─── Modals ─────────────────────────────────── */}
 
@@ -532,10 +659,10 @@ const CounsellorDashboard = () => {
                                                 </div>
                                                 <span
                                                     className={`px-2 py-1 text-xs rounded-full ${batch.status === "active"
-                                                            ? "bg-green-100 text-green-700"
-                                                            : batch.status === "upcoming"
-                                                                ? "bg-yellow-100 text-yellow-700"
-                                                                : "bg-gray-100 text-gray-700"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : batch.status === "upcoming"
+                                                            ? "bg-yellow-100 text-yellow-700"
+                                                            : "bg-gray-100 text-gray-700"
                                                         }`}
                                                 >
                                                     {batch.status

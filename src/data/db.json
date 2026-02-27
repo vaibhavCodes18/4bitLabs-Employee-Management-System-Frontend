@@ -68,14 +68,24 @@
   ],
   "batches": [
     {
-      "id": "352c",
-      "name": "Java BT-05",
-      "course": "Java Full Stack",
-      "startDate": "2026-02-04",
-      "endDate": "2026-03-06",
+      "id": "2387",
+      "name": "Bt-06",
+      "course": "Java ",
+      "trainerName": "TestTrainer123",
+      "startDate": "2026-02-05",
+      "endDate": "2026-02-13",
       "status": "active",
-      "studentsCount": 18,
-      "trainerName": "TestTrainer123"
+      "studentsCount": 3
+    },
+    {
+      "id": "4976",
+      "name": "Batch-02",
+      "course": "Python",
+      "trainerName": "Trainer 2",
+      "startDate": "2026-01-28",
+      "endDate": "2026-03-08",
+      "status": "active",
+      "studentsCount": 1
     }
   ],
   "students": [
@@ -108,42 +118,62 @@
     {
       "id": "2353",
       "studentId": "5c41",
-      "batchId": "352c"
+      "batchId": null
     },
     {
       "id": "89fe",
       "studentId": "5c41",
-      "batchId": "352c"
+      "batchId": null
     },
     {
       "id": "d424",
       "studentId": "5c41",
-      "batchId": "352c"
+      "batchId": null
     },
     {
       "id": "d63e",
       "studentId": "d5cc",
-      "batchId": "352c"
+      "batchId": null
     },
     {
       "id": "70f1",
       "studentId": null,
-      "batchId": "352c"
+      "batchId": null
     },
     {
       "id": "c566",
       "studentId": "21b3",
-      "batchId": "352c"
+      "batchId": null
     },
     {
       "id": "c7fc",
       "studentId": "21b3",
-      "batchId": "352c"
+      "batchId": null
     },
     {
       "id": "c02c",
       "studentId": "21b3",
-      "batchId": "352c"
+      "batchId": null
+    },
+    {
+      "id": "72ed",
+      "studentId": "5c41",
+      "batchId": "2387"
+    },
+    {
+      "id": "d8cb",
+      "studentId": "21b3",
+      "batchId": "2387"
+    },
+    {
+      "id": "f16b",
+      "studentId": "d5cc",
+      "batchId": "2387"
+    },
+    {
+      "id": "1287",
+      "studentId": "5c41",
+      "batchId": "4976"
     }
   ]
 }

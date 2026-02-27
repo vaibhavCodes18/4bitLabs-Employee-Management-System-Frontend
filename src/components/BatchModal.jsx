@@ -107,19 +107,6 @@ export const BatchModal = ({
               <option value="completed">Completed</option>
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Students Count
-            </label>
-            <input
-              type="number"
-              name="studentsCount"
-              value={formData.studentsCount}
-              onChange={onChange}
-              min="0"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
         </div>
         <div className="flex justify-end space-x-3 pt-4">
           <button
