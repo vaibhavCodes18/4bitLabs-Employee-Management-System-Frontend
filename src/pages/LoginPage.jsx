@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   FaMicrochip,
   FaEnvelope,
@@ -10,7 +9,16 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { Bounce, toast } from "react-toastify";
+import { notify } from "../utils/notify";
+import { loginByRole } from "../services/api";
+
+// Role → dashboard route mapping
+const ROLE_ROUTES = {
+  admin: "/admin-dashboard",
+  analyst: "/analyst-dashboard",
+  // trainer: "/trainer-dashboard",
+  counsellor: "/counsellor-dashboard",
+};
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -20,13 +28,6 @@ const LoginPage = () => {
     role: "",
   });
   const [loading, setLoading] = useState(false);
-
-  // Admin credentials from localStorage (set during registration or hardcoded)
-  const admin = JSON.parse(localStorage.getItem("admin")) || {
-    email: "admin@info.com",
-    password: "admin12",
-    role: "admin",
-  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,84 +39,40 @@ const LoginPage = () => {
 
     const { email, password, role } = formData;
 
+    if (!role) {
+      notify.error("Please select a valid role.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Admin login (local)
-      if (role === "admin") {
-        if (email === admin.email && password === admin.password) {
-          localStorage.setItem(
-            "user",
-            JSON.stringify({ role: "admin", ...admin }),
-          );
-          toast.success("Admin login successful!", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-          navigate("/admin-dashboard");
-        } else {
-          toast.error("Invalid admin credentials.");
-        }
-        setLoading(false);
-        return;
-      }
-
-      // For other roles, fetch from API
-      let endpoint = "";
-      if (role === "trainer") endpoint = "http://localhost:3000/trainer";
-      else if (role === "analyst") endpoint = "http://localhost:3000/analyst";
-      else if (role === "counsellor")
-        endpoint = "http://localhost:3000/counsellors";
-      else {
-        toast.error("Please select a valid role.");
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.get(endpoint);
-      const users = response.data;
-
-      // Find user with matching email and password
-      const user = users.find(
-        (u) => u.email === email && u.password === password,
-      );
+      // Authenticate via json-server for ALL roles
+      const user = await loginByRole(role, email, password);
 
       if (user) {
-        // Store user info (excluding password)
+        // Store session info (excluding password)
         const { password: _, ...userWithoutPassword } = user;
         localStorage.setItem(
           "user",
           JSON.stringify({ role, ...userWithoutPassword }),
         );
-        toast.success(`Welcome, ${user.name}!`, {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-        // For now, all roles go to the same dashboard.
-        // You can change this to role‑specific routes later.
-        if (role === "admin") navigate("/admin-dashboard");
-        else if (role === "analyst") navigate("/analyst-dashboard");
-        // else if (role === "trainer")
-        //   navigate("/trainer-dashboard"); // you'll create later
-        // else if (role === "counsellor") navigate("/counsellor-dashboard");
+
+        const displayName = user.fullName || user.name || "User";
+        notify.success(`Welcome, ${displayName}!`);
+
+        // Navigate to role-specific dashboard
+        const route = ROLE_ROUTES[role];
+        if (route) {
+          navigate(route);
+        } else {
+          notify.error(`Dashboard for "${role}" is not available yet.`);
+        }
       } else {
-        toast.error("Invalid email or password for the selected role.");
+        notify.error("Invalid email or password for the selected role.");
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("Login failed. Please try again later.");
+      notify.error("Login failed. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -249,12 +206,12 @@ const LoginPage = () => {
                 />
                 <span>Remember me</span>
               </label>
-              <a
-                href="#"
-                className="text-indigo-600 hover:text-indigo-700 font-medium"
+              <button
+                type="button"
+                className="text-indigo-600 hover:text-indigo-700 font-medium bg-transparent border-none cursor-pointer p-0"
               >
                 Forgot password?
-              </a>
+              </button>
             </div>
 
             {/* Submit Button */}
