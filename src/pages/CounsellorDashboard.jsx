@@ -184,7 +184,37 @@ const CounsellorDashboard = () => {
 
   const handleDeleteStudent = useCallback(async () => {
     try {
+      // Find all assignments for this student
+      const studentAssignments = assignments.filter(
+        (a) => a.studentId === currentStudent.id,
+      );
+
+      // Delete the student
       await api.deleteStudent(currentStudent.id);
+
+      // Delete each assignment and decrement the batch studentsCount
+      for (const assignment of studentAssignments) {
+        await api.deleteAssignment(assignment.id);
+        const batch = batches.find((b) => b.id === assignment.batchId);
+        if (batch) {
+          const newCount = Math.max((batch.studentsCount || 0) - 1, 0);
+          await api.updateBatch(batch.id, {
+            ...batch,
+            studentsCount: newCount,
+          });
+          setBatches((prev) =>
+            prev.map((b) =>
+              b.id === batch.id ? { ...b, studentsCount: newCount } : b,
+            ),
+          );
+        }
+      }
+
+      // Update local state
+      const assignmentIds = studentAssignments.map((a) => a.id);
+      setAssignments((prev) =>
+        prev.filter((a) => !assignmentIds.includes(a.id)),
+      );
       setStudents((prev) => prev.filter((s) => s.id !== currentStudent.id));
       notify.success("Student deleted successfully!");
       closeModals();
@@ -192,7 +222,7 @@ const CounsellorDashboard = () => {
       notify.error("Failed to delete student. Please try again.");
       console.error(err);
     }
-  }, [currentStudent, closeModals]);
+  }, [currentStudent, closeModals, assignments, batches]);
 
   const handleAssignBatch = useCallback(async () => {
     if (!selectedBatch) {
@@ -424,7 +454,7 @@ const CounsellorDashboard = () => {
                     >
                       {student.status
                         ? student.status.charAt(0).toUpperCase() +
-                          student.status.slice(1)
+                        student.status.slice(1)
                         : "Unknown"}
                     </span>
                   </td>
@@ -745,17 +775,16 @@ const CounsellorDashboard = () => {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span
-                            className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${
-                              batch.status === "active"
+                            className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${batch.status === "active"
                                 ? "bg-emerald-50 text-emerald-700"
                                 : batch.status === "upcoming"
                                   ? "bg-amber-50 text-amber-700"
                                   : "bg-gray-100 text-gray-600"
-                            }`}
+                              }`}
                           >
                             {batch.status
                               ? batch.status.charAt(0).toUpperCase() +
-                                batch.status.slice(1)
+                              batch.status.slice(1)
                               : "—"}
                           </span>
                         </td>
@@ -890,7 +919,7 @@ const CounsellorDashboard = () => {
                               >
                                 {student.status
                                   ? student.status.charAt(0).toUpperCase() +
-                                    student.status.slice(1)
+                                  student.status.slice(1)
                                   : "—"}
                               </span>
                             </td>
@@ -1020,17 +1049,16 @@ const CounsellorDashboard = () => {
                             </p>
                           </div>
                           <span
-                            className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${
-                              batch.status === "active"
+                            className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${batch.status === "active"
                                 ? "bg-emerald-50 text-emerald-700"
                                 : batch.status === "upcoming"
                                   ? "bg-amber-50 text-amber-700"
                                   : "bg-gray-100 text-gray-600"
-                            }`}
+                              }`}
                           >
                             {batch.status
                               ? batch.status.charAt(0).toUpperCase() +
-                                batch.status.slice(1)
+                              batch.status.slice(1)
                               : "—"}
                           </span>
                         </div>
@@ -1171,15 +1199,14 @@ const CounsellorDashboard = () => {
                             </p>
                           </div>
                           <span
-                            className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${
-                              batch.status === "active"
+                            className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${batch.status === "active"
                                 ? "bg-emerald-50 text-emerald-700"
                                 : "bg-gray-100 text-gray-600"
-                            }`}
+                              }`}
                           >
                             {batch.status
                               ? batch.status.charAt(0).toUpperCase() +
-                                batch.status.slice(1)
+                              batch.status.slice(1)
                               : "—"}
                           </span>
                         </div>
