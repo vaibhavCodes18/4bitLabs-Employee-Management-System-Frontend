@@ -148,7 +148,7 @@ const DashboardLayout = ({
           </div>
         </div>
 
-        {sidebarOpen && (
+        {/* {sidebarOpen && (
           <div className="mx-4 mt-5 mb-3 p-3.5 bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl border border-gray-100">
             <div className="flex items-center space-x-3">
               <div
@@ -164,7 +164,7 @@ const DashboardLayout = ({
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {sidebarOpen && (
           <p className="px-6 pt-5 pb-3 text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">
