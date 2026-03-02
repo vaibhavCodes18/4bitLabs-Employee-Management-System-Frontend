@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo } from "react";
 import { FaUsers, FaChalkboardTeacher, FaChartLine, FaUserFriends } from "react-icons/fa";
 
 import DashboardLayout from "../components/DashboardLayout";
@@ -18,27 +18,24 @@ const AdminDashboard = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const emp = useEmployees();
 
-  // Read logged-in user from session (set during login via json-server)
   const user = JSON.parse(localStorage.getItem("user")) || ADMIN_USER;
 
-  // Stats cards — memoized
   const stats = useMemo(
     () => [
-      { label: "Total Employees", value: emp.allEmployees.length, icon: FaUsers, color: "bg-blue-500" },
-      { label: "Trainers", value: emp.trainers.length, icon: FaChalkboardTeacher, color: "bg-green-500" },
+      { label: "Total Employees", value: emp.allEmployees.length, icon: FaUsers, color: "bg-indigo-500" },
+      { label: "Trainers", value: emp.trainers.length, icon: FaChalkboardTeacher, color: "bg-emerald-500" },
       { label: "Analysts", value: emp.analysts.length, icon: FaChartLine, color: "bg-purple-500" },
-      { label: "Counsellors", value: emp.counsellors.length, icon: FaUserFriends, color: "bg-yellow-500" },
+      { label: "Counsellors", value: emp.counsellors.length, icon: FaUserFriends, color: "bg-amber-500" },
     ],
-    [emp.allEmployees.length, emp.trainers.length, emp.analysts.length, emp.counsellors.length],
+    [emp]
   );
 
-  // Render active view content
   const renderContent = () => {
     if (emp.loading) {
       return (
-        <div className="flex flex-col justify-center items-center h-64 space-y-3">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600" />
-          <p className="text-sm text-gray-400 font-medium">Loading data...</p>
+        <div className="flex flex-col items-center justify-center h-64 space-y-4">
+          <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+          <p className="text-sm text-gray-500 font-medium">Loading dashboard...</p>
         </div>
       );
     }
@@ -46,8 +43,14 @@ const AdminDashboard = () => {
     if (emp.error) {
       return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center max-w-md mx-auto">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 text-2xl">!</div>
-          <p className="text-red-600 font-medium">{emp.error}</p>
+          <div className="w-16 h-16 mx-auto mb-4 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl">!</div>
+          <p className="text-rose-600 font-medium">{emp.error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm hover:bg-indigo-100 transition"
+          >
+            Retry
+          </button>
         </div>
       );
     }
@@ -59,6 +62,7 @@ const AdminDashboard = () => {
         return (
           <EmployeesView
             employees={emp.allEmployees}
+            loading={emp.loading}
             onAdd={() => emp.openAddModal("Trainer")}
             onEdit={(e) => emp.openEditModal(e.role, e)}
             onDelete={(e) => emp.openDeleteModal(e.role, e.id)}
@@ -68,6 +72,7 @@ const AdminDashboard = () => {
         return (
           <TrainersView
             trainers={emp.trainers}
+            loading={emp.loading}
             onAdd={() => emp.openAddModal("Trainer")}
             onView={(t) => emp.openViewModal("Trainer", t)}
             onEdit={(t) => emp.openEditModal("Trainer", t)}
@@ -78,6 +83,7 @@ const AdminDashboard = () => {
         return (
           <AnalystsView
             analysts={emp.analysts}
+            loading={emp.loading}
             onAdd={() => emp.openAddModal("Analyst")}
             onView={(a) => emp.openViewModal("Analyst", a)}
             onEdit={(a) => emp.openEditModal("Analyst", a)}
@@ -88,6 +94,7 @@ const AdminDashboard = () => {
         return (
           <CounsellorsView
             counsellors={emp.counsellors}
+            loading={emp.loading}
             onAdd={() => emp.openAddModal("Counsellor")}
             onView={(c) => emp.openViewModal("Counsellor", c)}
             onEdit={(c) => emp.openEditModal("Counsellor", c)}
@@ -109,7 +116,6 @@ const AdminDashboard = () => {
     >
       {renderContent()}
 
-      {/* Add/Edit Employee Modal */}
       <AddEmployeeModal
         isOpen={emp.isModalOpen}
         onClose={emp.closeModal}
@@ -120,17 +126,16 @@ const AdminDashboard = () => {
         onSubmit={emp.handleSubmit}
       />
 
-      {/* Delete Confirmation */}
       <ConfirmModal
         isOpen={emp.showDeleteModal}
         title="Confirm Delete"
         message={`Are you sure you want to delete this ${emp.deleteRole?.toLowerCase()}?`}
         confirmText="Yes, Delete"
+        confirmClassName="bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200"
         onConfirm={emp.confirmDelete}
         onCancel={emp.cancelDelete}
       />
 
-      {/* View Employee Details */}
       <ViewEmployeeModal
         isOpen={emp.showViewModal}
         employee={emp.viewEmployee}

@@ -1,18 +1,10 @@
 import React from "react";
 import { FaTimes, FaUserPlus } from "react-icons/fa";
 
-const INPUT_CLASS = "w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition";
+const INPUT_CLASS = "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition";
 const LABEL_CLASS = "block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5";
 
-const AddEmployeeModal = ({
-  isOpen,
-  onClose,
-  mode,
-  role,
-  formData,
-  onChange,
-  onSubmit,
-}) => {
+const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onSubmit }) => {
   if (!isOpen) return null;
 
   const renderFields = () => {
@@ -159,31 +151,31 @@ const AddEmployeeModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 animate-scale-in border border-gray-100">
-        <div className="flex justify-between items-center mb-5">
-          <div className="flex items-center space-x-3">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 animate-scale-in border border-gray-100">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
             <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600">
-              <FaUserPlus />
+              <FaUserPlus className="text-lg" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900">
               {mode === "add" ? "Add New" : "Edit"} {role}
             </h3>
           </div>
-          <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition">
-            <FaTimes size={16} />
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition">
+            <FaTimes size={18} />
           </button>
         </div>
-        <div className="space-y-4">
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-6">
           {renderFields()}
-          <div className="flex justify-end space-x-3 pt-3">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
             <button type="button" onClick={onClose} className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition">
               Cancel
             </button>
-            <button type="button" onClick={onSubmit} className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200">
+            <button type="submit" className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200">
               {mode === "add" ? "Add" : "Save"} {role}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

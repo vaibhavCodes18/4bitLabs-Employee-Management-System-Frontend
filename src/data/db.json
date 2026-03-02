@@ -11,15 +11,15 @@
   ],
   "analyst": [
     {
-      "id": "aaf6",
       "name": "vaibhv",
       "email": "vaibhav@gmail.com",
       "password": "vaibhav",
       "phno": "986789",
-      "department": "CSe",
       "status": "Inactive",
       "joiningdate": "2026-02-20",
-      "salary": 7000
+      "salary": 7000,
+      "department": "CSE",
+      "id": "aaf6"
     }
   ],
   "trainer": [
