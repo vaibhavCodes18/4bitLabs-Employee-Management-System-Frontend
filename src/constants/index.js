@@ -6,7 +6,8 @@ import {
     FaUserFriends,
     FaLayerGroup,
     FaChartBar,
-    FaUserGraduate
+    FaUserGraduate,
+    FaClipboardList
 } from "react-icons/fa";
 
 // ─── Default Admin Display Info (fallback only) ──────────────
@@ -67,6 +68,13 @@ export const ANALYST_NAV_ITEMS = [
     { key: "dashboard", icon: FaTachometerAlt, label: "Dashboard" },
     { key: "batches", icon: FaLayerGroup, label: "Batches" },
     { key: "reports", icon: FaChartBar, label: "Reports" },
+];
+
+// ─── Trainer Sidebar Navigation ──────────────────────────────
+export const TRAINER_NAV_ITEMS = [
+    { key: "dashboard", icon: FaTachometerAlt, label: "Dashboard" },
+    { key: "myBatches", icon: FaLayerGroup, label: "My Batches" },
+    { key: "batchProgress", icon: FaClipboardList, label: "Batch Progress" },
 ];
 
 // ─── Counsellor Sidebar Navigation ───────────────────────────────

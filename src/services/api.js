@@ -61,3 +61,10 @@ export const getAssignments = () => axios.get(`${API_BASE}/assignments`);
 export const assignStudentToBatch = (data) => axios.post(`${API_BASE}/assignments`, data);
 export const updateAssignment = (id, data) => axios.put(`${API_BASE}/assignments/${id}`, data);
 export const deleteAssignment = (id) => axios.delete(`${API_BASE}/assignments/${id}`);
+
+// ─── Batch Progress endpoints ────────────────────────────────
+export const getBatchProgress = () => axios.get(`${API_BASE}/batchProgress`);
+export const getBatchProgressByBatch = (batchId) => axios.get(`${API_BASE}/batchProgress?batchId=${batchId}`);
+export const addBatchProgress = (data) => axios.post(`${API_BASE}/batchProgress`, data);
+export const updateBatchProgress = (id, data) => axios.put(`${API_BASE}/batchProgress/${id}`, data);
+export const deleteBatchProgress = (id) => axios.delete(`${API_BASE}/batchProgress/${id}`);

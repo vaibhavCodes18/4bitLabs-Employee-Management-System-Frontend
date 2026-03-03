@@ -16,7 +16,7 @@ import { loginByRole } from "../services/api";
 const ROLE_ROUTES = {
   admin: "/admin-dashboard",
   analyst: "/analyst-dashboard",
-  // trainer: "/trainer-dashboard",
+  trainer: "/trainer-dashboard",
   counsellor: "/counsellor-dashboard",
 };
 

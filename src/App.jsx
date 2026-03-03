@@ -5,7 +5,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import LoginPage from "./pages/LoginPage";
 import AnalystDashboard from "./pages/AnalystDashboard";
 import CounsellorDashboard from "./pages/CounsellorDashboard";
-// import { EmployeeProvider } from "./context/EmployeeContext";
+import TrainerDashboard from "./pages/TrainerDashboard";
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/analyst-dashboard" element={<AnalystDashboard />} />
           <Route path="/counsellor-dashboard" element={<CounsellorDashboard />} />
+          <Route path="/trainer-dashboard" element={<TrainerDashboard />} />
         </Routes>
       </BrowserRouter>
     </>
