@@ -75,19 +75,24 @@ const CounsellorDashboard = () => {
     email: "counsellor@info.com",
   };
 
+  // Trainers for name resolution
+  const [trainers, setTrainers] = useState([]);
+
   // Fetch data on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [studentsRes, batchesRes, assignmentsRes] = await Promise.all([
+        const [studentsRes, batchesRes, assignmentsRes, trainersRes] = await Promise.all([
           api.getStudents(),
           api.getBatches(),
           api.getAssignments(),
+          api.getTrainers(),
         ]);
         setStudents(studentsRes.data);
         setBatches(batchesRes.data);
         setAssignments(assignmentsRes.data);
+        setTrainers(trainersRes.data);
         setError(null);
       } catch (err) {
         setError("Failed to load data. Please try again.");
@@ -98,6 +103,26 @@ const CounsellorDashboard = () => {
     };
     fetchData();
   }, []);
+
+  // Helper: resolve trainerId → trainer name
+  const getTrainerName = useCallback(
+    (trainerId) => {
+      const trainer = trainers.find((t) => t.id === trainerId);
+      return trainer ? trainer.name : "—";
+    },
+    [trainers]
+  );
+
+  // Helper: count students in a batch from assignments
+  const getStudentsCount = useCallback(
+    (batchId) => {
+      return assignments.filter(
+        (a) => a.batchId === batchId && a.studentId && a.status === "active"
+      ).length;
+    },
+    [assignments]
+  );
+
 
   // ─── Handlers ──────────────────────────────────────────────
   const handleInputChange = useCallback((e) => {
@@ -158,7 +183,10 @@ const CounsellorDashboard = () => {
   // ─── CRUD Operations ──────────────────────────────────────
   const handleAddStudent = useCallback(async () => {
     try {
-      const response = await api.addStudent(formData);
+      const response = await api.addStudent({
+        ...formData,
+        counsellorId: user.id || "",
+      });
       setStudents((prev) => [...prev, response.data]);
       notify.success("Student added successfully!");
       closeModals();
@@ -166,7 +194,7 @@ const CounsellorDashboard = () => {
       notify.error("Failed to add student. Please try again.");
       console.error(err);
     }
-  }, [formData, closeModals]);
+  }, [formData, closeModals, user.id]);
 
   const handleEditStudent = useCallback(async () => {
     try {
@@ -192,22 +220,9 @@ const CounsellorDashboard = () => {
       // Delete the student
       await api.deleteStudent(currentStudent.id);
 
-      // Delete each assignment and decrement the batch studentsCount
+      // Delete each assignment
       for (const assignment of studentAssignments) {
         await api.deleteAssignment(assignment.id);
-        const batch = batches.find((b) => b.id === assignment.batchId);
-        if (batch) {
-          const newCount = Math.max((batch.studentsCount || 0) - 1, 0);
-          await api.updateBatch(batch.id, {
-            ...batch,
-            studentsCount: newCount,
-          });
-          setBatches((prev) =>
-            prev.map((b) =>
-              b.id === batch.id ? { ...b, studentsCount: newCount } : b,
-            ),
-          );
-        }
       }
 
       // Update local state
@@ -222,7 +237,7 @@ const CounsellorDashboard = () => {
       notify.error("Failed to delete student. Please try again.");
       console.error(err);
     }
-  }, [currentStudent, closeModals, assignments, batches]);
+  }, [currentStudent, closeModals, assignments]);
 
   const handleAssignBatch = useCallback(async () => {
     if (!selectedBatch) {
@@ -240,30 +255,19 @@ const CounsellorDashboard = () => {
       const response = await api.assignStudentToBatch({
         studentId: currentStudent.id,
         batchId: selectedBatch,
+        assignedDate: new Date().toISOString().split("T")[0],
+        status: "active",
       });
       setAssignments((prev) => [...prev, response.data]);
-      const targetBatch = batches.find((b) => b.id === selectedBatch);
-      if (targetBatch) {
-        const newCount = (targetBatch.studentsCount || 0) + 1;
-        await api.updateBatch(selectedBatch, {
-          ...targetBatch,
-          studentsCount: newCount,
-        });
-        setBatches((prev) =>
-          prev.map((b) =>
-            b.id === selectedBatch ? { ...b, studentsCount: newCount } : b,
-          ),
-        );
-      }
       notify.success("Student assigned to batch successfully!");
       closeModals();
     } catch (err) {
       notify.error("Failed to assign student. Please try again.");
       console.error(err);
     }
-  }, [selectedBatch, currentStudent, closeModals, assignments, batches]);
+  }, [selectedBatch, currentStudent, closeModals, assignments]);
 
-  // ─── Batch Transfer ──────────────────────────────────────
+  // ─── Batch Transfer ────────────────────────────────────
   const handleTransferBatch = useCallback(async () => {
     if (!selectedBatch) {
       notify.error("Please select a new batch.");
@@ -282,47 +286,23 @@ const CounsellorDashboard = () => {
     try {
       for (const assignment of currentAssignments) {
         await api.deleteAssignment(assignment.id);
-        const oldBatch = batches.find((b) => b.id === assignment.batchId);
-        if (oldBatch) {
-          const newCount = Math.max((oldBatch.studentsCount || 0) - 1, 0);
-          await api.updateBatch(oldBatch.id, {
-            ...oldBatch,
-            studentsCount: newCount,
-          });
-          setBatches((prev) =>
-            prev.map((b) =>
-              b.id === oldBatch.id ? { ...b, studentsCount: newCount } : b,
-            ),
-          );
-        }
       }
       const oldIds = currentAssignments.map((a) => a.id);
       setAssignments((prev) => prev.filter((a) => !oldIds.includes(a.id)));
       const response = await api.assignStudentToBatch({
         studentId: currentStudent.id,
         batchId: selectedBatch,
+        assignedDate: new Date().toISOString().split("T")[0],
+        status: "active",
       });
       setAssignments((prev) => [...prev, response.data]);
-      const targetBatch = batches.find((b) => b.id === selectedBatch);
-      if (targetBatch) {
-        const newCount = (targetBatch.studentsCount || 0) + 1;
-        await api.updateBatch(selectedBatch, {
-          ...targetBatch,
-          studentsCount: newCount,
-        });
-        setBatches((prev) =>
-          prev.map((b) =>
-            b.id === selectedBatch ? { ...b, studentsCount: newCount } : b,
-          ),
-        );
-      }
       notify.success("Student transferred to new batch successfully!");
       closeModals();
     } catch (err) {
       notify.error("Failed to transfer student. Please try again.");
       console.error(err);
     }
-  }, [selectedBatch, currentStudent, closeModals, assignments, batches]);
+  }, [selectedBatch, currentStudent, closeModals, assignments]);
 
   // ─── Helper: Get assigned batches for a student ──────────
   const getStudentBatches = useCallback(
@@ -765,7 +745,7 @@ const CounsellorDashboard = () => {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                          {batch.trainerName || "—"}
+                          {getTrainerName(batch.trainerId)}
                         </td>
                         <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                           {batch.startDate}
@@ -776,10 +756,10 @@ const CounsellorDashboard = () => {
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span
                             className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${batch.status === "active"
-                                ? "bg-emerald-50 text-emerald-700"
-                                : batch.status === "upcoming"
-                                  ? "bg-amber-50 text-amber-700"
-                                  : "bg-gray-100 text-gray-600"
+                              ? "bg-emerald-50 text-emerald-700"
+                              : batch.status === "upcoming"
+                                ? "bg-amber-50 text-amber-700"
+                                : "bg-gray-100 text-gray-600"
                               }`}
                           >
                             {batch.status
@@ -790,7 +770,7 @@ const CounsellorDashboard = () => {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-medium">
-                            {batch.studentsCount || 0}
+                            {getStudentsCount(batch.id)}
                           </span>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -852,7 +832,7 @@ const CounsellorDashboard = () => {
                       </h3>
                       <p className="text-xs text-gray-400 mt-0.5">
                         {viewingBatch.course} · Trainer:{" "}
-                        {viewingBatch.trainerName || "—"}
+                        {getTrainerName(viewingBatch.trainerId)}
                       </p>
                     </div>
                   </div>
@@ -1042,7 +1022,7 @@ const CounsellorDashboard = () => {
                             </p>
                             <p className="text-xs text-gray-500 mt-0.5">
                               {batch.course} · Trainer:{" "}
-                              {batch.trainerName || "—"}
+                              {getTrainerName(batch.trainerId)}
                             </p>
                             <p className="text-[10px] text-gray-400 mt-0.5">
                               {batch.startDate} → {batch.endDate}
@@ -1050,10 +1030,10 @@ const CounsellorDashboard = () => {
                           </div>
                           <span
                             className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${batch.status === "active"
-                                ? "bg-emerald-50 text-emerald-700"
-                                : batch.status === "upcoming"
-                                  ? "bg-amber-50 text-amber-700"
-                                  : "bg-gray-100 text-gray-600"
+                              ? "bg-emerald-50 text-emerald-700"
+                              : batch.status === "upcoming"
+                                ? "bg-amber-50 text-amber-700"
+                                : "bg-gray-100 text-gray-600"
                               }`}
                           >
                             {batch.status
@@ -1195,13 +1175,13 @@ const CounsellorDashboard = () => {
                             </p>
                             <p className="text-xs text-gray-500">
                               {batch.course} · Trainer:{" "}
-                              {batch.trainerName || "—"}
+                              {getTrainerName(batch.trainerId)}
                             </p>
                           </div>
                           <span
                             className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${batch.status === "active"
-                                ? "bg-emerald-50 text-emerald-700"
-                                : "bg-gray-100 text-gray-600"
+                              ? "bg-emerald-50 text-emerald-700"
+                              : "bg-gray-100 text-gray-600"
                               }`}
                           >
                             {batch.status

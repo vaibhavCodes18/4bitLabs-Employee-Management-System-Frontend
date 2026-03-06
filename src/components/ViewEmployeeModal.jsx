@@ -19,7 +19,7 @@ const ViewEmployeeModal = ({ isOpen, employee, role, onClose }) => {
       <>
         <DetailItem label="Name" value={employee.name} />
         <DetailItem label="Email" value={employee.email} />
-        <DetailItem label="Phone" value={employee.phno} />
+        <DetailItem label="Phone" value={employee.phone} />
       </>
     );
 
@@ -29,13 +29,11 @@ const ViewEmployeeModal = ({ isOpen, employee, role, onClose }) => {
           <>
             {common}
             <DetailItem label="Status" value={employee.status} />
-            <DetailItem label="Specialization" value={employee.specialization || employee.expertise} />
-            <DetailItem label="Experience" value={`${employee.expInYear} years`} />
+            <DetailItem label="Specialization" value={employee.specialization} />
+            <DetailItem label="Experience" value={`${employee.experienceYears} years`} />
             <DetailItem label="Qualification" value={employee.qualification} />
-            <DetailItem label="Joining Date" value={employee.joiningdate} />
+            <DetailItem label="Joining Date" value={employee.joiningDate} />
             <DetailItem label="Salary" value={`$${employee.salary?.toLocaleString()}`} />
-            <DetailItem label="Students" value={employee.students} />
-            <DetailItem label="Rating" value={employee.rating} />
           </>
         );
       case "Analyst":
@@ -43,7 +41,7 @@ const ViewEmployeeModal = ({ isOpen, employee, role, onClose }) => {
           <>
             {common}
             <DetailItem label="Department" value={employee.department} />
-            <DetailItem label="Joining Date" value={employee.joiningdate} />
+            <DetailItem label="Joining Date" value={employee.joiningDate} />
             <DetailItem label="Salary" value={`$${employee.salary?.toLocaleString()}`} />
           </>
         );
@@ -52,7 +50,7 @@ const ViewEmployeeModal = ({ isOpen, employee, role, onClose }) => {
           <>
             {common}
             <DetailItem label="Status" value={employee.status} />
-            <DetailItem label="Joining Date" value={employee.joiningdate} />
+            <DetailItem label="Joining Date" value={employee.joiningDate} />
             <DetailItem label="Salary" value={`$${employee.salary?.toLocaleString()}`} />
           </>
         );

@@ -1,8 +1,8 @@
 // Keys for localStorage
 const STORAGE_KEYS = {
-  TRAINERS: '4bitlabs_trainers',
-  ANALYSTS: '4bitlabs_analysts',
-  COUNSELLORS: '4bitlabs_counsellors',
+  TRAINERS: '4bitLabs_trainers',
+  ANALYSTS: '4bitLabs_analysts',
+  COUNSELLORS: '4bitLabs_counsellors',
 };
 
 // Load data from localStorage or fallback to initial JSON

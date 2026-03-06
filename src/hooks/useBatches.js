@@ -5,11 +5,11 @@ import { notify } from "../utils/notify";
 const INITIAL_FORM = {
     name: "",
     course: "",
-    trainerName: "",
+    trainerId: "",
+    analystId: "",
     startDate: "",
     endDate: "",
     status: "upcoming",
-    studentsCount: 0,
 };
 
 /**
@@ -83,12 +83,10 @@ const useBatches = () => {
         setShowDeleteModal(true);
     }, []);
 
-    const handleAddBatch = useCallback(async () => {
+    const handleAddBatch = useCallback(async (overrides = {}) => {
         try {
-            const response = await batchApi.addBatch({
-                ...formData,
-                studentsCount: parseInt(formData.studentsCount) || 0,
-            });
+            const payload = { ...formData, ...overrides };
+            const response = await batchApi.addBatch(payload);
             setBatches((prev) => [...prev, response.data]);
             notify.success("Batch added successfully!");
             closeModals();
@@ -98,12 +96,10 @@ const useBatches = () => {
         }
     }, [formData, closeModals]);
 
-    const handleEditBatch = useCallback(async () => {
+    const handleEditBatch = useCallback(async (overrides = {}) => {
         try {
-            const response = await batchApi.updateBatch(currentBatch.id, {
-                ...formData,
-                studentsCount: parseInt(formData.studentsCount) || 0,
-            });
+            const payload = { ...formData, ...overrides };
+            const response = await batchApi.updateBatch(currentBatch.id, payload);
             setBatches((prev) =>
                 prev.map((b) => (b.id === currentBatch.id ? response.data : b)),
             );

@@ -16,7 +16,7 @@ const RolesSection = () => {
         </h2>
         <p className="text-center text-gray-600 mt-2 max-w-2xl mx-auto">
           Each role is designed to maximize efficiency and collaboration within
-          4bitlabs.
+          4bitLabs.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
           {/* Admin Card */}
@@ -35,7 +35,7 @@ const RolesSection = () => {
               <li>✓ System settings & security</li>
               <li>✓ Audit logs & reports</li>
             </ul>
-            
+
           </div>
 
           {/* Trainer Card */}
@@ -54,7 +54,7 @@ const RolesSection = () => {
               <li>✓ Lesson plans & materials</li>
               <li>✓ Performance tracking</li>
             </ul>
-            
+
           </div>
 
           {/* Analyst Card */}
@@ -73,7 +73,7 @@ const RolesSection = () => {
               <li>✓ Student success metrics</li>
               <li>✓ Trend analysis</li>
             </ul>
-            
+
           </div>
 
           {/* Counsellor Card */}
@@ -92,7 +92,7 @@ const RolesSection = () => {
               <li>✓ Student counseling records</li>
               <li>✓ Follow-up & engagement</li>
             </ul>
-            
+
           </div>
         </div>
       </div>

@@ -68,14 +68,14 @@ export const BatchModal = ({
               />
             </div>
 
-            {/* Trainer Name */}
+            {/* Trainer */}
             <div>
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                Trainer Name *
+                Trainer *
               </label>
               <select
-                name="trainerName"
-                value={formData.trainerName || ""}
+                name="trainerId"
+                value={formData.trainerId || ""}
                 onChange={onChange}
                 required
                 className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition"
@@ -84,7 +84,7 @@ export const BatchModal = ({
                   Select Trainer
                 </option>
                 {trainers.map((trainer) => (
-                  <option key={trainer.id} value={trainer.name}>
+                  <option key={trainer.id} value={trainer.id}>
                     {trainer.name}
                   </option>
                 ))}

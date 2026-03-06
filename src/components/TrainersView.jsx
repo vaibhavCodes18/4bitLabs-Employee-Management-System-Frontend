@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaChalkboardTeacher, FaStar, FaEdit, FaTrash, FaSearch, FaEye, FaPlus } from "react-icons/fa";
+import { FaChalkboardTeacher, FaEdit, FaTrash, FaSearch, FaEye, FaPlus } from "react-icons/fa";
 
 const TH = "px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/80 sticky top-0 backdrop-blur-sm";
 const TD = "px-4 py-3 text-sm text-gray-600";
@@ -81,8 +81,6 @@ const TrainersView = ({ trainers, loading, onAdd, onView, onEdit, onDelete }) =>
                 <th className={TH}>Qualification</th>
                 <th className={TH}>Joined</th>
                 <th className={TH}>Salary</th>
-                <th className={TH}>Students</th>
-                <th className={TH}>Rating</th>
                 <th className={TH}>Actions</th>
               </tr>
             </thead>
@@ -101,28 +99,18 @@ const TrainersView = ({ trainers, loading, onAdd, onView, onEdit, onDelete }) =>
                       </div>
                     </td>
                     <td className={TD}>{trainer.email || "—"}</td>
-                    <td className={TD}>{trainer.phno || "—"}</td>
+                    <td className={TD}>{trainer.phone || "—"}</td>
                     <td className={TD}>
-                      <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${
-                        trainer.status === "Active" ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600"
-                      }`}>
+                      <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${trainer.status === "Active" ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600"
+                        }`}>
                         {trainer.status || "Active"}
                       </span>
                     </td>
-                    <td className={TD}>{trainer.specialization || trainer.expertise || "—"}</td>
-                    <td className={TD}>{trainer.expInYear || "—"}</td>
+                    <td className={TD}>{trainer.specialization || "—"}</td>
+                    <td className={TD}>{trainer.experienceYears || "—"}</td>
                     <td className={TD}>{trainer.qualification || "—"}</td>
-                    <td className={TD}>{trainer.joiningdate || "—"}</td>
+                    <td className={TD}>{trainer.joiningDate || "—"}</td>
                     <td className={`${TD} font-medium`}>{trainer.salary ? `$${trainer.salary.toLocaleString()}` : "—"}</td>
-                    <td className={TD}>
-                      <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-medium">{trainer.students || 0}</span>
-                    </td>
-                    <td className={TD}>
-                      <div className="flex items-center gap-1">
-                        <FaStar className="text-amber-400 text-xs" />
-                        <span className="font-medium text-gray-700">{trainer.rating || 0}</span>
-                      </div>
-                    </td>
                     <td className={TD}>
                       <div className="flex items-center gap-1">
                         <button onClick={() => onView(trainer)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
@@ -140,7 +128,7 @@ const TrainersView = ({ trainers, loading, onAdd, onView, onEdit, onDelete }) =>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="12" className="text-center py-12">
+                  <td colSpan="10" className="text-center py-12">
                     <FaChalkboardTeacher className="text-4xl text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-500 font-medium">No trainers found</p>
                     <p className="text-sm text-gray-400 mt-1">Try adjusting your search</p>

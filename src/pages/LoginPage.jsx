@@ -88,7 +88,7 @@ const LoginPage = () => {
               <div className="bg-white p-2 rounded-lg">
                 <FaMicrochip className="text-indigo-600 text-2xl" />
               </div>
-              <span className="text-2xl font-bold">4bitlabs</span>
+              <span className="text-2xl font-bold">4bitLabs</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-4">
               Welcome Back to <br />
@@ -114,7 +114,7 @@ const LoginPage = () => {
             </ul>
           </div>
           <div className="mt-8 text-indigo-200 text-sm">
-            © 2025 4bitlabs. All rights reserved.
+            © 2025 4bitLabs. All rights reserved.
           </div>
         </div>
 

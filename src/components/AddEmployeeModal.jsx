@@ -26,7 +26,7 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Phone Number</label>
-              <input type="tel" name="phno" value={formData.phno || ""} onChange={onChange} className={INPUT_CLASS} />
+              <input type="tel" name="phone" value={formData.phone || ""} onChange={onChange} className={INPUT_CLASS} />
             </div>
             <div>
               <label className={LABEL_CLASS}>Status</label>
@@ -42,7 +42,7 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Experience (years)</label>
-              <input type="number" name="expInYear" value={formData.expInYear || ""} onChange={onChange} min="0" step="0.5" className={INPUT_CLASS} />
+              <input type="number" name="experienceYears" value={formData.experienceYears || ""} onChange={onChange} min="0" step="0.5" className={INPUT_CLASS} />
             </div>
             <div>
               <label className={LABEL_CLASS}>Qualification</label>
@@ -50,19 +50,11 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Joining Date</label>
-              <input type="date" name="joiningdate" value={formData.joiningdate || ""} onChange={onChange} className={INPUT_CLASS} />
+              <input type="date" name="joiningDate" value={formData.joiningDate || ""} onChange={onChange} className={INPUT_CLASS} />
             </div>
             <div>
               <label className={LABEL_CLASS}>Salary ($)</label>
               <input type="number" name="salary" value={formData.salary || ""} onChange={onChange} min="0" step="100" className={INPUT_CLASS} />
-            </div>
-            <div>
-              <label className={LABEL_CLASS}>Students</label>
-              <input type="number" name="students" value={formData.students || ""} onChange={onChange} min="0" className={INPUT_CLASS} />
-            </div>
-            <div>
-              <label className={LABEL_CLASS}>Rating (0-5)</label>
-              <input type="number" step="0.1" min="0" max="5" name="rating" value={formData.rating || ""} onChange={onChange} className={INPUT_CLASS} />
             </div>
           </div>
         );
@@ -83,7 +75,7 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Phone Number</label>
-              <input type="tel" name="phno" value={formData.phno || ""} onChange={onChange} className={INPUT_CLASS} />
+              <input type="tel" name="phone" value={formData.phone || ""} onChange={onChange} className={INPUT_CLASS} />
             </div>
             <div>
               <label className={LABEL_CLASS}>Status</label>
@@ -99,7 +91,7 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Joining Date</label>
-              <input type="date" name="joiningdate" value={formData.joiningdate || ""} onChange={onChange} className={INPUT_CLASS} />
+              <input type="date" name="joiningDate" value={formData.joiningDate || ""} onChange={onChange} className={INPUT_CLASS} />
             </div>
             <div>
               <label className={LABEL_CLASS}>Salary ($)</label>
@@ -124,7 +116,7 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Phone Number</label>
-              <input type="tel" name="phno" value={formData.phno || ""} onChange={onChange} className={INPUT_CLASS} />
+              <input type="tel" name="phone" value={formData.phone || ""} onChange={onChange} className={INPUT_CLASS} />
             </div>
             <div>
               <label className={LABEL_CLASS}>Status</label>
@@ -136,7 +128,7 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Joining Date</label>
-              <input type="date" name="joiningdate" value={formData.joiningdate || ""} onChange={onChange} className={INPUT_CLASS} />
+              <input type="date" name="joiningDate" value={formData.joiningDate || ""} onChange={onChange} className={INPUT_CLASS} />
             </div>
             <div>
               <label className={LABEL_CLASS}>Salary ($)</label>

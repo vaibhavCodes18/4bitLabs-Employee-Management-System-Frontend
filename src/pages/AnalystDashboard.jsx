@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   FaLayerGroup,
   FaCheckCircle,
@@ -41,6 +41,7 @@ const AnalystDashboard = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const batch = useBatches();
   const [trainers, setTrainers] = useState([]);
+  const [assignments, setAssignments] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user")) || {
     name: "Analyst",
@@ -48,18 +49,39 @@ const AnalystDashboard = () => {
   };
 
   useEffect(() => {
-    const fetchTrainers = async () => {
+    const fetchData = async () => {
       try {
-        const res = await import("../services/api").then((api) =>
-          api.getTrainers()
-        );
-        setTrainers(res.data);
+        const [trainersRes, assignmentsRes] = await Promise.all([
+          import("../services/api").then((api) => api.getTrainers()),
+          import("../services/api").then((api) => api.getAssignments()),
+        ]);
+        setTrainers(trainersRes.data);
+        setAssignments(assignmentsRes.data);
       } catch (err) {
-        console.error("Failed to fetch trainers:", err);
+        console.error("Failed to fetch data:", err);
       }
     };
-    fetchTrainers();
+    fetchData();
   }, []);
+
+  // Helper: resolve trainerId → trainer name
+  const getTrainerName = useCallback(
+    (trainerId) => {
+      const trainer = trainers.find((t) => t.id === trainerId);
+      return trainer ? trainer.name : "—";
+    },
+    [trainers]
+  );
+
+  // Helper: count students in a batch from assignments
+  const getStudentsCount = useCallback(
+    (batchId) => {
+      return assignments.filter(
+        (a) => a.batchId === batchId && a.studentId && a.status === "active"
+      ).length;
+    },
+    [assignments]
+  );
 
   const statsCards = useMemo(
     () => [
@@ -93,9 +115,8 @@ const AnalystDashboard = () => {
 
   const getStatusBadge = (status) => (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium ${
-        STATUS_BADGES[status] || STATUS_BADGES.completed
-      }`}
+      className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium ${STATUS_BADGES[status] || STATUS_BADGES.completed
+        }`}
     >
       {status ? status.charAt(0).toUpperCase() + status.slice(1) : "Unknown"}
     </span>
@@ -259,7 +280,7 @@ const AnalystDashboard = () => {
                           </span>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-gray-600">
-                          {b.trainerName || "—"}
+                          {getTrainerName(b.trainerId)}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-gray-600">
                           {b.startDate}
@@ -272,7 +293,7 @@ const AnalystDashboard = () => {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-medium">
-                            {b.studentsCount || 0}
+                            {getStudentsCount(b.id)}
                           </span>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -357,7 +378,7 @@ const AnalystDashboard = () => {
           title="Add New Batch"
           formData={batch.formData}
           onChange={batch.handleInputChange}
-          onSubmit={batch.handleAddBatch}
+          onSubmit={() => batch.handleAddBatch({ analystId: user.id })}
           onClose={batch.closeModals}
           submitText="Add Batch"
           trainers={trainers}
@@ -368,7 +389,7 @@ const AnalystDashboard = () => {
           title="Edit Batch"
           formData={batch.formData}
           onChange={batch.handleInputChange}
-          onSubmit={batch.handleEditBatch}
+          onSubmit={() => batch.handleEditBatch({ analystId: user.id })}
           onClose={batch.closeModals}
           submitText="Update Batch"
           trainers={trainers}
@@ -399,8 +420,8 @@ const AnalystDashboard = () => {
               <DetailItem label="Batch Name" value={batch.currentBatch.name} />
               <DetailItem label="Course" value={batch.currentBatch.course} />
               <DetailItem
-                label="Trainer Name"
-                value={batch.currentBatch.trainerName}
+                label="Trainer"
+                value={getTrainerName(batch.currentBatch.trainerId)}
               />
               <DetailItem
                 label="Start Date"
@@ -410,7 +431,7 @@ const AnalystDashboard = () => {
               <DetailItem label="Status" value={batch.currentBatch.status} />
               <DetailItem
                 label="Students Count"
-                value={batch.currentBatch.studentsCount}
+                value={getStudentsCount(batch.currentBatch.id)}
               />
             </div>
             <div className="flex justify-end mt-6">

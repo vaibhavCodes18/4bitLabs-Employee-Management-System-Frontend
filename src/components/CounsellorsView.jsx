@@ -91,15 +91,14 @@ const CounsellorsView = ({ counsellors, loading, onAdd, onView, onEdit, onDelete
                       </div>
                     </td>
                     <td className={TD}>{c.email || "—"}</td>
-                    <td className={TD}>{c.phno || "—"}</td>
+                    <td className={TD}>{c.phone || "—"}</td>
                     <td className={TD}>
-                      <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${
-                        c.status === "Active" ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600"
-                      }`}>
+                      <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${c.status === "Active" ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-600"
+                        }`}>
                         {c.status || "Active"}
                       </span>
                     </td>
-                    <td className={TD}>{c.joiningdate || "—"}</td>
+                    <td className={TD}>{c.joiningDate || "—"}</td>
                     <td className={`${TD} font-medium`}>
                       {c.salary ? `$${c.salary.toLocaleString()}` : "—"}
                     </td>

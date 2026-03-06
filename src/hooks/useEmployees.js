@@ -112,24 +112,26 @@ const useEmployees = () => {
             name: data.name,
             email: data.email || "",
             password: data.password || "",
-            phno: data.phno || "",
+            phone: data.phone || "",
             status: data.status || "Active",
-            joiningdate: data.joiningdate || "",
+            joiningDate: data.joiningDate || "",
             salary: parseFloat(data.salary) || 0,
         };
 
         if (role === "Trainer") {
             return {
                 ...base,
-                specialization: data.specialization || data.expertise || "",
-                expInYear: parseFloat(data.expInYear) || 0,
+                role: "trainer",
+                specialization: data.specialization || "",
+                experienceYears: parseFloat(data.experienceYears) || 0,
                 qualification: data.qualification || "",
-                students: parseInt(data.students) || 0,
-                rating: parseFloat(data.rating) || 0,
             };
         }
-        if (role === "Analyst" || role === "Counsellor") {
-            return { ...base, department: data.department || "" };
+        if (role === "Analyst") {
+            return { ...base, role: "analyst", department: data.department || "" };
+        }
+        if (role === "Counsellor") {
+            return { ...base, role: "counsellor", department: data.department || "" };
         }
         return base;
     }, []);

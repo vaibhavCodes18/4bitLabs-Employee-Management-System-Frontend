@@ -138,7 +138,7 @@ const DashboardLayout = ({
             {sidebarOpen && (
               <div>
                 <span className="text-lg font-bold text-gray-900 tracking-tight">
-                  4bitlabs
+                  4bitLabs
                 </span>
                 <p className="text-[10px] text-gray-400 font-medium tracking-wider uppercase -mt-0.5">
                   Dashboard
@@ -213,7 +213,7 @@ const DashboardLayout = ({
                 </div>
                 <div>
                   <span className="text-lg font-bold text-gray-900">
-                    4bitlabs
+                    4bitLabs
                   </span>
                   <p className="text-[10px] text-gray-400 font-medium tracking-wider uppercase -mt-0.5">
                     Dashboard
@@ -377,11 +377,11 @@ const DashboardLayout = ({
                       value={user.email}
                       colorClass={colors.text}
                     />
-                    {(user.phone || user.phno) && (
+                    {user.phone && (
                       <ProfileDetailRow
                         icon={FaPhone}
                         label="Phone"
-                        value={user.phone || user.phno}
+                        value={user.phone}
                         colorClass={colors.text}
                       />
                     )}
@@ -409,12 +409,12 @@ const DashboardLayout = ({
                         colorClass={colors.text}
                       />
                     )}
-                    {user.expInYear !== undefined &&
-                      user.expInYear !== null && (
+                    {user.experienceYears !== undefined &&
+                      user.experienceYears !== null && (
                         <ProfileDetailRow
                           icon={FaBriefcase}
                           label="Experience"
-                          value={`${user.expInYear} year${user.expInYear !== 1 ? "s" : ""}`}
+                          value={`${user.experienceYears} year${user.experienceYears !== 1 ? "s" : ""}`}
                           colorClass={colors.text}
                         />
                       )}
@@ -428,7 +428,7 @@ const DashboardLayout = ({
                             style={{
                               color:
                                 user.status === "Active" ||
-                                user.status === "active"
+                                  user.status === "active"
                                   ? "#10b981"
                                   : "#9ca3af",
                             }}
@@ -445,11 +445,11 @@ const DashboardLayout = ({
                         </div>
                       </div>
                     )}
-                    {(user.joiningDate || user.joiningdate) && (
+                    {user.joiningDate && (
                       <ProfileDetailRow
                         icon={FaCalendarAlt}
                         label="Joining Date"
-                        value={user.joiningDate || user.joiningdate}
+                        value={user.joiningDate}
                         colorClass={colors.text}
                       />
                     )}
@@ -461,16 +461,7 @@ const DashboardLayout = ({
                         colorClass={colors.text}
                       />
                     )}
-                    {user.rating !== undefined &&
-                      user.rating !== null &&
-                      user.rating > 0 && (
-                        <ProfileDetailRow
-                          icon={FaStar}
-                          label="Rating"
-                          value={`${user.rating} / 5`}
-                          colorClass={colors.text}
-                        />
-                      )}
+
                   </div>
 
                   <div

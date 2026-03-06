@@ -159,11 +159,11 @@ const EmployeesView = ({ employees, loading, onAdd, onEdit, onDelete }) => {
                       </td>
                       <td className={TD}>
                         {emp.role === "Trainer" &&
-                          `${emp.specialization || emp.expertise || "—"}, ${emp.students || 0} students`}
+                          `${emp.specialization || "—"}, ${emp.experienceYears || 0} yrs exp`}
                         {emp.role === "Analyst" &&
-                          `${emp.department || "—"}, ${emp.projects || 0} projects`}
+                          `${emp.department || "—"}`}
                         {emp.role === "Counsellor" &&
-                          `${emp.studentsAssigned || 0} students, ${emp.sessionsCompleted || 0} sessions`}
+                          `${emp.status || "—"}`}
                       </td>
                       <td className={TD}>
                         <div className="flex items-center gap-1">

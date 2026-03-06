@@ -130,7 +130,7 @@ const AnalystsView = ({
                       </div>
                     </td>
                     <td className={TD}>{analyst.email || "—"}</td>
-                    <td className={TD}>{analyst.phno || "—"}</td>
+                    <td className={TD}>{analyst.phone || "—"}</td>
                     <td className={TD}>
                       {analyst.department ? (
                         <span className="px-2 py-1 bg-purple-50 text-purple-700 rounded-lg text-xs font-medium">
@@ -140,7 +140,7 @@ const AnalystsView = ({
                         "—"
                       )}
                     </td>
-                    <td className={TD}>{analyst.joiningdate || "—"}</td>
+                    <td className={TD}>{analyst.joiningDate || "—"}</td>
                     <td className={`${TD} font-medium`}>
                       {analyst.salary
                         ? `$${analyst.salary.toLocaleString()}`
