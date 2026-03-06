@@ -1,20 +1,63 @@
-<<<<<<< HEAD
-# React + Vite
+# 🖥️ Employee Management System — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, role-based Employee Management System frontend built for **4bitLabs**. This single-page application provides dedicated dashboards for **Admin**, **Analyst**, **Trainer**, and **Counsellor** roles, enabling efficient management of employees, batches, students, assignments, and batch progress.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** with Vite for fast development and HMR
+- **Tailwind CSS 4** for responsive, utility-first styling
+- **React Router v7** for client-side routing
+- **Axios** for API communication
+- **React Icons** for consistent iconography
+- **React Hot Toast** for notification toasts
+- **JSON Server** as a mock REST API backend during development
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Role-Based Authentication** — Secure login that routes users to their respective dashboards (Admin, Analyst, Trainer, Counsellor)
+- **Admin Dashboard** — Full CRUD for trainers, analysts, and counsellors with search/filter capabilities
+- **Analyst Dashboard** — Batch management (create, edit, delete, view) with trainer assignment and dynamic student count tracking
+- **Trainer Dashboard** — View assigned batches, add/edit/delete batch progress entries with document uploads
+- **Counsellor Dashboard** — Student management with batch assignment, batch transfer, and batch-wise student views
+- **Professional Data Model** — ID-based entity relationships, camelCase field naming, and dynamically calculated derived fields (no redundant data storage)
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# Employee-Management-System-Frontend
->>>>>>> 8816d29ded3e9ef739dce6f1395aafa361a4cd4d
+```
+src/
+├── components/       # Reusable UI components (modals, views, layout)
+├── constants/        # App-wide constants and role config
+├── data/             # db.json (JSON Server mock database)
+├── hooks/            # Custom hooks (useEmployees, useBatches)
+├── pages/            # Role-specific dashboard pages + Login/Landing
+├── services/         # API service layer (Axios)
+└── utils/            # Utility functions (notifications, storage)
+```
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start JSON Server (mock backend on port 3000)
+npx json-server --watch src/data/db.json 
+
+# Start development server (port 5173)
+npm run dev
+```
+
+## Data Model
+
+| Entity         | Key Fields                                                       |
+|---------------|------------------------------------------------------------------|
+| **Admin**      | email, fullName, password, role, username                        |
+| **Trainer**    | name, email, phone, specialization, experienceYears, qualification, joiningDate, salary |
+| **Analyst**    | name, email, phone, department, joiningDate, salary              |
+| **Counsellor** | name, email, phone, department, joiningDate, salary              |
+| **Student**    | name, email, phone, status, joiningDate, counsellorId            |
+| **Batch**      | name, course, trainerId, analystId, startDate, endDate, status   |
+| **Assignment** | studentId, batchId, assignedDate, status                         |
+| **BatchProgress** | batchId, trainerId, title, description, sessionNumber, topicCovered, createdAt |
+
+> All relationships use **ID-based references** (e.g., `trainerId`, `analystId`, `counsellorId`). Student counts per batch are **calculated dynamically** from the assignments collection.
