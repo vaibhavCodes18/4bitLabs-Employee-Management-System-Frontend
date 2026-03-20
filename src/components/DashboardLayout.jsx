@@ -20,6 +20,7 @@ import {
   FaChevronLeft,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import * as api from "../services/api";
 import SidebarItem from "./SidebarItem";
 import ConfirmModal from "./ConfirmModal";
 
@@ -116,7 +117,12 @@ const DashboardLayout = ({
     [onViewChange],
   );
 
-  const confirmLogout = useCallback(() => {
+  const confirmLogout = useCallback(async () => {
+    // Explicitly call backend logout endpoint, fulfilling end-to-end integration requirements
+    if (typeof api !== 'undefined' && api.logout) {
+      await api.logout();
+    }
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
     setShowLogoutModal(false);
@@ -363,14 +369,6 @@ const DashboardLayout = ({
                   </div>
 
                   <div className="px-6 py-4 max-h-72 overflow-y-auto space-y-0.5">
-                    {user.username && (
-                      <ProfileDetailRow
-                        icon={FaUserShield}
-                        label="Username"
-                        value={user.username}
-                        colorClass={colors.text}
-                      />
-                    )}
                     <ProfileDetailRow
                       icon={FaEnvelope}
                       label="Email"

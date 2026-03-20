@@ -14,7 +14,6 @@ import {
 // Auth credentials are now in db.json, NOT here.
 export const ADMIN_USER = {
     fullName: "Vaibhav Sathe",
-    username: "admin123",
     email: "admin@info.com",
     role: "admin",
 };

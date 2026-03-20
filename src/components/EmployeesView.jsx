@@ -80,12 +80,7 @@ const EmployeesView = ({ employees, loading, onAdd, onEdit, onDelete }) => {
               {employees.length}
             </span>
           </div>
-          <button
-            onClick={onAdd}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-indigo-200 transition-shadow"
-          >
-            <FaPlus className="text-xs" /> Add Employee
-          </button>
+
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-6">

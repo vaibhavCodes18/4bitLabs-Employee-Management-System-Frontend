@@ -1,7 +1,7 @@
 import { FaArrowUp } from "react-icons/fa";
 
 const DashboardView = ({ admin, stats }) => {
-  const displayName = admin.fullName || admin.name || "User";
+  const displayName = admin.name || "User";
 
   return (
     <div className="animate-fade-in-up">
@@ -23,11 +23,7 @@ const DashboardView = ({ admin, stats }) => {
                 <span className="px-2 py-0.5 bg-white/15 rounded-md text-white/90 text-[11px]">
                   {admin.email}
                 </span>
-                {admin.username && (
-                  <span className="px-2 py-0.5 bg-white/10 rounded-md text-white/70 text-[11px]">
-                    @{admin.username}
-                  </span>
-                )}
+
               </div>
             </div>
           </div>

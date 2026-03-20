@@ -50,18 +50,26 @@ const LoginPage = () => {
       const user = await loginByRole(role, email, password);
 
       if (user) {
-        // Store session info (excluding password)
-        const { password: _, ...userWithoutPassword } = user;
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ role, ...userWithoutPassword }),
-        );
+        // Since the axios interceptor unwraps the Spring Boot "ApiResponse" wrapper,
+        // `user` is exactly the JSON data. (e.g., { email, name, role, status, userId, accessToken })
+        const { email, name, role, status, userId, accessToken } = user;
+        
+        // Store token and user information cleanly in localStorage
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("user", JSON.stringify({
+          id: userId,
+          name: name,
+          email: email,
+          role: role,
+          status: status
+        }));
 
-        const displayName = user.fullName || user.name || "User";
+        const displayName = name || "User";
         notify.success(`Welcome, ${displayName}!`);
 
-        // Navigate to role-specific dashboard
-        const route = ROLE_ROUTES[role];
+        // Navigate to role-specific dashboard based on the true backend role
+        let realRole = typeof role === 'string' ? role.toLowerCase() : '';
+        const route = ROLE_ROUTES[realRole];
         if (route) {
           navigate(route);
         } else {
