@@ -31,26 +31,26 @@
       "phone": "968796957",
       "status": "Active",
       "joiningDate": "",
-      "salary": 0,
-      "specialization": "",
-      "experienceYears": 0,
-      "qualification": "",
+      "salary": 3000,
       "role": "trainer",
+      "specialization": "rtrg",
+      "experienceYears": 0,
+      "qualification": "sfdsfc",
       "id": "7b00"
     },
     {
-      "id": "ae65",
       "name": "TestTrainer123",
       "email": "test123@test.com",
       "password": "test123",
       "phone": "",
       "status": "Active",
-      "specialization": "",
-      "experienceYears": 0,
-      "qualification": "",
       "joiningDate": "",
       "salary": 0,
-      "role": "trainer"
+      "role": "trainer",
+      "specialization": "",
+      "experienceYears": 0,
+      "qualification": "fgfg",
+      "id": "ae65"
     },
     {
       "id": "396b",
@@ -65,20 +65,34 @@
       "experienceYears": 2,
       "qualification": "Btech",
       "role": "trainer"
+    },
+    {
+      "name": "sowmya",
+      "email": "sowmya@gmail.com",
+      "password": "sowmya12",
+      "phone": "918233567",
+      "status": "Active",
+      "joiningDate": "2026-03-12",
+      "salary": 30000,
+      "role": "trainer",
+      "specialization": "java",
+      "experienceYears": 3,
+      "qualification": "mca",
+      "id": "2fb5"
     }
   ],
   "counsellors": [
     {
-      "id": "e281",
       "name": "Vaibhav",
       "email": "vaibhv@gam.cmd",
       "password": "dsxcdsxc",
-      "phone": "1233",
-      "status": "Active",
-      "department": "",
+      "phone": "09iu654",
+      "status": "Inactive",
       "joiningDate": "2026-02-12",
       "salary": 343400,
-      "role": "counsellor"
+      "role": "counsellor",
+      "department": "",
+      "id": "e281"
     }
   ],
   "batches": [

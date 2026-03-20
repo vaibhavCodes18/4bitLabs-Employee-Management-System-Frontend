@@ -17,10 +17,10 @@ const ConfirmModal = ({ isOpen, title, message, confirmText = "Confirm", cancelT
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6">
-          <button onClick={onCancel} className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition">
+          <button type="button" onClick={onCancel} className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition">
             {cancelText}
           </button>
-          <button onClick={onConfirm} className={`px-5 py-2.5 rounded-xl text-sm font-medium text-white transition shadow-md hover:shadow-lg ${confirmClassName}`}>
+          <button type="button" onClick={onConfirm} className={`px-5 py-2.5 rounded-xl text-sm font-medium text-white transition shadow-md hover:shadow-lg ${confirmClassName}`}>
             {confirmText}
           </button>
         </div>

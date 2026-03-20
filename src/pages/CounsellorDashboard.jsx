@@ -509,28 +509,33 @@ const CounsellorDashboard = () => {
     );
   };
 
-  // ─── Loading / Error ──────────────────────────────────────
-  if (loading && activeView !== "dashboard") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-3">
-          <div className="w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin" />
-          <p className="text-sm text-gray-500 font-medium">Loading data...</p>
-        </div>
+  // ─── Inline Loading/Error Helpers ──────────────────────────
+  const renderLoading = () => (
+    <div className="flex flex-col items-center justify-center h-64 space-y-4">
+      <div className="w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin" />
+      <p className="text-sm text-gray-500 font-medium">Loading data...</p>
+    </div>
+  );
+
+  const renderError = () => (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center max-w-md mx-auto">
+      <div className="w-16 h-16 mx-auto mb-4 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl">
+        !
       </div>
-    );
-  }
+      <p className="text-rose-600 font-medium">{error}</p>
+    </div>
+  );
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center max-w-md">
-          <div className="w-16 h-16 mx-auto mb-4 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl">
-            !
-          </div>
-          <p className="text-rose-600 font-medium">{error}</p>
-        </div>
-      </div>
+      <DashboardLayout
+        user={{ ...user, role: "Counsellor" }}
+        navItems={COUNSELLOR_NAV_ITEMS}
+        activeView={activeView}
+        onViewChange={setActiveView}
+      >
+        {renderError()}
+      </DashboardLayout>
     );
   }
 
@@ -837,6 +842,7 @@ const CounsellorDashboard = () => {
                     </div>
                   </div>
                   <button
+                    type="button"
                     onClick={closeModals}
                     className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition"
                   >
@@ -932,6 +938,7 @@ const CounsellorDashboard = () => {
                     student{batchStudents.length !== 1 ? "s" : ""}
                   </p>
                   <button
+                    type="button"
                     onClick={closeModals}
                     className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:shadow-indigo-200 text-sm font-medium transition"
                   >
@@ -985,6 +992,7 @@ const CounsellorDashboard = () => {
                     </h3>
                   </div>
                   <button
+                    type="button"
                     onClick={closeModals}
                     className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition"
                   >
@@ -1053,6 +1061,7 @@ const CounsellorDashboard = () => {
 
                 <div className="flex justify-end mt-6">
                   <button
+                    type="button"
                     onClick={closeModals}
                     className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:shadow-lg hover:shadow-amber-200 text-sm font-medium transition"
                   >
@@ -1078,6 +1087,7 @@ const CounsellorDashboard = () => {
                 </h3>
               </div>
               <button
+                type="button"
                 onClick={closeModals}
                 className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition"
               >
@@ -1107,12 +1117,14 @@ const CounsellorDashboard = () => {
 
             <div className="flex justify-end gap-3">
               <button
+                type="button"
                 onClick={closeModals}
                 className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleAssignBatch}
                 className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-emerald-200 transition-all duration-200"
               >
@@ -1142,6 +1154,7 @@ const CounsellorDashboard = () => {
                     </h3>
                   </div>
                   <button
+                    type="button"
                     onClick={closeModals}
                     className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition"
                   >
@@ -1222,12 +1235,14 @@ const CounsellorDashboard = () => {
 
                 <div className="flex justify-end gap-3">
                   <button
+                    type="button"
                     onClick={closeModals}
                     className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
                     onClick={handleTransferBatch}
                     className="px-5 py-2.5 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-orange-200 transition-all duration-200 inline-flex items-center gap-2"
                   >

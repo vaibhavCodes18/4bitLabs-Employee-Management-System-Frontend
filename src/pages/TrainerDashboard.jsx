@@ -563,25 +563,35 @@ const TrainerDashboard = () => {
     // ─── Loading / Error ──────────────────────────────────────
     if (loading && activeView !== "dashboard") {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
-                <div className="flex flex-col items-center space-y-3">
+            <DashboardLayout
+                user={{ ...user, role: "Trainer" }}
+                navItems={TRAINER_NAV_ITEMS}
+                activeView={activeView}
+                onViewChange={setActiveView}
+            >
+                <div className="flex flex-col items-center justify-center h-64 space-y-4">
                     <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
                     <p className="text-sm text-gray-500 font-medium">Loading data...</p>
                 </div>
-            </div>
+            </DashboardLayout>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center max-w-md">
+            <DashboardLayout
+                user={{ ...user, role: "Trainer" }}
+                navItems={TRAINER_NAV_ITEMS}
+                activeView={activeView}
+                onViewChange={setActiveView}
+            >
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center max-w-md mx-auto">
                     <div className="w-16 h-16 mx-auto mb-4 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl">
                         !
                     </div>
                     <p className="text-rose-600 font-medium">{error}</p>
                 </div>
-            </div>
+            </DashboardLayout>
         );
     }
 
