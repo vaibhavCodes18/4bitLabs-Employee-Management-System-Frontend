@@ -39,12 +39,12 @@ axios.interceptors.response.use(
                 // Because refresh token is an HttpOnly cookie, we just push the POST
                 // (Ensure backend allows credentials for CORS if domains ever separate)
                 const refreshResponse = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });
-                
+
                 const newTokens = refreshResponse.data.data || refreshResponse.data;
                 if (newTokens && newTokens.accessToken) {
                     // Save new access token
                     localStorage.setItem("token", newTokens.accessToken);
-                    
+
                     // Attach it to the failed request
                     originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
                     // Retry the original request
@@ -79,7 +79,9 @@ export const logout = async () => {
 // ─── Admin Management endpoints ──────────────────────────────
 export const getTrainers = () => axios.get(`${API_BASE}/admin/trainers`);
 export const addTrainer = (data) => axios.post(`${API_BASE}/admin/trainers`, data);
-export const updateTrainer = (id, data) => axios.put(`${API_BASE}/admin/trainers/${id}`, data);
+export const updateTrainer = (id, data) => {
+    axios.put(`${API_BASE}/admin/trainers/${id}`, data); console.log(data);
+};
 export const deleteTrainer = (id) => axios.delete(`${API_BASE}/admin/trainers/${id}`);
 
 export const getAnalysts = () => axios.get(`${API_BASE}/admin/analysts`);

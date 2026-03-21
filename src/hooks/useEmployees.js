@@ -67,9 +67,13 @@ const useEmployees = () => {
                     api.getAnalysts(),
                     api.getCounsellors(),
                 ]);
-                setTrainers(trainersRes.data);
-                setAnalysts(analystsRes.data);
-                setCounsellors(counsellorsRes.data);
+                
+                // Safely extract arrays, defaulting to [] if null/undefined or not an array
+                const getArray = (res) => Array.isArray(res?.data) ? res.data : (Array.isArray(res?.data?.data) ? res.data.data : []);
+
+                setTrainers(getArray(trainersRes));
+                setAnalysts(getArray(analystsRes));
+                setCounsellors(getArray(counsellorsRes));
                 setError(null);
             } catch (err) {
                 setError("Failed to load data. Please try again.");
@@ -84,19 +88,19 @@ const useEmployees = () => {
     // ─── Derived Data ────────────────────────────────────────
     const allEmployees = useMemo(
         () => [
-            ...trainers.map((t) => ({
+            ...(trainers || []).map((t) => ({
                 ...t,
                 role: "Trainer",
                 roleIcon: ROLE_CONFIG.Trainer.icon,
                 roleColor: ROLE_CONFIG.Trainer.color,
             })),
-            ...analysts.map((a) => ({
+            ...(analysts || []).map((a) => ({
                 ...a,
                 role: "Analyst",
                 roleIcon: ROLE_CONFIG.Analyst.icon,
                 roleColor: ROLE_CONFIG.Analyst.color,
             })),
-            ...counsellors.map((c) => ({
+            ...(counsellors || []).map((c) => ({
                 ...c,
                 role: "Counsellor",
                 roleIcon: ROLE_CONFIG.Counsellor.icon,
@@ -174,11 +178,15 @@ const useEmployees = () => {
         try {
             if (modalMode === "add") {
                 const response = await add(payload);
-                setState((prev) => [...prev, response.data]);
+                const newData = response?.data?.data || response?.data || response;
+                
+                setState((prev) => [...(prev || []), newData]);
             } else {
                 const response = await update(editingId, payload);
+                const updatedData = response?.data?.data || response?.data || response;
+                
                 setState((prev) =>
-                    prev.map((item) => (item.id === editingId ? response.data : item)),
+                    (prev || []).map((item) => (item.id === editingId ? updatedData : item)),
                 );
             }
             notify.success(
