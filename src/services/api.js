@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = import.meta.env.VITE_API_URL;
 
 // --- Axios Interceptors ---
 // Add the JWT token to every request
@@ -36,11 +36,17 @@ axios.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                // Because refresh token is an HttpOnly cookie, we just push the POST
+                // Create a fresh Axios instance to avoid triggering the interceptors again
                 // (Ensure backend allows credentials for CORS if domains ever separate)
-                const refreshResponse = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });
+                const refreshAxios = axios.create();
+                const refreshResponse = await refreshAxios.post(
+                    `${API_BASE}/auth/refresh`,
+                    {},
+                    { withCredentials: true }
+                );
 
-                const newTokens = refreshResponse.data.data || refreshResponse.data;
+                const newTokens = refreshResponse.data?.data || refreshResponse.data;
+
                 if (newTokens && newTokens.accessToken) {
                     // Save new access token
                     localStorage.setItem("token", newTokens.accessToken);
