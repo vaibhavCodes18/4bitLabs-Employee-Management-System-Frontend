@@ -220,10 +220,8 @@ const CounsellorDashboard = () => {
       // Delete the student
       await api.deleteStudent(currentStudent.id);
 
-      // Delete each assignment
-      for (const assignment of studentAssignments) {
-        await api.deleteAssignment(assignment.id);
-      }
+      // Update local state by removing assignments 
+      // (The backend does not have a deleteAssignment endpoint, it handles assignment invalidation via student status)
 
       // Update local state
       const assignmentIds = studentAssignments.map((a) => a.id);
@@ -284,18 +282,18 @@ const CounsellorDashboard = () => {
       return;
     }
     try {
-      for (const assignment of currentAssignments) {
-        await api.deleteAssignment(assignment.id);
-      }
-      const oldIds = currentAssignments.map((a) => a.id);
-      setAssignments((prev) => prev.filter((a) => !oldIds.includes(a.id)));
-      const response = await api.assignStudentToBatch({
+      const response = await api.updateAssignment({
         studentId: currentStudent.id,
         batchId: selectedBatch,
         assignedDate: new Date().toISOString().split("T")[0],
         status: "active",
       });
-      setAssignments((prev) => [...prev, response.data]);
+      
+      const oldIds = currentAssignments.map((a) => a.id);
+      setAssignments((prev) => [
+        ...prev.filter((a) => !oldIds.includes(a.id)),
+        response.data,
+      ]);
       notify.success("Student transferred to new batch successfully!");
       closeModals();
     } catch (err) {

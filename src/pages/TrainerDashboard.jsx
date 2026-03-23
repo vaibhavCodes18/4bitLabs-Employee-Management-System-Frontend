@@ -191,6 +191,21 @@ const BatchProgressModal = ({
 };
 
 // ─── View Progress Modal ─────────────────────────────────────
+// Helper to generate the correct View URL depending on file type
+const getViewUrl = (url, filename) => {
+    if (!url || !filename) return "#";
+    const ext = filename.split(".").pop().toLowerCase();
+    const officeExts = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"];
+    // For Office documents, force Google Docs Viewer proxy for professional inline viewing
+    if (officeExts.includes(ext)) {
+        return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}`;
+    }
+    // For PDF and Images, modern browsers can securely view them natively
+    console.log(url);
+
+    return url;
+};
+
 const ViewProgressModal = ({ progress, batchName, onClose }) => (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg animate-scale-in border border-gray-100">
@@ -265,14 +280,15 @@ const ViewProgressModal = ({ progress, batchName, onClose }) => (
                                     {progress.documentName}
                                 </span>
                             </div>
-                            {progress.documentData && (
+                            {progress.documentUrl && (
                                 <a
-                                    href={progress.documentData}
-                                    download={progress.documentName}
+                                    href={getViewUrl(progress.documentUrl, progress.documentName)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-medium hover:bg-emerald-700 transition"
                                 >
-                                    <FaDownload className="text-[10px]" />
-                                    Download
+                                    <FaEye className="text-[10px]" />
+                                    View Document
                                 </a>
                             )}
                         </div>
@@ -434,6 +450,7 @@ const TrainerDashboard = () => {
                 ...prev,
                 documentName: file.name,
                 documentData: reader.result,
+                file: file,
             }));
         };
         reader.readAsDataURL(file);
@@ -487,17 +504,16 @@ const TrainerDashboard = () => {
         }
 
         try {
-            const payload = {
-                batchId: formData.batchId,
-                trainerId: user.id,
-                title: formData.title.trim(),
-                description: formData.description.trim(),
-                documentName: formData.documentName || null,
-                documentData: formData.documentData || null,
-                sessionNumber: null,
-                topicCovered: "",
-                createdAt: new Date().toISOString(),
-            };
+            const payload = new FormData();
+            payload.append("batchId", formData.batchId);
+            payload.append("trainerId", user.id);
+            payload.append("title", formData.title.trim());
+            payload.append("description", formData.description.trim());
+
+            if (formData.file) {
+                payload.append("file", formData.file);
+            }
+
             const response = await api.addBatchProgress(payload);
             setAllProgress((prev) => [...prev, response.data]);
             notify.success("Batch progress added successfully!");
@@ -515,13 +531,14 @@ const TrainerDashboard = () => {
         }
 
         try {
-            const payload = {
-                ...currentProgress,
-                title: formData.title.trim(),
-                description: formData.description.trim(),
-                documentName: formData.documentName || currentProgress.documentName,
-                documentData: formData.documentData || currentProgress.documentData,
-            };
+            const payload = new FormData();
+            payload.append("title", formData.title.trim());
+            payload.append("description", formData.description.trim());
+
+            if (formData.file) {
+                payload.append("file", formData.file);
+            }
+
             const response = await api.updateBatchProgress(
                 currentProgress.id,
                 payload

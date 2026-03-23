@@ -85,9 +85,7 @@ export const logout = async () => {
 // ─── Admin Management endpoints ──────────────────────────────
 export const getTrainers = () => axios.get(`${API_BASE}/admin/trainers`);
 export const addTrainer = (data) => axios.post(`${API_BASE}/admin/trainers`, data);
-export const updateTrainer = (id, data) => {
-    axios.put(`${API_BASE}/admin/trainers/${id}`, data); console.log(data);
-};
+export const updateTrainer = (id, data) => axios.put(`${API_BASE}/admin/trainers/${id}`, data);
 export const deleteTrainer = (id) => axios.delete(`${API_BASE}/admin/trainers/${id}`);
 
 export const getAnalysts = () => axios.get(`${API_BASE}/admin/analysts`);
@@ -130,5 +128,10 @@ export const addBatchProgress = (data) => {
         headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {}
     });
 };
-export const updateBatchProgress = (id, data) => axios.put(`${API_BASE}/batch-progress/${id}`, data);
+export const updateBatchProgress = (id, data) => {
+    const isFormData = data instanceof FormData;
+    return axios.put(`${API_BASE}/batch-progress/${id}`, data, {
+        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {}
+    });
+};
 export const deleteBatchProgress = (id) => axios.delete(`${API_BASE}/batch-progress/${id}`);

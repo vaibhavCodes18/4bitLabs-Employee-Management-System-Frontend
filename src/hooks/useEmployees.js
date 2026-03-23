@@ -112,6 +112,10 @@ const useEmployees = () => {
 
     // ─── Form Helpers ────────────────────────────────────────
     const buildPayload = useCallback((role, data) => {
+        // Extract the admin's ID from localStorage for mapping new employees
+        const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const adminId = currentUser.id || null;
+
         const base = {
             name: data.name,
             email: data.email || "",
@@ -120,6 +124,7 @@ const useEmployees = () => {
             status: data.status || "Active",
             joiningDate: data.joiningDate || "",
             salary: parseFloat(data.salary) || 0,
+            adminId: adminId,
         };
 
         if (role === "Trainer") {
