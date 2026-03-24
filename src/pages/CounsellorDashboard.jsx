@@ -30,8 +30,9 @@ const INITIAL_FORM = {
 };
 
 const STATUS_BADGES = {
-  active: "bg-emerald-50 text-emerald-700",
-  inactive: "bg-gray-100 text-gray-600",
+  ACTIVE: "bg-emerald-50 text-emerald-700",
+  INACTIVE: "bg-gray-100 text-gray-600",
+  DROPPED: "bg-rose-50 text-rose-700",
 };
 
 // ─── Skeleton Row for Loading ───────────────────────────────
@@ -117,12 +118,11 @@ const CounsellorDashboard = () => {
   const getStudentsCount = useCallback(
     (batchId) => {
       return assignments.filter(
-        (a) => a.batchId === batchId && a.studentId && a.status === "active"
+        (a) => a.batchId === batchId && a.studentId && typeof a.status === "string" && a.status.toLowerCase() === "active"
       ).length;
     },
     [assignments]
   );
-
 
   // ─── Handlers ──────────────────────────────────────────────
   const handleInputChange = useCallback((e) => {
@@ -169,7 +169,7 @@ const CounsellorDashboard = () => {
     (student) => {
       setCurrentStudent(student);
       const studentAssignments = assignments.filter(
-        (a) => a.studentId === student.id,
+        (a) => a.studentId === student.id && typeof a.status === "string" && a.status.toLowerCase() === "active",
       );
       if (studentAssignments.length > 0) {
         setShowTransferModal(true);
@@ -214,7 +214,7 @@ const CounsellorDashboard = () => {
     try {
       // Find all assignments for this student
       const studentAssignments = assignments.filter(
-        (a) => a.studentId === currentStudent.id,
+        (a) => a.studentId === currentStudent.id && typeof a.status === "string" && a.status.toLowerCase() === "active",
       );
 
       // Delete the student
@@ -254,7 +254,7 @@ const CounsellorDashboard = () => {
         studentId: currentStudent.id,
         batchId: selectedBatch,
         assignedDate: new Date().toISOString().split("T")[0],
-        status: "active",
+        status: "ACTIVE",
       });
       setAssignments((prev) => [...prev, response.data]);
       notify.success("Student assigned to batch successfully!");
@@ -272,7 +272,7 @@ const CounsellorDashboard = () => {
       return;
     }
     const currentAssignments = assignments.filter(
-      (a) => a.studentId === currentStudent.id,
+      (a) => a.studentId === currentStudent.id && typeof a.status === "string" && a.status.toLowerCase() === "active",
     );
     const alreadyInTarget = currentAssignments.some(
       (a) => a.batchId === selectedBatch,
@@ -286,13 +286,19 @@ const CounsellorDashboard = () => {
         studentId: currentStudent.id,
         batchId: selectedBatch,
         assignedDate: new Date().toISOString().split("T")[0],
-        status: "active",
+        status: "ACTIVE",
       });
+      
+      const newAssignmentData = {
+        ...response.data,
+        batchId: response.data.newBatchId || response.data.batchId,
+        batchName: response.data.newBatchName || response.data.batchName,
+      };
       
       const oldIds = currentAssignments.map((a) => a.id);
       setAssignments((prev) => [
         ...prev.filter((a) => !oldIds.includes(a.id)),
-        response.data,
+        newAssignmentData,
       ]);
       notify.success("Student transferred to new batch successfully!");
       closeModals();
@@ -306,7 +312,7 @@ const CounsellorDashboard = () => {
   const getStudentBatches = useCallback(
     (studentId) => {
       const studentAssignments = assignments.filter(
-        (a) => a.studentId === studentId,
+        (a) => a.studentId === studentId && typeof a.status === "string" && a.status.toLowerCase() === "active",
       );
       const uniqueBatchIds = [
         ...new Set(studentAssignments.map((a) => a.batchId)),
@@ -322,7 +328,7 @@ const CounsellorDashboard = () => {
   const getBatchStudents = useCallback(
     (batchId) => {
       const batchAssignments = assignments.filter(
-        (a) => a.batchId === batchId && a.studentId,
+        (a) => a.batchId === batchId && a.studentId && typeof a.status === "string" && a.status.toLowerCase() === "active",
       );
       const uniqueStudentIds = [
         ...new Set(batchAssignments.map((a) => a.studentId)),
@@ -350,7 +356,7 @@ const CounsellorDashboard = () => {
       },
       {
         label: "Active Students",
-        value: students.filter((s) => s.status === "active").length,
+        value: students.filter((s) => s.status === "ACTIVE").length,
         icon: FaCheckCircle,
         color: "bg-emerald-500",
       },
@@ -362,7 +368,7 @@ const CounsellorDashboard = () => {
       },
       {
         label: "Inactive",
-        value: students.filter((s) => s.status === "inactive").length,
+        value: students.filter((s) => s.status === "INACTIVE").length,
         icon: FaClock,
         color: "bg-gray-500",
       },
@@ -428,11 +434,11 @@ const CounsellorDashboard = () => {
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <span
-                      className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${STATUS_BADGES[student.status] || STATUS_BADGES.inactive}`}
+                      className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${STATUS_BADGES[student.status] || STATUS_BADGES.INACTIVE}`}
                     >
                       {student.status
                         ? student.status.charAt(0).toUpperCase() +
-                        student.status.slice(1)
+                        student.status.slice(1).toLowerCase()
                         : "Unknown"}
                     </span>
                   </td>
@@ -465,7 +471,7 @@ const CounsellorDashboard = () => {
                         </button>
                         {(() => {
                           const hasAssignment = assignments.some(
-                            (a) => a.studentId === student.id,
+                            (a) => a.studentId === student.id && typeof a.status === "string" && a.status.toLowerCase() === "active",
                           );
                           return (
                             <button

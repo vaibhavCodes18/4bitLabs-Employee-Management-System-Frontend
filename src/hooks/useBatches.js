@@ -9,7 +9,7 @@ const INITIAL_FORM = {
     analystId: "",
     startDate: "",
     endDate: "",
-    status: "upcoming",
+    status: "UPCOMING",
 };
 
 /**
@@ -126,9 +126,9 @@ const useBatches = () => {
     // Derived stats
     const stats = {
         total: batches.length,
-        active: batches.filter((b) => b.status === "active").length,
-        upcoming: batches.filter((b) => b.status === "upcoming").length,
-        completed: batches.filter((b) => b.status === "completed").length,
+        active: batches.filter((b) => b.status === "ACTIVE").length,
+        upcoming: batches.filter((b) => b.status === "UPCOMING").length,
+        completed: batches.filter((b) => b.status === "COMPLETED").length,
     };
 
     return {

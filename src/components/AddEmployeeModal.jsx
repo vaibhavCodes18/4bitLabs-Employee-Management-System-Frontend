@@ -30,10 +30,9 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Status</label>
-              <select name="status" value={formData.status || "Active"} onChange={onChange} className={INPUT_CLASS}>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="On Leave">On Leave</option>
+              <select name="status" value={formData.status || "ACTIVE"} onChange={onChange} className={INPUT_CLASS}>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
               </select>
             </div>
             <div>
@@ -79,10 +78,9 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Status</label>
-              <select name="status" value={formData.status || "Active"} onChange={onChange} className={INPUT_CLASS}>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="On Leave">On Leave</option>
+              <select name="status" value={formData.status || "ACTIVE"} onChange={onChange} className={INPUT_CLASS}>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
               </select>
             </div>
             <div>
@@ -120,10 +118,9 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
             </div>
             <div>
               <label className={LABEL_CLASS}>Status</label>
-              <select name="status" value={formData.status || "Active"} onChange={onChange} className={INPUT_CLASS}>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="On Leave">On Leave</option>
+              <select name="status" value={formData.status || "ACTIVE"} onChange={onChange} className={INPUT_CLASS}>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
               </select>
             </div>
             <div>

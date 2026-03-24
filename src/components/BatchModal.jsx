@@ -126,13 +126,13 @@ export const BatchModal = ({
               </label>
               <select
                 name="status"
-                value={formData.status || "upcoming"}
+                value={formData.status || "UPCOMING"}
                 onChange={onChange}
                 className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition"
               >
-                <option value="upcoming">Upcoming</option>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
+                <option value="UPCOMING">Upcoming</option>
+                <option value="ACTIVE">Active</option>
+                <option value="COMPLETED">Completed</option>
               </select>
             </div>
           </div>

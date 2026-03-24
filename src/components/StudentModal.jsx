@@ -77,12 +77,12 @@ export const StudentModal = ({
           </label>
           <select
             name="status"
-            value={formData.status || "active"}
+            value={formData.status || "ACTIVE"}
             onChange={onChange}
             className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition"
           >
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
           </select>
         </div>
         <div>
