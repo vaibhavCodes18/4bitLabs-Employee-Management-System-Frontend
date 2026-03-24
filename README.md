@@ -10,7 +10,7 @@ A modern, role-based Employee Management System frontend built for **4bitLabs**.
 - **Axios** for API communication
 - **React Icons** for consistent iconography
 - **React Hot Toast** for notification toasts
-- **JSON Server** as a mock REST API backend during development
+- **Spring Boot REST API backend** ensuring robust JSON responses and secure configurations.
 
 ## Features
 
@@ -20,6 +20,7 @@ A modern, role-based Employee Management System frontend built for **4bitLabs**.
 - **Trainer Dashboard** — View assigned batches, add/edit/delete batch progress entries with document uploads
 - **Counsellor Dashboard** — Student management with batch assignment, batch transfer, and batch-wise student views
 - **Professional Data Model** — ID-based entity relationships, camelCase field naming, and dynamically calculated derived fields (no redundant data storage)
+- **Cloudinary Previews** — File viewing natively supported through Google Docs Viewer and raw document links.
 
 ## Project Structure
 
@@ -27,23 +28,17 @@ A modern, role-based Employee Management System frontend built for **4bitLabs**.
 src/
 ├── components/       # Reusable UI components (modals, views, layout)
 ├── constants/        # App-wide constants and role config
-├── data/             # db.json (JSON Server mock database)
 ├── hooks/            # Custom hooks (useEmployees, useBatches)
 ├── pages/            # Role-specific dashboard pages + Login/Landing
-├── services/         # API service layer (Axios)
+├── services/         # API service layer (Axios connected to local 8080 Spring Boot port)
 └── utils/            # Utility functions (notifications, storage)
 ```
-
-## Getting Started
 
 ```bash
 # Install dependencies
 npm install
 
-# Start JSON Server (mock backend on port 3000)
-npx json-server --watch src/data/db.json 
-
-# Start development server (port 5173)
+# Start development server (port 5173 / proxies to Spring Boot automatically)
 npm run dev
 ```
 
@@ -58,6 +53,6 @@ npm run dev
 | **Student**    | name, email, phone, status, joiningDate, counsellorId            |
 | **Batch**      | name, course, trainerId, analystId, startDate, endDate, status   |
 | **Assignment** | studentId, batchId, assignedDate, status                         |
-| **BatchProgress** | batchId, trainerId, title, description, sessionNumber, topicCovered, createdAt |
+| **BatchProgress** | batchId, trainerId, title, description, sessionNumber, documentUrl, documentPublicId, createdAt |
 
 > All relationships use **ID-based references** (e.g., `trainerId`, `analystId`, `counsellorId`). Student counts per batch are **calculated dynamically** from the assignments collection.
