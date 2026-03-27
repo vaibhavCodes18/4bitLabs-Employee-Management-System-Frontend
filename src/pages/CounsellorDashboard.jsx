@@ -70,6 +70,10 @@ const CounsellorDashboard = () => {
   const [selectedBatch, setSelectedBatch] = useState("");
   const [viewingBatch, setViewingBatch] = useState(null);
 
+  // Action loading states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   // Session user
   const user = JSON.parse(localStorage.getItem("user")) || {
     name: "Counsellor",
@@ -182,6 +186,7 @@ const CounsellorDashboard = () => {
 
   // ─── CRUD Operations ──────────────────────────────────────
   const handleAddStudent = useCallback(async () => {
+    setIsSubmitting(true);
     try {
       const response = await api.addStudent({
         ...formData,
@@ -193,10 +198,13 @@ const CounsellorDashboard = () => {
     } catch (err) {
       notify.error("Failed to add student. Please try again.");
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   }, [formData, closeModals, user.id]);
 
   const handleEditStudent = useCallback(async () => {
+    setIsSubmitting(true);
     try {
       const response = await api.updateStudent(currentStudent.id, formData);
       setStudents((prev) =>
@@ -207,23 +215,18 @@ const CounsellorDashboard = () => {
     } catch (err) {
       notify.error("Failed to update student. Please try again.");
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   }, [formData, currentStudent, closeModals]);
 
   const handleDeleteStudent = useCallback(async () => {
+    setIsDeleting(true);
     try {
-      // Find all assignments for this student
       const studentAssignments = assignments.filter(
         (a) => a.studentId === currentStudent.id && typeof a.status === "string" && a.status.toLowerCase() === "active",
       );
-
-      // Delete the student
       await api.deleteStudent(currentStudent.id);
-
-      // Update local state by removing assignments 
-      // (The backend does not have a deleteAssignment endpoint, it handles assignment invalidation via student status)
-
-      // Update local state
       const assignmentIds = studentAssignments.map((a) => a.id);
       setAssignments((prev) =>
         prev.filter((a) => !assignmentIds.includes(a.id)),
@@ -234,6 +237,8 @@ const CounsellorDashboard = () => {
     } catch (err) {
       notify.error("Failed to delete student. Please try again.");
       console.error(err);
+    } finally {
+      setIsDeleting(false);
     }
   }, [currentStudent, closeModals, assignments]);
 
@@ -249,6 +254,7 @@ const CounsellorDashboard = () => {
       notify.error("Student is already assigned to this batch.");
       return;
     }
+    setIsSubmitting(true);
     try {
       const response = await api.assignStudentToBatch({
         studentId: currentStudent.id,
@@ -262,6 +268,8 @@ const CounsellorDashboard = () => {
     } catch (err) {
       notify.error("Failed to assign student. Please try again.");
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   }, [selectedBatch, currentStudent, closeModals, assignments]);
 
@@ -281,6 +289,7 @@ const CounsellorDashboard = () => {
       notify.error("Student is already in this batch.");
       return;
     }
+    setIsSubmitting(true);
     try {
       const response = await api.updateAssignment({
         studentId: currentStudent.id,
@@ -288,13 +297,11 @@ const CounsellorDashboard = () => {
         assignedDate: new Date().toISOString().split("T")[0],
         status: "ACTIVE",
       });
-      
       const newAssignmentData = {
         ...response.data,
         batchId: response.data.newBatchId || response.data.batchId,
         batchName: response.data.newBatchName || response.data.batchName,
       };
-      
       const oldIds = currentAssignments.map((a) => a.id);
       setAssignments((prev) => [
         ...prev.filter((a) => !oldIds.includes(a.id)),
@@ -305,6 +312,8 @@ const CounsellorDashboard = () => {
     } catch (err) {
       notify.error("Failed to transfer student. Please try again.");
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   }, [selectedBatch, currentStudent, closeModals, assignments]);
 
@@ -963,6 +972,7 @@ const CounsellorDashboard = () => {
           onSubmit={handleAddStudent}
           onClose={closeModals}
           submitText="Add Student"
+          isLoading={isSubmitting}
         />
       )}
 
@@ -975,6 +985,7 @@ const CounsellorDashboard = () => {
           onSubmit={handleEditStudent}
           onClose={closeModals}
           submitText="Update Student"
+          isLoading={isSubmitting}
         />
       )}
 
@@ -1123,16 +1134,25 @@ const CounsellorDashboard = () => {
               <button
                 type="button"
                 onClick={closeModals}
-                className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition"
+                disabled={isSubmitting}
+                className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleAssignBatch}
-                className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-emerald-200 transition-all duration-200"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-emerald-200 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Assign
+                {isSubmitting ? (
+                  <>
+                    <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    <span>Assigning...</span>
+                  </>
+                ) : (
+                  "Assign"
+                )}
               </button>
             </div>
           </div>
@@ -1241,16 +1261,25 @@ const CounsellorDashboard = () => {
                   <button
                     type="button"
                     onClick={closeModals}
-                    className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition"
+                    disabled={isSubmitting}
+                    className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={handleTransferBatch}
-                    className="px-5 py-2.5 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-orange-200 transition-all duration-200 inline-flex items-center gap-2"
+                    disabled={isSubmitting}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-orange-200 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    <FaExchangeAlt /> Transfer
+                    {isSubmitting ? (
+                      <>
+                        <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        <span>Transferring...</span>
+                      </>
+                    ) : (
+                      <><FaExchangeAlt /> Transfer</>
+                    )}
                   </button>
                 </div>
               </div>
@@ -1264,6 +1293,8 @@ const CounsellorDashboard = () => {
         title="Confirm Delete"
         message={`Are you sure you want to delete student "${currentStudent?.name}"?`}
         confirmText="Yes, Delete"
+        loadingText="Deleting..."
+        isLoading={isDeleting}
         confirmClassName="bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200"
         onConfirm={handleDeleteStudent}
         onCancel={closeModals}

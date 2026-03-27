@@ -1,5 +1,6 @@
 import React from "react";
 import { FaTimes, FaLayerGroup } from "react-icons/fa";
+import ButtonSpinner from "./ButtonSpinner";
 
 // Reusable DetailItem component (can also be imported from a separate file)
 
@@ -12,6 +13,7 @@ export const BatchModal = ({
   onClose,
   submitText,
   trainers = [],
+  isLoading = false,
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -142,15 +144,24 @@ export const BatchModal = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition"
+              disabled={isLoading}
+              className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200"
+              disabled={isLoading}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {submitText}
+              {isLoading ? (
+                <>
+                  <ButtonSpinner size="sm" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                submitText
+              )}
             </button>
           </div>
         </form>

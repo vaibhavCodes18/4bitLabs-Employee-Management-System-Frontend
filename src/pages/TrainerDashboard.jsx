@@ -50,8 +50,18 @@ const BatchProgressModal = ({
     submitText,
     batches,
     isEdit = false,
+    isLoading = false,
 }) => {
     const fileRef = useRef(null);
+    const ButtonSpinner = ({ size = "sm", className = "" }) => {
+        const sizeClasses = { sm: "w-4 h-4 border-2", md: "w-5 h-5 border-2" };
+        return (
+            <span
+                className={`inline-block ${sizeClasses[size]} border-current border-t-transparent rounded-full animate-spin ${className}`}
+                role="status"
+            />
+        );
+    };
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
@@ -174,15 +184,24 @@ const BatchProgressModal = ({
                 <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl">
                     <button
                         onClick={onClose}
-                        className="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-50 transition"
+                        disabled={isLoading}
+                        className="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={onSubmit}
-                        className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-emerald-200 transition-shadow"
+                        disabled={isLoading}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-emerald-200 transition-shadow disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        {submitText}
+                        {isLoading ? (
+                            <>
+                                <ButtonSpinner size="sm" />
+                                <span>Saving...</span>
+                            </>
+                        ) : (
+                            submitText
+                        )}
                     </button>
                 </div>
             </div>
@@ -327,6 +346,10 @@ const TrainerDashboard = () => {
     const [showViewModal, setShowViewModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [currentProgress, setCurrentProgress] = useState(null);
+
+    // Action loading states
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Form
     const INITIAL_FORM = {
@@ -503,6 +526,7 @@ const TrainerDashboard = () => {
             return;
         }
 
+        setIsSubmitting(true);
         try {
             const payload = new FormData();
             payload.append("batchId", formData.batchId);
@@ -521,6 +545,8 @@ const TrainerDashboard = () => {
         } catch (err) {
             notify.error("Failed to add progress. Please try again.");
             console.error(err);
+        } finally {
+            setIsSubmitting(false);
         }
     }, [formData, user, closeModals]);
 
@@ -530,6 +556,7 @@ const TrainerDashboard = () => {
             return;
         }
 
+        setIsSubmitting(true);
         try {
             const payload = new FormData();
             payload.append("title", formData.title.trim());
@@ -551,10 +578,13 @@ const TrainerDashboard = () => {
         } catch (err) {
             notify.error("Failed to update progress. Please try again.");
             console.error(err);
+        } finally {
+            setIsSubmitting(false);
         }
     }, [formData, currentProgress, closeModals]);
 
     const handleDeleteProgress = useCallback(async () => {
+        setIsDeleting(true);
         try {
             await api.deleteBatchProgress(currentProgress.id);
             setAllProgress((prev) =>
@@ -565,6 +595,8 @@ const TrainerDashboard = () => {
         } catch (err) {
             notify.error("Failed to delete progress. Please try again.");
             console.error(err);
+        } finally {
+            setIsDeleting(false);
         }
     }, [currentProgress, closeModals]);
 
@@ -1085,6 +1117,7 @@ const TrainerDashboard = () => {
                     onClose={closeModals}
                     submitText="Add Progress"
                     batches={trainerBatches}
+                    isLoading={isSubmitting}
                 />
             )}
 
@@ -1100,6 +1133,7 @@ const TrainerDashboard = () => {
                     submitText="Update Progress"
                     batches={trainerBatches}
                     isEdit={true}
+                    isLoading={isSubmitting}
                 />
             )}
 
@@ -1118,6 +1152,8 @@ const TrainerDashboard = () => {
                 title="Confirm Delete"
                 message={`Are you sure you want to delete progress "${currentProgress?.title}"?`}
                 confirmText="Yes, Delete"
+                loadingText="Deleting..."
+                isLoading={isDeleting}
                 confirmClassName="bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200"
                 onConfirm={handleDeleteProgress}
                 onCancel={closeModals}

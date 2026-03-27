@@ -21,6 +21,10 @@ const useBatches = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Action loading states
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     // Modal state
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -84,6 +88,7 @@ const useBatches = () => {
     }, []);
 
     const handleAddBatch = useCallback(async (overrides = {}) => {
+        setIsSubmitting(true);
         try {
             const payload = { ...formData, ...overrides };
             const response = await batchApi.addBatch(payload);
@@ -93,10 +98,13 @@ const useBatches = () => {
         } catch (err) {
             notify.error("Failed to add batch. Please try again.");
             console.error(err);
+        } finally {
+            setIsSubmitting(false);
         }
     }, [formData, closeModals]);
 
     const handleEditBatch = useCallback(async (overrides = {}) => {
+        setIsSubmitting(true);
         try {
             const payload = { ...formData, ...overrides };
             const response = await batchApi.updateBatch(currentBatch.id, payload);
@@ -108,10 +116,13 @@ const useBatches = () => {
         } catch (err) {
             notify.error("Failed to update batch. Please try again.");
             console.error(err);
+        } finally {
+            setIsSubmitting(false);
         }
     }, [formData, currentBatch, closeModals]);
 
     const handleDeleteBatch = useCallback(async () => {
+        setIsDeleting(true);
         try {
             await batchApi.deleteBatch(currentBatch.id);
             setBatches((prev) => prev.filter((b) => b.id !== currentBatch.id));
@@ -120,6 +131,8 @@ const useBatches = () => {
         } catch (err) {
             notify.error("Failed to delete batch. Please try again.");
             console.error(err);
+        } finally {
+            setIsDeleting(false);
         }
     }, [currentBatch, closeModals]);
 
@@ -153,6 +166,8 @@ const useBatches = () => {
         handleAddBatch,
         handleEditBatch,
         handleDeleteBatch,
+        isSubmitting,
+        isDeleting,
     };
 };
 

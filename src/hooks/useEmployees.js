@@ -22,6 +22,10 @@ const useEmployees = () => {
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({});
 
+    // ─── Action Loading States ───────────────────────────────
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     // ─── Delete Modal State ──────────────────────────────────
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteRole, setDeleteRole] = useState(null);
@@ -181,6 +185,7 @@ const useEmployees = () => {
         const { add, update, setState } = roleApi[modalRole];
         const payload = buildPayload(modalRole, formData);
 
+        setIsSubmitting(true);
         try {
             if (modalMode === "add") {
                 const response = await add(payload);
@@ -204,6 +209,8 @@ const useEmployees = () => {
                 `Failed to ${modalMode} ${modalRole.toLowerCase()}. Please try again.`,
             );
             console.error(err);
+        } finally {
+            setIsSubmitting(false);
         }
     }, [formData, modalMode, modalRole, editingId, roleApi, buildPayload, closeModal]);
 
@@ -225,6 +232,7 @@ const useEmployees = () => {
 
         const { delete: deleteApi, setState } = roleApi[deleteRole];
 
+        setIsDeleting(true);
         try {
             await deleteApi(deleteId);
             setState((prev) => prev.filter((item) => item.id !== deleteId));
@@ -233,6 +241,7 @@ const useEmployees = () => {
             notify.error("Failed to delete employee. Please try again.");
             console.error(err);
         } finally {
+            setIsDeleting(false);
             cancelDelete();
         }
     }, [deleteRole, deleteId, roleApi, cancelDelete]);
@@ -269,6 +278,7 @@ const useEmployees = () => {
         closeModal,
         handleInputChange,
         handleSubmit,
+        isSubmitting,
 
         // Delete modal
         showDeleteModal,
@@ -276,6 +286,7 @@ const useEmployees = () => {
         openDeleteModal,
         cancelDelete,
         confirmDelete,
+        isDeleting,
 
         // View modal
         showViewModal,

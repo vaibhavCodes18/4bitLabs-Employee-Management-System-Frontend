@@ -392,6 +392,7 @@ const AnalystDashboard = () => {
           onClose={batch.closeModals}
           submitText="Add Batch"
           trainers={trainers}
+          isLoading={batch.isSubmitting}
         />
       )}
       {batch.showEditModal && (
@@ -403,6 +404,7 @@ const AnalystDashboard = () => {
           onClose={batch.closeModals}
           submitText="Update Batch"
           trainers={trainers}
+          isLoading={batch.isSubmitting}
         />
       )}
 
@@ -462,6 +464,8 @@ const AnalystDashboard = () => {
         title="Confirm Delete"
         message={`Are you sure you want to delete batch "${batch.currentBatch?.name}"?`}
         confirmText="Yes, Delete"
+        loadingText="Deleting..."
+        isLoading={batch.isDeleting}
         confirmClassName="bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200"
         onConfirm={batch.handleDeleteBatch}
         onCancel={batch.closeModals}

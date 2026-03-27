@@ -124,6 +124,7 @@ const AdminDashboard = () => {
         formData={emp.formData}
         onChange={emp.handleInputChange}
         onSubmit={emp.handleSubmit}
+        isLoading={emp.isSubmitting}
       />
 
       <ConfirmModal
@@ -131,6 +132,8 @@ const AdminDashboard = () => {
         title="Confirm Delete"
         message={`Are you sure you want to delete this ${emp.deleteRole?.toLowerCase()}?`}
         confirmText="Yes, Delete"
+        loadingText="Deleting..."
+        isLoading={emp.isDeleting}
         confirmClassName="bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200"
         onConfirm={emp.confirmDelete}
         onCancel={emp.cancelDelete}

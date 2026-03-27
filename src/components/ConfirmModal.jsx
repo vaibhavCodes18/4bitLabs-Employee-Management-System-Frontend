@@ -1,7 +1,19 @@
 import React from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
+import ButtonSpinner from "./ButtonSpinner";
 
-const ConfirmModal = ({ isOpen, title, message, confirmText = "Confirm", cancelText = "Cancel", confirmClassName = "bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200", onConfirm, onCancel }) => {
+const ConfirmModal = ({
+  isOpen,
+  title,
+  message,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  confirmClassName = "bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200",
+  onConfirm,
+  onCancel,
+  isLoading = false,
+  loadingText = "Processing...",
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -17,11 +29,28 @@ const ConfirmModal = ({ isOpen, title, message, confirmText = "Confirm", cancelT
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6">
-          <button type="button" onClick={onCancel} className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isLoading}
+            className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {cancelText}
           </button>
-          <button type="button" onClick={onConfirm} className={`px-5 py-2.5 rounded-xl text-sm font-medium text-white transition shadow-md hover:shadow-lg ${confirmClassName}`}>
-            {confirmText}
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={isLoading}
+            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed ${confirmClassName}`}
+          >
+            {isLoading ? (
+              <>
+                <ButtonSpinner size="sm" />
+                <span>{loadingText}</span>
+              </>
+            ) : (
+              confirmText
+            )}
           </button>
         </div>
       </div>

@@ -1,4 +1,6 @@
-import { FaUserGraduate,FaTimes  } from "react-icons/fa";
+import React from "react";
+import { FaUserGraduate, FaTimes } from "react-icons/fa";
+import ButtonSpinner from "./ButtonSpinner";
 
 // ─── Student Form Modal (Improved) ──────────────────────────
 export const StudentModal = ({
@@ -8,6 +10,7 @@ export const StudentModal = ({
   onSubmit,
   onClose,
   submitText,
+  isLoading = false,
 }) => (
   <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-scale-in border border-gray-100">
@@ -102,15 +105,24 @@ export const StudentModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition"
+            disabled={isLoading}
+            className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-5 py-2.5 bg-linear-to-r from-amber-600 to-orange-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-amber-200 transition-all duration-200"
+            disabled={isLoading}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-linear-to-r from-amber-600 to-orange-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-amber-200 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {submitText}
+            {isLoading ? (
+              <>
+                <ButtonSpinner size="sm" />
+                <span>Saving...</span>
+              </>
+            ) : (
+              submitText
+            )}
           </button>
         </div>
       </form>

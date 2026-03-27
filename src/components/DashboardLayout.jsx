@@ -89,6 +89,7 @@ const DashboardLayout = ({
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
@@ -118,14 +119,20 @@ const DashboardLayout = ({
   );
 
   const confirmLogout = useCallback(async () => {
-    // Explicitly call backend logout endpoint, fulfilling end-to-end integration requirements
-    if (typeof api !== 'undefined' && api.logout) {
-      await api.logout();
+    setIsLoggingOut(true);
+    try {
+      if (typeof api !== 'undefined' && api.logout) {
+        await api.logout();
+      }
+    } catch {
+      // ignore logout errors — still clear session
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/login");
+      setShowLogoutModal(false);
+      setIsLoggingOut(false);
     }
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-    setShowLogoutModal(false);
   }, [navigate]);
 
   const toggleProfile = useCallback(() => setShowProfile((prev) => !prev), []);
@@ -490,6 +497,8 @@ const DashboardLayout = ({
         title="Confirm Logout"
         message="Are you sure you want to logout?"
         confirmText="Yes, Logout"
+        loadingText="Logging out..."
+        isLoading={isLoggingOut}
         confirmClassName="bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 shadow-md shadow-rose-200"
         onConfirm={confirmLogout}
         onCancel={() => setShowLogoutModal(false)}

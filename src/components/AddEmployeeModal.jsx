@@ -1,10 +1,11 @@
 import React from "react";
 import { FaTimes, FaUserPlus } from "react-icons/fa";
+import ButtonSpinner from "./ButtonSpinner";
 
 const INPUT_CLASS = "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition";
 const LABEL_CLASS = "block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5";
 
-const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onSubmit }) => {
+const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onSubmit, isLoading = false }) => {
   if (!isOpen) return null;
 
   const renderFields = () => {
@@ -157,11 +158,27 @@ const AddEmployeeModal = ({ isOpen, onClose, mode, role, formData, onChange, onS
         <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-6">
           {renderFields()}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-            <button type="button" onClick={onClose} className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isLoading}
+              className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 font-medium hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               Cancel
             </button>
-            <button type="submit" className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200">
-              {mode === "add" ? "Add" : "Save"} {role}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <ButtonSpinner size="sm" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                `${mode === "add" ? "Add" : "Save"} ${role}`
+              )}
             </button>
           </div>
         </form>
