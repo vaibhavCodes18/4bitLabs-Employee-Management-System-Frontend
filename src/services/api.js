@@ -1,45 +1,30 @@
-import axios from "axios";
+import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-// Create main axios instance
-const api = axios.create({
-    baseURL: API_BASE,
-    withCredentials: true // IMPORTANT for refresh token cookies
-});
-
-// ================= REQUEST INTERCEPTOR =================
-api.interceptors.request.use(
+// --- Axios Interceptors ---
+// Add the JWT token to every request
+axios.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("token");
-
+        const token = localStorage.getItem('token');
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            try {
+                // Ensure Bearer format is sent correctly
+                config.headers.Authorization = `Bearer ${token}`;
+            } catch (error) {
+                console.error("Failed to parse access token for interceptor", error);
+            }
         }
-
         return config;
     },
     (error) => Promise.reject(error)
 );
 
-// ================= RESPONSE INTERCEPTOR =================
-let isRefreshing = false;
-let failedQueue = [];
-
-const processQueue = (error, token = null) => {
-    failedQueue.forEach((prom) => {
-        if (error) {
-            prom.reject(error);
-        } else {
-            prom.resolve(token);
-        }
-    });
-    failedQueue = [];
-};
-
-api.interceptors.response.use(
+// Unwrap Spring Boot "ApiResponse" layer automatically, and catch 401s for Refresh Token
+axios.interceptors.response.use(
     (response) => {
-        // unwrap your ApiResponse { status, message, data }
+        // If the backend returned a wrapper like { status, message, data } 
+        // return just the inner data so it behaves like json-server for components
         if (response.data && response.data.data !== undefined) {
             response.data = response.data.data;
         }
@@ -47,116 +32,107 @@ api.interceptors.response.use(
     },
     async (error) => {
         const originalRequest = error.config;
-
-        // ❗ Prevent retry loop
-        if (originalRequest.url.includes("/auth/refresh")) {
-            return Promise.reject(error);
-        }
-
-        // If 401 and not retried yet
+        // If backend returned 401 (Unauthorized) and we haven't already retried
         if (error.response?.status === 401 && !originalRequest._retry) {
-
-            if (isRefreshing) {
-                return new Promise((resolve, reject) => {
-                    failedQueue.push({ resolve, reject });
-                }).then((token) => {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
-                    return api(originalRequest);
-                });
-            }
-
             originalRequest._retry = true;
-            isRefreshing = true;
-
             try {
-                console.log("Refreshing token...");
-
-                const res = await axios.post(
+                // Create a fresh Axios instance to avoid triggering the interceptors again
+                // (Ensure backend allows credentials for CORS if domains ever separate)
+                const refreshAxios = axios.create();
+                const refreshResponse = await refreshAxios.post(
                     `${API_BASE}/auth/refresh`,
                     {},
                     { withCredentials: true }
                 );
 
-                const newTokens = res.data?.data || res.data;
+                const newTokens = refreshResponse.data?.data || refreshResponse.data;
 
-                if (!newTokens?.accessToken) {
-                    throw new Error("No access token received");
+                if (newTokens && newTokens.accessToken) {
+                    // Save new access token
+                    localStorage.setItem("token", newTokens.accessToken);
+
+                    // Attach it to the failed request
+                    originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
+                    // Retry the original request
+                    return axios(originalRequest);
                 }
-
-                // Save new token
-                localStorage.setItem("token", newTokens.accessToken);
-
-                // Update header
-                api.defaults.headers.common["Authorization"] =
-                    `Bearer ${newTokens.accessToken}`;
-
-                processQueue(null, newTokens.accessToken);
-
-                // Retry original request
-                originalRequest.headers.Authorization =
-                    `Bearer ${newTokens.accessToken}`;
-
-                return api(originalRequest);
-
             } catch (refreshError) {
-                console.error("Refresh failed:", refreshError);
-
-                processQueue(refreshError, null);
-
-                // Logout user
+                // If refresh fails (e.g., token expired), wipe session and kick to login
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
-
                 window.location.href = "/login";
-
-                return Promise.reject(refreshError);
-            } finally {
-                isRefreshing = false;
             }
         }
-
         return Promise.reject(error);
     }
 );
 
-// ================= API METHODS =================
-
-// Auth
-export const login = (email, password) =>
-    api.post("/auth/login", { email, password });
-
-export const logout = () =>
-    api.post("/auth/logout");
-
-// Admin
-export const getTrainers = () => api.get("/admin/trainers");
-export const addTrainer = (data) => api.post("/admin/trainers", data);
-export const updateTrainer = (id, data) => api.put(`/admin/trainers/${id}`, data);
-export const deleteTrainer = (id) => api.delete(`/admin/trainers/${id}`);
-
-// Analyst - Batches
-export const getBatches = () => api.get("/analyst/batches");
-export const addBatch = (data) => api.post("/analyst/batches", data);
-export const updateBatch = (id, data) => api.put(`/analyst/batches/${id}`, data);
-export const deleteBatch = (id) => api.delete(`/analyst/batches/${id}`);
-
-// Counsellor - Students
-export const getStudents = () => api.get("/counsellor/students");
-export const addStudent = (data) => api.post("/counsellor/students", data);
-export const updateStudent = (id, data) => api.put(`/counsellor/students/${id}`, data);
-export const deleteStudent = (id) => api.delete(`/counsellor/students/${id}`);
-
-// Batch Progress (File Upload supported)
-export const addBatchProgress = (data) => {
-    const isFormData = data instanceof FormData;
-
-    return api.post("/batch-progress", data, {
-        headers: isFormData
-            ? { "Content-Type": "multipart/form-data" }
-            : {}
-    });
+// ─── Auth ────────────────────────────────────────────────────
+export const loginByRole = async (role, email, password) => {
+    const endpoint = "auth/login";
+    const response = await axios.post(`${API_BASE}/${endpoint}`, { email, password });
+    return response.data; // The interceptor above makes this the actual user object
 };
 
-export const getBatchProgress = () => api.get("/batch-progress");
+export const logout = async () => {
+    try {
+        await axios.post(`${API_BASE}/auth/logout`);
+    } catch (e) {
+        console.error("Logout API failed", e);
+    }
+};
 
-export default api;
+// ─── Admin Management endpoints ──────────────────────────────
+export const getTrainers = () => axios.get(`${API_BASE}/admin/trainers`);
+export const addTrainer = (data) => axios.post(`${API_BASE}/admin/trainers`, data);
+export const updateTrainer = (id, data) => axios.put(`${API_BASE}/admin/trainers/${id}`, data);
+export const deleteTrainer = (id) => axios.delete(`${API_BASE}/admin/trainers/${id}`);
+
+export const getAnalysts = () => axios.get(`${API_BASE}/admin/analysts`);
+export const addAnalyst = (data) => axios.post(`${API_BASE}/admin/analysts`, data);
+export const updateAnalyst = (id, data) => axios.put(`${API_BASE}/admin/analysts/${id}`, data);
+export const deleteAnalyst = (id) => axios.delete(`${API_BASE}/admin/analysts/${id}`);
+
+export const getCounsellors = () => axios.get(`${API_BASE}/admin/counsellors`);
+export const addCounsellor = (data) => axios.post(`${API_BASE}/admin/counsellors`, data);
+export const updateCounsellor = (id, data) => axios.put(`${API_BASE}/admin/counsellors/${id}`, data);
+export const deleteCounsellor = (id) => axios.delete(`${API_BASE}/admin/counsellors/${id}`);
+
+// ─── Batches endpoints (Analyst) ─────────────────────────────
+export const getBatches = () => axios.get(`${API_BASE}/analyst/batches`);
+export const addBatch = (data) => axios.post(`${API_BASE}/analyst/batches`, data);
+export const updateBatch = (id, data) => axios.put(`${API_BASE}/analyst/batches/${id}`, data);
+export const deleteBatch = (id) => axios.delete(`${API_BASE}/analyst/batches/${id}`);
+
+// ─── Students (Counsellor) ───────────────────────────────────
+export const getStudents = () => axios.get(`${API_BASE}/counsellor/students`);
+export const addStudent = (data) => axios.post(`${API_BASE}/counsellor/students`, data);
+export const updateStudent = (id, data) => axios.put(`${API_BASE}/counsellor/students/${id}`, data);
+export const deleteStudent = (id) => axios.delete(`${API_BASE}/counsellor/students/${id}`);
+
+// ─── Assignments (Backend Maps) ────────────────────────────────
+// Real backend endpoint retrieves all students for a specific batch explicitly.
+export const getStudentsByBatch = (batchId) => axios.get(`${API_BASE}/assignments/batch/${batchId}`);
+export const getAssignments = () => axios.get(`${API_BASE}/assignments`);
+export const assignStudentToBatch = (data) => axios.post(`${API_BASE}/assignments`, data);
+// Transfer uses PUT on /assignments/transfer
+export const updateAssignment = (data) => axios.put(`${API_BASE}/assignments/transfer`, data);
+
+// ─── Batch Progress (Trainer) ────────────────────────────────
+export const getBatchProgress = () => axios.get(`${API_BASE}/batch-progress`); // Update if get all added
+export const getBatchProgressByBatch = (batchId) => axios.get(`${API_BASE}/batch-progress/${batchId}`);
+export const addBatchProgress = (data) => {
+    // Determine headers if data is FormData
+    const isFormData = data instanceof FormData;
+    return axios.post(`${API_BASE}/batch-progress`, data, {
+        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {}
+    });
+};
+export const updateBatchProgress = (id, data) => {
+    const isFormData = data instanceof FormData;
+    return axios.put(`${API_BASE}/batch-progress/${id}`, data, {
+        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {}
+    });
+};
+export const deleteBatchProgress = (id) => axios.delete(`${API_BASE}/batch-progress/${id}`);p
+p
