@@ -38,7 +38,15 @@ api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
         if (token) {
+<<<<<<< HEAD
             config.headers.Authorization = `Bearer ${token}`;
+=======
+            try {
+                config.headers.Authorization = `Bearer ${token}`;
+            } catch (error) {
+                console.error("Failed to parse access token for interceptor", error);
+            }
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
         }
         return config;
     },
@@ -50,7 +58,10 @@ api.interceptors.request.use(
 // 2. On 401, attempts a silent token refresh using the httpOnly cookie.
 api.interceptors.response.use(
     (response) => {
+<<<<<<< HEAD
         // Unwrap Spring Boot ApiResponse wrapper if present
+=======
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
         if (response.data && response.data.data !== undefined) {
             response.data = response.data.data;
         }
@@ -59,6 +70,7 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+<<<<<<< HEAD
         // Only attempt refresh on 401 and not on auth endpoints themselves
         const isAuthEndpoint = originalRequest.url?.includes('/auth/');
         if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
@@ -75,16 +87,29 @@ api.interceptors.response.use(
                 });
             }
 
+=======
+        // 🔥 Prevent infinite loop
+        if (originalRequest.url.includes("/auth/refresh")) {
+            return Promise.reject(error);
+        }
+
+        // If backend returned 401 and not retried yet
+        if (error.response?.status === 401 && !originalRequest._retry) {
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
             originalRequest._retry = true;
             isRefreshing = true;
 
             try {
+<<<<<<< HEAD
                 // Use a clean axios instance to avoid triggering interceptors recursively.
                 // withCredentials: true is critical so the browser sends the httpOnly refreshToken cookie.
+=======
+                // ✅ FIX: Use SAME axios (do NOT create new instance)
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
                 const refreshResponse = await axios.post(
                     `${API_BASE}/auth/refresh`,
                     {},
-                    { withCredentials: true }
+                    { withCredentials: true } // ensures cookie is sent
                 );
 
                 // Backend wraps response in ApiResponse { status, message, data }
@@ -94,6 +119,7 @@ api.interceptors.response.use(
                 if (newAccessToken) {
                     localStorage.setItem('token', newAccessToken);
 
+<<<<<<< HEAD
                     // Retry the original failed request with the new token
                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                     
@@ -112,6 +138,21 @@ api.interceptors.response.use(
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;
+=======
+                    // Attach new token to original request
+                    originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
+
+                    // Retry original request
+                    return axios(originalRequest);
+                }
+            } catch (refreshError) {
+                console.error("Refresh failed:", refreshError);
+
+                // Logout user if refresh fails
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "/login";
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
             }
         }
 
@@ -133,8 +174,14 @@ function clearSessionAndRedirect() {
 //  AUTH ENDPOINTS
 // ═══════════════════════════════════════════════════════════════
 export const loginByRole = async (role, email, password) => {
+<<<<<<< HEAD
     const response = await api.post('/auth/login', { email, password });
     return response.data; // Interceptor unwraps ApiResponse → returns LoginResponseDto
+=======
+    const endpoint = "auth/login";
+    const response = await axios.post(`${API_BASE}/${endpoint}`, { email, password });
+    return response.data;
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
 };
 
 export const logout = async () => {
@@ -179,6 +226,7 @@ export const addStudent     = (data)      => api.post('/counsellor/students', da
 export const updateStudent  = (id, data)  => api.put(`/counsellor/students/${id}`, data);
 export const deleteStudent  = (id)        => api.delete(`/counsellor/students/${id}`);
 
+<<<<<<< HEAD
 // ═══════════════════════════════════════════════════════════════
 //  ASSIGNMENTS — Batch ↔ Student Mapping
 // ═══════════════════════════════════════════════════════════════
@@ -193,6 +241,18 @@ export const updateAssignment     = (data)    => api.put('/assignments/transfer'
 export const getBatchProgress = () => api.get('/batch-progress');
 export const getBatchProgressByBatch = (batchId) => api.get(`/batch-progress/${batchId}`);
 
+=======
+// ─── Assignments ────────────────────────────────
+export const getStudentsByBatch = (batchId) => axios.get(`${API_BASE}/assignments/batch/${batchId}`);
+export const getAssignments = () => axios.get(`${API_BASE}/assignments`);
+export const assignStudentToBatch = (data) => axios.post(`${API_BASE}/assignments`, data);
+export const updateAssignment = (data) => axios.put(`${API_BASE}/assignments/transfer`, data);
+
+// ─── Batch Progress ────────────────────────────────
+export const getBatchProgress = () => axios.get(`${API_BASE}/batch-progress`);
+export const getBatchProgressByBatch = (batchId) => axios.get(`${API_BASE}/batch-progress/${batchId}`);
+
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
 export const addBatchProgress = (data) => {
     const isFormData = data instanceof FormData;
     return api.post('/batch-progress', data, {
@@ -207,7 +267,11 @@ export const updateBatchProgress = (id, data) => {
     });
 };
 
+<<<<<<< HEAD
 export const deleteBatchProgress = (id) => api.delete(`/batch-progress/${id}`);
 
 // ─── Export the configured instance for advanced use ──────────
 export default api;
+=======
+export const deleteBatchProgress = (id) => axios.delete(`${API_BASE}/batch-progress/${id}`);
+>>>>>>> 6fd2f230d83b1fc717eb9917695a1ec7a82e39dd
