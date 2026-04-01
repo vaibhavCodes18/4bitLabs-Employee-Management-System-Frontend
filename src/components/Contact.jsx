@@ -5,8 +5,7 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
   FaLinkedin,
-  FaTwitter,
-  FaFacebookF
+  FaGithub
 } from 'react-icons/fa';
 
 const Contact = () => {
@@ -30,7 +29,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-800">Visit Us</h4>
-                  <p className="text-gray-600">123 Tech Park, Silicon Valley, CA</p>
+                  <p className="text-gray-600">Hyderabad, Telangana</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
@@ -39,7 +38,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-800">Call Us</h4>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
+                  <p className="text-gray-600">+91 7972824554</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
@@ -48,20 +47,17 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-800">Email</h4>
-                  <p className="text-gray-600">info@4bitLabs.com</p>
+                  <p className="text-gray-600">vaibhav.sathe.159@gmail.com</p>
                 </div>
               </div>
             </div>
             <div className="flex justify-center md:justify-start space-x-4 mt-8">
-              <button type="button" className="bg-indigo-100 p-3 rounded-full text-indigo-600 hover:bg-indigo-200 transition">
+              <a href="https://www.linkedin.com/in/vaibhav-sathe89/" target="_blank" rel="noopener noreferrer" className="bg-indigo-100 p-3 rounded-full text-indigo-600 hover:bg-indigo-200 transition">
                 <FaLinkedin />
-              </button>
-              <button type="button" className="bg-indigo-100 p-3 rounded-full text-indigo-600 hover:bg-indigo-200 transition">
-                <FaTwitter />
-              </button>
-              <button type="button" className="bg-indigo-100 p-3 rounded-full text-indigo-600 hover:bg-indigo-200 transition">
-                <FaFacebookF />
-              </button>
+              </a>
+              <a href="https://github.com/vaibhavCodes18/vaibhavCodes18" target="_blank" rel="noopener noreferrer" className="bg-indigo-100 p-3 rounded-full text-indigo-600 hover:bg-indigo-200 transition">
+                <FaGithub />
+              </a>
             </div>
           </div>
           <div className="flex-1 max-w-md mx-auto md:mx-0">
