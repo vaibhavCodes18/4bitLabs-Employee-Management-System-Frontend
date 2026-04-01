@@ -28,6 +28,7 @@ const LoginPage = () => {
     role: "",
   });
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Signing in...");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,11 +37,23 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setLoadingText("Signing in...");
+
+    // Render free-tier cold start handlers
+    let timeoutMsg1 = setTimeout(() => {
+        setLoadingText("Waking up server...");
+    }, 5000);
+    let timeoutMsg2 = setTimeout(() => {
+        setLoadingText("This might take up to a minute...");
+        notify.info("Render free tier takes ~50s to wake up the backend. Please be patient.");
+    }, 15000);
 
     const { email, password, role } = formData;
 
     if (!role) {
       notify.error("Please select a valid role.");
+      clearTimeout(timeoutMsg1);
+      clearTimeout(timeoutMsg2);
       setLoading(false);
       return;
     }
@@ -82,6 +95,8 @@ const LoginPage = () => {
       console.error("Login error:", error);
       notify.error("Login failed. Please try again later.");
     } finally {
+      clearTimeout(timeoutMsg1);
+      clearTimeout(timeoutMsg2);
       setLoading(false);
     }
   };
@@ -231,7 +246,7 @@ const LoginPage = () => {
               {loading ? (
                 <>
                   <FaSpinner className="animate-spin" />
-                  <span>Signing in...</span>
+                  <span>{loadingText}</span>
                 </>
               ) : (
                 <>

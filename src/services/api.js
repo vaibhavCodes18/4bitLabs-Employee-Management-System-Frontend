@@ -61,7 +61,7 @@ api.interceptors.response.use(
 
         // Only attempt refresh on 401 and not on auth endpoints themselves
         const isAuthEndpoint = originalRequest.url?.includes('/auth/');
-        if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+        if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry && !isAuthEndpoint) {
 
             if (isRefreshing) {
                 // Another refresh is already in-flight — queue this request
