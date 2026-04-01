@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 import {
   FaEnvelope,
   FaPhoneAlt,
@@ -9,6 +10,8 @@ import {
 } from 'react-icons/fa';
 
 const Contact = () => {
+  const [state, handleSubmit] = useForm("xreolprp");
+
   return (
     <section id="contact" className="bg-white py-20">
       <div className="container mx-auto px-6">
@@ -62,14 +65,37 @@ const Contact = () => {
             </div>
           </div>
           <div className="flex-1 max-w-md mx-auto md:mx-0">
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-              <input type="text" placeholder="Your Name" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" />
-              <input type="email" placeholder="Email Address" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" />
-              <textarea rows="4" placeholder="Message" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
-              <button type="button" className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition w-full shadow-md">
-                Send Message
-              </button>
-            </form>
+            {state.succeeded ? (
+               <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-6 text-center shadow-sm">
+                 <h3 className="text-xl font-bold mb-2">Message Sent!</h3>
+                 <p>Thank you for reaching out. We will get back to you shortly.</p>
+               </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <input id="name" type="text" name="name" placeholder="Your Name" required className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                  <ValidationError prefix="Name" field="name" errors={state.errors} className="text-red-500 text-sm mt-1" />
+                </div>
+                <div>
+                  <input id="email" type="email" name="email" placeholder="Email Address" required className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                  <ValidationError prefix="Email" field="email" errors={state.errors} className="text-red-500 text-sm mt-1" />
+                </div>
+                <div>
+                  <input id="subject" type="text" name="subject" placeholder="Enter subject" required className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                  <ValidationError prefix="Subject" field="subject" errors={state.errors} className="text-red-500 text-sm mt-1" />
+                </div>
+                <div>
+                  <textarea id="message" name="message" rows="4" placeholder="Message" required className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+                  <ValidationError prefix="Message" field="message" errors={state.errors} className="text-red-500 text-sm mt-1" />
+                </div>
+                {state.errors && state.errors.length > 0 && (
+                  <p className="text-red-500 text-sm">Please fix the errors above or check your connection.</p>
+                )}
+                <button type="submit" disabled={state.submitting} className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition w-full shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
+                  {state.submitting ? 'Sending...' : 'Send Message'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
