@@ -8,7 +8,9 @@ const Footer = () => {
           &copy; 2025 4bitLabs. All rights reserved. Empowering software
           training.
         </p>
-        <p className="mt-2 text-sm">Designed with ❤️ for 4bitLabs</p>
+        <p className="mt-2 text-sm">
+          Designed with <span className="text-red-500">❤️</span> by <span className="font-semibold text-white tracking-wide">Vaibhav Sathe</span> for 4bitLabs
+        </p>
       </div>
     </footer>
   );
