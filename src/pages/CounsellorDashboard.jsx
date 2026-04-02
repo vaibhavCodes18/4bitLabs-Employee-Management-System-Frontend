@@ -231,6 +231,16 @@ const CounsellorDashboard = () => {
       setAssignments((prev) =>
         prev.filter((a) => !assignmentIds.includes(a.id)),
       );
+
+      // Decrement locally the studentCount from impacted batches
+      const impactedBatchIds = studentAssignments.map(a => a.batchId);
+      setBatches(prev => prev.map(b => {
+        if (impactedBatchIds.includes(b.id)) {
+          return { ...b, studentCount: Math.max(0, (b.studentCount || 0) - 1) };
+        }
+        return b;
+      }));
+
       setStudents((prev) => prev.filter((s) => s.id !== currentStudent.id));
       notify.success("Student deleted successfully!");
       closeModals();
@@ -263,6 +273,10 @@ const CounsellorDashboard = () => {
         status: "ACTIVE",
       });
       setAssignments((prev) => [...prev, response.data]);
+
+      // Locally update batch target student count
+      setBatches(prev => prev.map(b => b.id === Number(selectedBatch) ? { ...b, studentCount: (b.studentCount || 0) + 1 } : b));
+
       notify.success("Student assigned to batch successfully!");
       closeModals();
     } catch (err) {
@@ -307,6 +321,18 @@ const CounsellorDashboard = () => {
         ...prev.filter((a) => !oldIds.includes(a.id)),
         newAssignmentData,
       ]);
+
+      const oldBatchId = currentAssignments[0]?.batchId;
+      setBatches(prev => prev.map(b => {
+        if (b.id === Number(selectedBatch)) {
+          return { ...b, studentCount: (b.studentCount || 0) + 1 };
+        }
+        if (b.id === oldBatchId) {
+          return { ...b, studentCount: Math.max(0, (b.studentCount || 0) - 1) };
+        }
+        return b;
+      }));
+
       notify.success("Student transferred to new batch successfully!");
       closeModals();
     } catch (err) {
