@@ -41,7 +41,6 @@ const AnalystDashboard = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const batch = useBatches();
   const [trainers, setTrainers] = useState([]);
-  const [assignments, setAssignments] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user")) || {
     name: "Analyst",
@@ -51,12 +50,10 @@ const AnalystDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [trainersRes, assignmentsRes] = await Promise.all([
+        const [trainersRes] = await Promise.all([
           import("../services/api").then((api) => api.getTrainers()),
-          import("../services/api").then((api) => api.getAssignments()),
         ]);
         setTrainers(trainersRes.data);
-        setAssignments(assignmentsRes.data);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -73,15 +70,6 @@ const AnalystDashboard = () => {
     [trainers]
   );
 
-  // Helper: count students in a batch from assignments
-  const getStudentsCount = useCallback(
-    (batchId) => {
-      return assignments.filter(
-        (a) => a.batchId === batchId && a.studentId && a.status === "active"
-      ).length;
-    },
-    [assignments]
-  );
 
   const statsCards = useMemo(
     () => [
@@ -303,7 +291,7 @@ const AnalystDashboard = () => {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-medium">
-                            {getStudentsCount(b.id)}
+                            {b.studentCount || 0}
                           </span>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -443,7 +431,7 @@ const AnalystDashboard = () => {
               <DetailItem label="Status" value={batch.currentBatch.status} />
               <DetailItem
                 label="Students Count"
-                value={getStudentsCount(batch.currentBatch.id)}
+                value={batch.currentBatch.studentCount || 0}
               />
             </div>
             <div className="flex justify-end mt-6">

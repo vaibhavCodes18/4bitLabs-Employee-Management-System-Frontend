@@ -788,7 +788,7 @@ const CounsellorDashboard = () => {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-medium">
-                            {getStudentsCount(batch.id)}
+                            {batch.studentCount || 0}
                           </span>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">

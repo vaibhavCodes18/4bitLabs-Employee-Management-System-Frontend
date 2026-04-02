@@ -336,7 +336,6 @@ const TrainerDashboard = () => {
     // Data
     const [batches, setBatches] = useState([]);
     const [allProgress, setAllProgress] = useState([]);
-    const [assignments, setAssignments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -372,14 +371,12 @@ const TrainerDashboard = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const [batchesRes, progressRes, assignmentsRes] = await Promise.all([
+                const [batchesRes, progressRes] = await Promise.all([
                     api.getBatches(),
                     api.getBatchProgress(),
-                    api.getAssignments(),
                 ]);
                 setBatches(batchesRes.data);
                 setAllProgress(progressRes.data);
-                setAssignments(assignmentsRes.data);
                 setError(null);
             } catch (err) {
                 setError("Failed to load data. Please try again.");
@@ -411,15 +408,6 @@ const TrainerDashboard = () => {
         [allProgress, user.id]
     );
 
-    // ─── Helper: get student count for a batch ───────────────
-    const getStudentsCount = useCallback(
-        (batchId) => {
-            return assignments.filter(
-                (a) => a.batchId === batchId && a.studentId && a.status === "active"
-            ).length;
-        },
-        [assignments]
-    );
 
     // ─── Stats ─────────────────────────────────────────────────
     const stats = useMemo(
@@ -905,7 +893,7 @@ const TrainerDashboard = () => {
                                                 </td>
                                                 <td className="px-4 py-3 whitespace-nowrap">
                                                     <span className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-medium">
-                                                        {getStudentsCount(batch.id)}
+                                                        {batch.studentCount || 0}
                                                     </span>
                                                 </td>
                                             </tr>
