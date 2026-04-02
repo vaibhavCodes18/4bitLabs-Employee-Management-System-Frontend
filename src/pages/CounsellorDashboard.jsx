@@ -263,8 +263,7 @@ const CounsellorDashboard = () => {
         status: "ACTIVE",
       });
       setAssignments((prev) => [...prev, response.data]);
-      setBatches((prev) => prev.map(b => b.id === Number(selectedBatch) ? { ...b, studentCount: (b.studentCount || 0) + 1 } : b));
-      notify.success("Student assigned to batch!");
+      notify.success("Student assigned to batch successfully!");
       closeModals();
     } catch (err) {
       notify.error("Failed to assign student. Please try again.");
@@ -283,7 +282,6 @@ const CounsellorDashboard = () => {
     const currentAssignments = assignments.filter(
       (a) => a.studentId === currentStudent.id && typeof a.status === "string" && a.status.toLowerCase() === "active",
     );
-    const oldBatchIds = currentAssignments.map(a => a.batchId);
     const alreadyInTarget = currentAssignments.some(
       (a) => a.batchId === selectedBatch,
     );
@@ -309,12 +307,7 @@ const CounsellorDashboard = () => {
         ...prev.filter((a) => !oldIds.includes(a.id)),
         newAssignmentData,
       ]);
-      setBatches((prev) => prev.map(b => {
-        if (b.id === Number(selectedBatch)) return { ...b, studentCount: (b.studentCount || 0) + 1 };
-        if (oldBatchIds.includes(b.id)) return { ...b, studentCount: Math.max(0, (b.studentCount || 0) - 1) };
-        return b;
-      }));
-      notify.success("Batch transferred successfully!");
+      notify.success("Student transferred to new batch successfully!");
       closeModals();
     } catch (err) {
       notify.error("Failed to transfer student. Please try again.");
